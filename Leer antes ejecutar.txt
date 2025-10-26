@@ -1,0 +1,12 @@
+Antes que nada, no he probado otra conexión que no sea DbLocal por lo que tendrás que mover los archivos:
+
+Ubicados en la carpeta del proyecto WebAppInventario\WebAppInventario\Data
+
+db_inventario.mdf
+db_inventario.ldf
+
+hacia la ruta:
+
+C:\Users\(Tu nombre de ususario)AppData\Local\Microsoft\Microsoft SQL Server Local DB\Instances\MSSQLLocalDB
+
+dejarlos dentro de aquí.
