@@ -52,6 +52,52 @@ namespace WebAppInventario.Controllers
             return Ok(facturasDetalles);
         }
 
+        // DETALLE COMPLETO DE CADA FACTURA
+
+        // GET: api/FacturaDetalle/por-idFactura/5
+        [HttpGet("por-idFactura/{idFactura}")]
+        public async Task<ActionResult<IEnumerable<FacturaDetalle>>> GetDetallesPorFactura(int idFactura)
+        {
+            var facturasDetalles = await _context.FacturasDetalles
+        .Include(fd => fd.Facturas)
+            .ThenInclude(f => f.Cliente)
+        .Include(fd => fd.Facturas)
+            .ThenInclude(f => f.Empleado)
+        .Include(fd => fd.inventario)
+            .ThenInclude(i => i.Producto)
+        .Where(fd => fd.idFactura == idFactura) // filtramos por factura
+        .Select(fd => new
+        {
+            fd.idFacturaDetalle,
+            fd.idFactura,
+            fd.idInventario,
+            fd.Facturas.numeroFactura,
+            idCliente = fd.Facturas.idCliente != null ? fd.Facturas.idCliente : null,
+            clienteNombre = fd.Facturas.Cliente != null && fd.Facturas.Cliente.nombre != null
+                             ? fd.Facturas.Cliente.nombre
+                             : "Sin cliente",
+            empleadoNombre = fd.Facturas.Empleado != null && fd.Facturas.Empleado.nombre != null
+                             ? fd.Facturas.Empleado.nombre
+                             : "Sin Empleados",
+            productoNombre = fd.inventario != null && fd.inventario.Producto != null && fd.inventario.Producto.nombre != null
+                             ? fd.inventario.Producto.nombre
+                             : "Sin Nombre",
+            fd.precio,
+            fd.cantidad,
+            fd.subtotal,
+            fd.Facturas.fecha,
+            fd.Facturas.hora
+        })
+        .ToListAsync();
+
+            if (facturasDetalles == null || facturasDetalles.Count == 0)
+                return NotFound($"No hay detalles para la factura con ID {idFactura}.");
+
+            return Ok(facturasDetalles);
+        }
+
+
+
         // GET: api/FacturasDetalles/5
         [HttpGet("{id}")]
         public async Task<ActionResult<FacturaDetalle>> GetFacturaDetalle(int id)

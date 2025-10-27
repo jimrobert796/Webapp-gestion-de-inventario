@@ -327,6 +327,26 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "WebAppInventario.Controllers.ComprasController",
+    "Method": "GetSiguienteNumeroCompra",
+    "RelativePath": "api/Compras/siguiente-numero",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "WebAppInventario.Controllers.ComprasDetallesController",
     "Method": "GetComprasDetalles",
     "RelativePath": "api/ComprasDetalles",
@@ -654,6 +674,26 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "WebAppInventario.Controllers.FacturasController",
+    "Method": "GetSiguienteNumeroFactura",
+    "RelativePath": "api/Facturas/siguiente-numero",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "WebAppInventario.Controllers.FacturasDetallesController",
     "Method": "GetFacturasDetalles",
     "RelativePath": "api/FacturasDetalles",
@@ -761,6 +801,32 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebAppInventario.Controllers.FacturasDetallesController",
+    "Method": "GetDetallesPorFactura",
+    "RelativePath": "api/FacturasDetalles/por-idFactura/{idFactura}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idFactura",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[WebAppInventario.Models.FacturaDetalle, WebAppInventario, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "WebAppInventario.Controllers.InventarioController",

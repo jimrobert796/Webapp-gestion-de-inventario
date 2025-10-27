@@ -27,6 +27,20 @@ namespace WebAppInventario.Controllers
             return await _context.Compras.ToListAsync();
         }
 
+        // GET: api/Compras/siguiente-numero
+        [HttpGet("siguiente-numero")]
+        public async Task<ActionResult<int>> GetSiguienteNumeroCompra()
+        {
+            // Obtener el número de compra más alto en la base
+            int ultimoNumero = await _context.Compras
+                .Select(c => (int?)c.numeroCompra)
+                .MaxAsync() ?? 0;
+
+            int siguienteNumero = ultimoNumero + 1;
+            return Ok(siguienteNumero);
+        }
+
+
         // GET: api/Compras/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Compra>> GetCompra(int id)

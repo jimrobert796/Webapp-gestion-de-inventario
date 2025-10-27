@@ -459,6 +459,38 @@
         }
       }
     },
+    "/api/Compras/siguiente-numero": {
+      "get": {
+        "tags": [
+          "Compras"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Compras/{id}": {
       "get": {
         "tags": [
@@ -1115,6 +1147,38 @@
         }
       }
     },
+    "/api/Facturas/siguiente-numero": {
+      "get": {
+        "tags": [
+          "Facturas"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/FacturasDetalles": {
       "get": {
         "tags": [
@@ -1192,6 +1256,55 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/FacturaDetalle"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FacturasDetalles/por-idFactura/{idFactura}": {
+      "get": {
+        "tags": [
+          "FacturasDetalles"
+        ],
+        "parameters": [
+          {
+            "name": "idFactura",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FacturaDetalle"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FacturaDetalle"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FacturaDetalle"
+                  }
                 }
               }
             }

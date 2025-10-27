@@ -107,6 +107,20 @@ namespace WebAppInventario.Controllers
             return NoContent();
         }
 
+        //DEEVUELVE EL SIGUIENTE NUMERO DE FACTURA A HACER O REGISTRAR
+
+        // GET: api/Facturas/siguiente-numero
+        [HttpGet("siguiente-numero")]
+        public async Task<ActionResult<int>> GetSiguienteNumeroFactura()
+        {
+            int ultimoNumero = await _context.Facturas
+                .Select(f => (int?)f.numeroFactura)
+                .MaxAsync() ?? 0;
+
+            int siguienteNumero = ultimoNumero + 1;
+            return Ok(siguienteNumero);
+        }
+
         // POST: api/Facturas
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]

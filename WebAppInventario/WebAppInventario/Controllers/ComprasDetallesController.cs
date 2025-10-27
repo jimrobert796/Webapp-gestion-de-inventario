@@ -52,6 +52,9 @@ namespace WebAppInventario.Controllers
             return Ok(detalles);
         }
 
+
+
+
         // GET: api/ComprasDetalles/5
         [HttpGet("{id}")]
         public async Task<ActionResult<CompraDetalle>> GetCompraDetalle(int id)
