@@ -14,8 +14,8 @@ namespace WebAppInventario.Models
         public string nombre { get; set; }
         public string descripcion { get; set; }
         public bool estado { get; set; } = true;
-        public DateOnly fechaProd { get; set; }
-        public DateOnly fechaVenc { get; set; }
+        public DateOnly? fechaProd { get; set; }
+        public DateOnly? fechaVenc { get; set; }
         // Propiedad de navegación hacia la categoría 
         public Categoria? Categoria { get; set; }
         public Proveedor? Proveedor { get; set; }

@@ -1,6 +1,11 @@
 wwwroot\js\empleados.js
+wwwroot\views\cajero.html
 wwwroot\views\clientes.html
+wwwroot\views\compras.html
 wwwroot\views\empleados.html
+wwwroot\views\facturas.html
 wwwroot\views\index.html
-wwwroot\views\proveedores.html
 wwwroot\views\inventario.html
+wwwroot\views\login.html
+wwwroot\views\proveedores.html
+wwwroot\views\perfil.html
