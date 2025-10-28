@@ -35,7 +35,9 @@ namespace WebAppInventario.Controllers
             .Select(i => new
             {
                 i.idInventario,
-                idProducto = i.idProducto,
+                i.idProducto,
+                idCategoria = i.Producto != null ? i.Producto.idCategoria : (int?)null,
+                idProveedor = i.Producto != null ? i.Producto.idProveedor : (int?)null,
                 i.precio,
                 i.costo,
                 i.cantidad,
@@ -91,7 +93,9 @@ namespace WebAppInventario.Controllers
         .Select(i => new
         {
             i.idInventario,
-            idProducto = i.idProducto,  // ¡Incluido explícitamente!
+            i.idProducto,
+            idCategoria = i.Producto != null ? i.Producto.idCategoria : (int?)null,
+            idProveedor = i.Producto != null ? i.Producto.idProveedor : (int?)null,
             i.precio,
             i.costo,
             i.cantidad,

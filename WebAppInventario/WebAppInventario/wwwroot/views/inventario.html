@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html>
+<html>  
 <head>
     <meta charset="utf-8" />
     <title>Inventario</title>
@@ -42,6 +42,11 @@
             border: 1px solid #ccc;
             padding: 10px;
         }
+
+        .formulario-bloqueado {
+            pointer-events: none;
+            opacity: 0.6;
+        }
     </style>
 </head>
 <body>
@@ -50,7 +55,7 @@
 
         <div class="contenedor">
             <!-- Formulario lado izquierdo -->
-            <div class="formulario">
+            <div class="formulario formulario-bloqueado" id="formularioContainer">
                 <form id="formInventario">
                     <input type="hidden" id="idInventario">
                     <input type="hidden" id="idProducto">
@@ -77,7 +82,7 @@
                             <input type="text" class="form-control" id="nombreProducto" placeholder="Nombre Producto" required disabled>
                         </div>
                         <div class="mb-2">
-                            <input type="text" class="form-control" id="descripcion" placeholder="Descripción" disabled>
+                            <textarea class="form-control" id="descripcion" placeholder="Descripción" rows="3" disabled></textarea>
                         </div>
                         <div class="mb-2">
                             <input type="date" class="form-control" id="fechaProd" placeholder="Fecha Producción" required disabled>
@@ -164,7 +169,7 @@
 
             function cargarCategorias() {
                 $.ajax({
-                    url: "/api/Categorias", // Asumiendo API para categorias
+                    url: "/api/Categorias",
                     method: "GET",
                     success: function (data) {
                         categorias = data;
@@ -172,11 +177,46 @@
                         select.empty();
                         select.append('<option value="">Seleccione una categoría</option>');
                         categorias.forEach(cat => {
-                            select.append(`<option value="${cat.idCategoria}">${cat.nombre.trim()}</option>`); // Asumiendo campo nombre
+                            select.append(`<option value="${cat.idCategoria}">${cat.nombre.trim()}</option>`);
                         });
                     },
                     error: function (err) {
                         console.error("Error cargando categorias:", err);
+                    }
+                });
+            }
+
+            function cargarInventarios() {
+                $.ajax({
+                    url: "/api/Inventario",
+                    method: "GET",
+                    success: function (data) {
+                        // Filtrar solo productos activos
+                        inventarios = data
+                            .filter(inv => inv.productoEstado)
+                            .map(inv => ({
+                                idInventario: inv.idInventario,
+                                idProducto: inv.idProducto,
+                                idProveedor: inv.idProveedor || '',
+                                idCategoria: inv.idCategoria || '',
+                                precio: Number(inv.precio),
+                                costo: Number(inv.costo),
+                                cantidad: Number(inv.cantidad),
+                                ubicacion: inv.ubicacion.trim(),
+                                ultimaActualizacion: inv.ultimaActualizacion,
+                                productoCodigo: inv.productoCodigo.trim(),
+                                productoNombre: inv.productoNombre.trim(),
+                                productoDescripcion: inv.productoDescripcion.trim(),
+                                productoFechaProd: inv.productoFechaProd,
+                                productoFechaVenc: inv.productoFechaVenc,
+                                productocategoria: inv.productocategoria.trim(),
+                                productoproveedor: inv.productoproveedor.trim()
+                            }));
+
+                        renderTabla();
+                    },
+                    error: function (err) {
+                        console.error("Error cargando inventario:", err);
                     }
                 });
             }
@@ -186,33 +226,31 @@
                 tbody.empty();
                 inventarios.forEach((inv, i) => {
                     tbody.append(`
-                                    <tr data-index="${i}">
-                                        <td>${inv.productoNombre}</td>
-                                        <td>${inv.precio}</td>
-                                        <td>${inv.costo}</td>
-                                        <td>${inv.cantidad}</td>
-                                        <td>${inv.ubicacion}</td>
-                                        <td>${inv.ultimaActualizacion}</td>
-                                    </tr>
-                                `);
+                            <tr data-index="${i}">
+                                <td>${inv.productoNombre}</td>
+                                <td>${inv.precio.toFixed(2)}</td>
+                                <td>${inv.costo.toFixed(2)}</td>
+                                <td>${inv.cantidad}</td>
+                                <td>${inv.ubicacion}</td>
+                                <td>${inv.ultimaActualizacion}</td>
+                            </tr>
+                        `);
                 });
 
-                // Solo agregar el evento click si estamos en modo normal
                 if (modo === 'normal') {
                     $("#tablaInventario tbody tr").click(function () {
                         $("#tablaInventario tbody tr").removeClass("table-primary");
                         $(this).addClass("table-primary");
                         filaSeleccionada = $(this).data("index");
 
-                        // Llenar formulario
                         let inv = inventarios[filaSeleccionada];
                         $("#idInventario").val(inv.idInventario);
                         $("#idProducto").val(inv.idProducto);
-                        $("#idProveedor").val(inv.idProveedor || ''); // Asumiendo que tienes idProveedor en el inventario o producto
-                        $("#idCategoria").val(inv.idCategoria || '');
+                        $("#idProveedor").val(inv.idProveedor);
+                        $("#idCategoria").val(inv.idCategoria);
                         $("#codigo").val(inv.productoCodigo);
                         $("#nombreProducto").val(inv.productoNombre);
-                        $("#descripcion").val(inv.descripcion || '');
+                        $("#descripcion").val(inv.productoDescripcion);
                         $("#fechaProd").val(inv.productoFechaProd);
                         $("#fechaVenc").val(inv.productoFechaVenc);
                         $("#precio").val(inv.precio);
@@ -223,54 +261,22 @@
                 }
             }
 
-            function cargarInventarios() {
-                $.ajax({
-                    url: "/api/Inventario",
-                    method: "GET",
-                    success: function (data) {
-                        inventarios = data.map(inv => ({
-                            idInventario: inv.idInventario,
-                            idProducto: inv.idProducto,
-                            precio: inv.precio,
-                            costo: inv.costo,
-                            cantidad: inv.cantidad,
-                            ubicacion: inv.ubicacion.trim(),
-                            ultimaActualizacion: inv.ultimaActualizacion,
-                            productoNombre: inv.productoNombre.trim(),
-                            productoCodigo: inv.productoCodigo.trim(),
-                            productoEstado: inv.productoEstado,
-                            productoFechaProd: inv.productoFechaProd,
-                            productoFechaVenc: inv.productoFechaVenc,
-                            productocategoria: inv.productocategoria.trim(),
-                            productoproveedor: inv.productoproveedor.trim(),
-                            descripcion: inv.descripcion || '', // Asumiendo que tienes descripcion en el producto
-                            idProveedor: inv.idProveedor || '', // Asumiendo campos adicionales
-                            idCategoria: inv.idCategoria || ''
-                        }));
-                        renderTabla();
-                    },
-                    error: function (err) {
-                        console.error("Error cargando inventarios:", err);
-                    }
-                });
-            }
-
             function activarModoAgregar() {
                 modo = 'agregar';
                 $("#btnAgregar").text("Guardar").removeClass("btn-primary").addClass("btn-success");
                 $("#btnEditar").text("Cancelar").removeClass("btn-warning").addClass("btn-secondary");
                 $("#btnEliminar").prop("disabled", true);
                 $("#tablaInventario").addClass("tabla-desactivada");
+                $("#formularioContainer").removeClass("formulario-bloqueado");
                 $("#formInventario")[0].reset();
                 filaSeleccionada = null;
-                // Habilitar campos del formulario
                 $("#idProveedor, #idCategoria, #codigo, #nombreProducto, #descripcion, #fechaProd, #fechaVenc, #precio, #costo, #cantidad, #ubicacion").prop("disabled", false);
-                renderTabla(); // Re-render para quitar eventos de click
+                renderTabla();
             }
 
             function activarModoEditar() {
                 if (filaSeleccionada === null) {
-                    alert("Seleccione un inventario para editar");
+                    alert("Seleccione un producto del inventario para editar");
                     return;
                 }
                 modo = 'editar';
@@ -278,9 +284,9 @@
                 $("#btnEditar").text("Cancelar").removeClass("btn-warning").addClass("btn-secondary");
                 $("#btnEliminar").prop("disabled", true);
                 $("#tablaInventario").addClass("tabla-desactivada");
-                // Habilitar campos del formulario
+                $("#formularioContainer").removeClass("formulario-bloqueado");
                 $("#idProveedor, #idCategoria, #codigo, #nombreProducto, #descripcion, #fechaProd, #fechaVenc, #precio, #costo, #cantidad, #ubicacion").prop("disabled", false);
-                renderTabla(); // Re-render para quitar eventos de click
+                renderTabla();
             }
 
             function desactivarModo() {
@@ -289,11 +295,11 @@
                 $("#btnEditar").text("Editar").removeClass("btn-secondary").addClass("btn-warning");
                 $("#btnEliminar").prop("disabled", false);
                 $("#tablaInventario").removeClass("tabla-desactivada");
+                $("#formularioContainer").addClass("formulario-bloqueado");
                 $("#formInventario")[0].reset();
                 filaSeleccionada = null;
-                // Deshabilitar campos del formulario
                 $("#idProveedor, #idCategoria, #codigo, #nombreProducto, #descripcion, #fechaProd, #fechaVenc, #precio, #costo, #cantidad, #ubicacion").prop("disabled", true);
-                renderTabla(); // Re-render para restaurar eventos
+                renderTabla();
             }
 
             $(document).ready(function () {
@@ -304,7 +310,6 @@
                 // Botón Agregar / Guardar
                 $("#btnAgregar").click(function () {
                     if (modo === 'agregar') {
-                        // Guardar nuevo producto primero
                         if (!$("#formInventario")[0].checkValidity()) {
                             $("#formInventario")[0].reportValidity();
                             return;
@@ -326,8 +331,7 @@
                             contentType: "application/json",
                             data: JSON.stringify(nuevoProducto),
                             success: function (productoCreado) {
-                                let idProductoNuevo = productoCreado.idProducto; // Asumiendo que devuelve el ID
-                                // Ahora crear inventario
+                                let idProductoNuevo = productoCreado.idProducto;
                                 let nuevoInventario = {
                                     idInventario: 0,
                                     idProducto: idProductoNuevo,
@@ -335,15 +339,15 @@
                                     costo: Number($("#costo").val()),
                                     cantidad: Number($("#cantidad").val()),
                                     ubicacion: $("#ubicacion").val(),
-                                    ultimaActualizacion: new Date().toISOString().split('T')[0] // Fecha actual
+                                    ultimaActualizacion: new Date().toISOString().split('T')[0]
                                 };
                                 $.ajax({
-                                    url: "/api/Inventarios",
+                                    url: "/api/Inventario",
                                     method: "POST",
                                     contentType: "application/json",
                                     data: JSON.stringify(nuevoInventario),
                                     success: function () {
-                                        alert("Inventario agregado");
+                                        alert("Producto agregado/registrado en el inventario");
                                         cargarInventarios();
                                         desactivarModo();
                                     },
@@ -353,7 +357,6 @@
                             error: function (err) { console.error("Error creando producto:", err); }
                         });
                     } else if (modo === 'editar') {
-                        // Guardar cambios (actualizar producto e inventario)
                         if (!$("#formInventario")[0].checkValidity()) {
                             $("#formInventario")[0].reportValidity();
                             return;
@@ -385,7 +388,7 @@
                                     ultimaActualizacion: new Date().toISOString().split('T')[0]
                                 };
                                 $.ajax({
-                                    url: `/api/Inventarios/${actualizarInventario.idInventario}`,
+                                    url: `/api/Inventario/${actualizarInventario.idInventario}`,
                                     method: "PUT",
                                     contentType: "application/json",
                                     data: JSON.stringify(actualizarInventario),
@@ -400,7 +403,6 @@
                             error: function (err) { console.error("Error actualizando producto:", err); }
                         });
                     } else {
-                        // Inicia modo agregar
                         activarModoAgregar();
                     }
                 });
@@ -408,26 +410,43 @@
                 // Botón Editar / Cancelar
                 $("#btnEditar").click(function () {
                     if (modo === 'agregar' || modo === 'editar') {
-                        // Cancelar
                         desactivarModo();
                     } else {
-                        // Inicia modo editar
                         activarModoEditar();
                     }
                 });
 
-                // Eliminar inventario
+                // Eliminar inventario (Soft Delete opcional)
                 $("#btnEliminar").click(function () {
-                    if (modo !== 'normal') return; // Deshabilitado en modos agregar/editar
+                    if (modo !== 'normal') return;
                     if (filaSeleccionada === null) {
-                        alert("Seleccione un inventario para eliminar");
+                        alert("Seleccione un producto para eliminar en el inventario");
                         return;
                     }
                     let id = Number($("#idInventario").val());
                     const nombreProducto = $("#nombreProducto").val();
-                    if (confirm(`¿Desea eliminar el inventario de ${nombreProducto}?`)) {
+                    if (confirm(`¿Desea eliminar el producto ${nombreProducto} del inventario?`)) {
+                        // Soft Delete: actualizar estado a false
                         $.ajax({
-                            url: `/api/Inventarios/${id}`,
+                            url: `/api/Productos/${$("#idProducto").val()}`,
+                            method: "DELETE", // Se puede usar PUT también
+                            contentType: "application/json",
+                            data: JSON.stringify({ estado: false }),
+                            success: function () {
+                                alert("Producto del inventario eliminado (soft delete)");
+                                cargarInventarios();
+                                $("#formInventario")[0].reset();
+                                filaSeleccionada = null;
+                            },
+                            error: function (err) { console.error(err); }
+                        });
+
+
+                        // REPITO NO ES NECESARIO
+                        // Para delete físico usarlo sip pero no es necesario:
+                        /*
+                        $.ajax({
+                            url: `/api/Inventario/${id}`,
                             method: "DELETE",
                             success: function () {
                                 alert("Inventario eliminado");
@@ -437,6 +456,7 @@
                             },
                             error: function (err) { console.error(err); }
                         });
+                        */
                     }
                 });
             });
@@ -444,3 +464,4 @@
     </script>
 </body>
 </html>
+
