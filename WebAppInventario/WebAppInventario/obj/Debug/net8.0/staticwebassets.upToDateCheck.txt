@@ -1,0 +1,6 @@
+wwwroot\js\empleados.js
+wwwroot\views\clientes.html
+wwwroot\views\empleados.html
+wwwroot\views\index.html
+wwwroot\views\proveedores.html
+wwwroot\views\inventario.html

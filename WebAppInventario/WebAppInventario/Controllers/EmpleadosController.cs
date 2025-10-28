@@ -30,6 +30,7 @@ namespace WebAppInventario.Controllers
        .Select(e => new
        {
            e.idEmpleado,
+           e.idRol,
            e.nombre,
            e.contraseña,
            e.credencial,
@@ -56,6 +57,7 @@ namespace WebAppInventario.Controllers
         {
             e.idEmpleado,
             e.nombre,
+            e.idRol,
             e.contraseña,
             e.credencial,
             e.telefono,

@@ -97,7 +97,9 @@ namespace WebAppInventario.Controllers
                 return NotFound();
             }
 
-            _context.Proveedores.Remove(proveedor);
+            // Soft delete: cambiar estado a false
+            proveedor.estado = false;
+            _context.Proveedores.Update(proveedor);
             await _context.SaveChangesAsync();
 
             return NoContent();
