@@ -1,12 +1,14 @@
-Antes que nada, no he probado otra conexión que no sea DbLocal por lo que tendrás que mover los archivos:
+Antes que nada, no he probado otra conexión que no sea DbLocal ir a explorador de soluciones:
 
-Ubicados en la carpeta del proyecto WebAppInventario\WebAppInventario\Data
+Ubicados en la carpeta del proyecto Data
 
 db_inventario.mdf
 db_inventario.ldf
 
-hacia la ruta:
+dar click en el, te mandara al exlorador de soluciones -> click derecho, examinar en explorador de sqlServer, copias la ruta 
+ 
+Ahora a appsetings.json
 
-C:\Users\(Tu nombre de ususario)AppData\Local\Microsoft\Microsoft SQL Server Local DB\Instances\MSSQLLocalDB
+string connectionString = "Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\USERS\(TU NOMBRE DE USUARIO)\DESKTOP\WEB APP PROYECTO\WEBAPPINVENTARIO\WEBAPPINVENTARIO\db_inventario.mdf;Integrated Security=True;";
 
-dejarlos dentro de aquí.
+Ahora debería de reconocer la conexión.
