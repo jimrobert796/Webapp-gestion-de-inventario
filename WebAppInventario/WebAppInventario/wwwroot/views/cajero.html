@@ -1,11 +1,113 @@
 ﻿<!DOCTYPE html>
-<html>
+<html data-bs-theme="dark">
 <head>
     <meta charset="utf-8" />
-    <title></title>
-    <h1>Cajero</h1>
+    <title>::.. Sistema de inventario ..::</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Select2 -->
+    <style>
+        .select2-container .select2-selection--single {
+            height: 38px !important;
+            padding: 6px 12px !important;
+        }
+    </style>
 </head>
 <body>
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Header Info -->
+            <div class="col-12 mb-4">
+                <div class="row text-center">
+                    <div class="col-md-3"><strong>Cajero:</strong> -----</div>
+                    <div class="col-md-3"><strong>Factura Nº:</strong> --</div>
+                    <div class="col-md-3"><strong>Fecha:</strong> --</div>
+                    <div class="col-md-3"><strong>Hora:</strong> --</div>
+                </div>
+            </div>
+        </div>
 
+        <div class="row">
+            <!-- Panel Izquierdo -->
+            <div class="col-md-6">
+                <div class="card p-4 mb-4">
+                    <h5 class="card-title mb-3">Información del Cliente y Producto</h5>
+
+                    <!-- Cliente con búsqueda -->
+                    <div class="mb-3">
+                        <label for="cliente" class="form-label">Cliente</label>
+                        <select id="cliente" class="form-select">
+                            <option value="">Seleccione un cliente...</option>
+                            <option value="Cliente A">Cliente A</option>
+                            <option value="Cliente B">Cliente B</option>
+                            <option value="Cliente C">Cliente C</option>
+                            <option value="Cliente D">Cliente D</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-mail</label>
+                        <input type="email" id="email" class="form-control">
+                    </div>
+
+                    <!-- Producto con búsqueda -->
+                    <div class="mb-3">
+                        <label for="producto" class="form-label">Producto</label>
+                        <select id="producto" class="form-select">
+                            <option value="">Seleccione un producto...</option>
+                            <option value="Producto A">Producto A</option>
+                            <option value="Producto B">Producto B</option>
+                            <option value="Producto C">Producto C</option>
+                            <option value="Producto D">Producto D</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="cantidad" class="form-label">Cantidad</label>
+                        <input type="number" id="cantidad" class="form-control" value="1" min="1">
+                    </div>
+
+                    <button class="btn btn-success w-100">Pagar</button>
+                </div>
+            </div>
+
+            <!-- Panel Derecho -->
+            <div class="col-md-6">
+                <div class="card p-4">
+                    <h5 class="card-title mb-3">Acciones y Detalles</h5>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <button class="btn btn-primary">Agregar</button>
+                        <button class="btn btn-warning">Editar</button>
+                        <button class="btn btn-danger">Eliminar</button>
+                        <button class="btn btn-secondary">Limpiar</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Factura</th>
+                                    <th>Cliente</th>
+                                    <th>Producto</th>
+                                    <th>Precio</th>
+                                    <th>Cantidad</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="6" class="text-center">No hay datos</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+ 
 </body>
 </html>

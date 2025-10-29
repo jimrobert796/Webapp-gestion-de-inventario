@@ -8,21 +8,45 @@
 <body>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="#">LOGO
                 <!--<img src="/img/logo.png" height="50"/>-->
             </a>
-
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav" id="mnxAcademica">
-                    <a class="nav-link" href="#" data-form="perfil">Perfil</a>
-                    <a class="nav-link" href="#" data-form="inventario">Inventario</a>
-                    <a class="nav-link" href="#" data-form="proveedores">Proveedores</a>
-                    <a class="nav-link" href="#" data-form="compras">Compras</a>
-                    <a class="nav-link" href="#" data-form="cajero">Cajero</a>
-                    <a class="nav-link" href="#" data-form="empleados">Empleados</a>
-                    <a class="nav-link" href="#" data-form="facturas">Facturas</a>
-                    <a class="nav-link" href="#" data-form="clientes">Clientes</a>
-                </div>
+                <ul class="navbar-nav" id="mnxAcademica">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-form="perfil">Perfil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-form="inventario">Inventario</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-form="proveedores">Proveedores</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownCompras" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Compras
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownCompras">
+                            <li><a class="dropdown-item" href="#" data-form="compras">Compras</a></li>
+                            <li><a class="dropdown-item" href="#" data-form="registroCompras">Registro Compras</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-form="cajero">Cajero</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-form="facturas">Facturas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-form="empleados">Empleados</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-form="clientes">Clientes</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
@@ -37,8 +61,10 @@
     <script>
         document.addEventListener("DOMContentLoaded", e => {
             mnxAcademica.addEventListener("click", event => {
-                event.preventDefault();
-                abrirVentana(event.target.dataset.form)
+                if (event.target.dataset.form) {
+                    event.preventDefault();
+                    abrirVentana(event.target.dataset.form);
+                }
             })
         })
         function abrirVentana(form) {
@@ -54,6 +80,6 @@
                 });
         }
     </script>
-   
+
 </body>
-</html>  
+</html>

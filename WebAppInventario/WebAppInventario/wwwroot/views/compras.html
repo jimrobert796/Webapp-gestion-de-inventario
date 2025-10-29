@@ -1,11 +1,126 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="es" data-bs-theme="dark">
 <head>
-    <meta charset="utf-8" />
-    <title></title>
-    <h1>Compras</h1>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Compras</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .campo-moneda {
+            display: flex;
+            align-items: center;
+        }
+
+            .campo-moneda span {
+                margin-right: 5px;
+                font-weight: bold;
+            }
+    </style>
 </head>
 <body>
+
+    <div class="container mt-4">
+
+        <!-- Encabezado -->
+        <div class="card mb-4 p-3 shadow-sm">
+            <div class="d-flex justify-content-between">
+                <span><strong>N° compra:</strong> --</span>
+                <span><strong>Fecha:</strong> --/--/--</span>
+                <span><strong>Hora:</strong> 00:00</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Panel Izquierdo: Formulario -->
+            <div class="col-md-5">
+                <div class="card p-4 shadow-sm mb-4">
+                    <h5 class="mb-3 text-center">Datos de la Compra</h5>
+
+                    <div class="mb-3">
+                        <label for="proveedor" class="form-label">Proveedor</label>
+                        <select id="proveedor" class="form-select">
+                            <option value="">Seleccione un proveedor</option>
+                            <option>Proveedor A</option>
+                            <option>Proveedor B</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="producto" class="form-label">Producto</label>
+                        <select id="producto" class="form-select">
+                            <option value="">Seleccione un producto</option>
+                            <option>Producto A</option>
+                            <option>Producto B</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="cantidad" class="form-label">Cantidad</label>
+                        <input type="number" id="cantidad" class="form-control" value="1" min="1">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="precio-compra" class="form-label">Precio de compra</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="text" id="precio-compra" class="form-control" placeholder="Precio de compra">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="precio-venta" class="form-label">Precio de venta</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="text" id="precio-venta" class="form-control" placeholder="Precio de venta">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="solicitado-por" class="form-label">Solicitado por:</label>
+                        <input type="text" id="solicitado-por" class="form-control" placeholder="Nombre de quien solicita">
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Agregar</button>
+                        <button type="submit" class="btn btn-success"><i class="bi bi-save"></i> Registrar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Derecho: Tabla -->
+            <div class="col-md-7">
+                <div class="card p-4 shadow-sm">
+                    <h5 class="mb-3 text-center">Detalle de Compras</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover text-center align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>N° Compra</th>
+                                    <th>Proveedor</th>
+                                    <th>Producto</th>
+                                    <th>Solicitado por</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio</th>
+                                    <th>Sub Total</th>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="9" class="text-muted">No hay compras agregadas</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 
 </body>
 </html>
