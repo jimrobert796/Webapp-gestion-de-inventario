@@ -1,19 +1,12 @@
 ﻿<!DOCTYPE html>
-<html data-bs-theme="dark">
+<html>
 <head>
     <meta charset="utf-8" />
-    <title>::.. Sistema de inventario ..::</title>
-
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Select2 -->
-    <style>
-        .select2-container .select2-selection--single {
-            height: 38px !important;
-            padding: 6px 12px !important;
-        }
-    </style>
+    <title>Cajero</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
     <div class="container mt-4">
@@ -21,10 +14,10 @@
             <!-- Header Info -->
             <div class="col-12 mb-4">
                 <div class="row text-center">
-                    <div class="col-md-3"><strong>Cajero:</strong> -----</div>
-                    <div class="col-md-3"><strong>Factura Nº:</strong> --</div>
-                    <div class="col-md-3"><strong>Fecha:</strong> --</div>
-                    <div class="col-md-3"><strong>Hora:</strong> --</div>
+                    <div class="col-md-3"><strong>Cajero:</strong> <span id="cajeroNombre">-----</span></div>
+                    <div class="col-md-3"><strong>Factura Nº:</strong> <span id="facturaNumero">--</span></div>
+                    <div class="col-md-3"><strong>Fecha:</strong> <span id="fechaActual">--</span></div>
+                    <div class="col-md-3"><strong>Hora:</strong> <span id="horaActual">--</span></div>
                 </div>
             </div>
         </div>
@@ -35,41 +28,63 @@
                 <div class="card p-4 mb-4">
                     <h5 class="card-title mb-3">Información del Cliente y Producto</h5>
 
+                    <!-- Búsqueda de Cliente -->
+                    <div class="mb-3">
+                        <label for="busquedaCliente" class="form-label">Buscar Cliente</label>
+                        <input type="text" id="busquedaCliente" class="form-control" placeholder="Escribe para buscar...">
+                    </div>
+
                     <!-- Cliente con búsqueda -->
                     <div class="mb-3">
                         <label for="cliente" class="form-label">Cliente</label>
-                        <select id="cliente" class="form-select">
+                        <select id="cliente" class="form-select" required>
                             <option value="">Seleccione un cliente...</option>
-                            <option value="Cliente A">Cliente A</option>
-                            <option value="Cliente B">Cliente B</option>
-                            <option value="Cliente C">Cliente C</option>
-                            <option value="Cliente D">Cliente D</option>
+                            <option value="1" data-email="clienteA@example.com">Cliente A</option>
+                            <option value="2" data-email="clienteB@example.com">Cliente B</option>
+                            <option value="3" data-email="clienteC@example.com">Cliente C</option>
+                            <option value="4" data-email="clienteD@example.com">Cliente D</option>
                         </select>
                     </div>
 
                     <div class="mb-3">
                         <label for="email" class="form-label">E-mail</label>
-                        <input type="email" id="email" class="form-control">
+                        <input type="email" id="email" class="form-control" readonly>
+                    </div>
+
+                    <!-- Búsqueda de Producto -->
+                    <div class="mb-3">
+                        <label for="busquedaProducto" class="form-label">Buscar Producto</label>
+                        <input type="text" id="busquedaProducto" class="form-control" placeholder="Escribe para buscar...">
                     </div>
 
                     <!-- Producto con búsqueda -->
                     <div class="mb-3">
                         <label for="producto" class="form-label">Producto</label>
-                        <select id="producto" class="form-select">
+                        <select id="producto" class="form-select" required>
                             <option value="">Seleccione un producto...</option>
-                            <option value="Producto A">Producto A</option>
-                            <option value="Producto B">Producto B</option>
-                            <option value="Producto C">Producto C</option>
-                            <option value="Producto D">Producto D</option>
+                            <option value="1" data-precio="10.00">Producto A</option>
+                            <option value="2" data-precio="15.50">Producto B</option>
+                            <option value="3" data-precio="20.00">Producto C</option>
+                            <option value="4" data-precio="25.75">Producto D</option>
                         </select>
                     </div>
 
                     <div class="mb-3">
                         <label for="cantidad" class="form-label">Cantidad</label>
-                        <input type="number" id="cantidad" class="form-control" value="1" min="1">
+                        <input type="number" id="cantidad" class="form-control" value="1" min="1" required>
                     </div>
 
-                    <button class="btn btn-success w-100">Pagar</button>
+                    <!-- Combo de Pago -->
+                    <div class="mb-3">
+                        <label for="tipoPago" class="form-label">Tipo de Pago</label>
+                        <select id="tipoPago" class="form-select" required>
+                            <option value="">Seleccione tipo de pago...</option>
+                            <option value="efectivo">Efectivo</option>
+                            <option value="tarjeta">Tarjeta</option>
+                        </select>
+                    </div>
+
+                    <button id="btnPagar" class="btn btn-success w-100">Pagar</button>
                 </div>
             </div>
 
@@ -78,17 +93,15 @@
                 <div class="card p-4">
                     <h5 class="card-title mb-3">Acciones y Detalles</h5>
                     <div class="d-flex flex-wrap gap-2 mb-3">
-                        <button class="btn btn-primary">Agregar</button>
-                        <button class="btn btn-warning">Editar</button>
-                        <button class="btn btn-danger">Eliminar</button>
-                        <button class="btn btn-secondary">Limpiar</button>
+                        <button id="btnAgregar" class="btn btn-primary">Agregar</button>
+                        <button id="btnEditar" class="btn btn-warning" disabled>Editar</button>
+                        <button id="btnEliminar" class="btn btn-danger" disabled>Eliminar</button>
+                        <button id="btnLimpiar" class="btn btn-secondary">Limpiar</button>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
+                        <table class="table table-striped" id="tablaDetalles">
+                            <thead class="table-dark">
                                 <tr>
-                                    <th>Factura</th>
-                                    <th>Cliente</th>
                                     <th>Producto</th>
                                     <th>Precio</th>
                                     <th>Cantidad</th>
@@ -97,9 +110,23 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="6" class="text-center">No hay datos</td>
+                                    <td colspan="4" class="text-center text-muted">No hay productos agregados</td>
                                 </tr>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="3" class="text-end">Subtotal:</th>
+                                    <th id="subtotalFactura">0.00</th>
+                                </tr>
+                                <tr>
+                                    <th colspan="3" class="text-end">IVA (13%):</th>
+                                    <th id="ivaFactura">0.00</th>
+                                </tr>
+                                <tr>
+                                    <th colspan="3" class="text-end">Total:</th>
+                                    <th id="totalFactura">0.00</th>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -107,7 +134,121 @@
         </div>
     </div>
 
+    <!-- ========== MODAL PARA AGREGAR/EDITAR PRODUCTO EN VENTA ========== -->
+    <div class="modal fade" id="modalProductoVenta" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Encabezado del modal -->
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="modalProductoTitulo">Agregar Producto</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
 
- 
+                <!-- Cuerpo del modal con formulario -->
+                <div class="modal-body">
+                    <form id="formProductoVenta">
+                        <input type="hidden" id="indiceEditar">
+                        <div class="mb-3">
+                            <label for="productoModal" class="form-label">Producto</label>
+                            <select id="productoModal" class="form-select" required>
+                                <option value="">Seleccione un producto...</option>
+                                <option value="1" data-precio="10.00">Producto A</option>
+                                <option value="2" data-precio="15.50">Producto B</option>
+                                <option value="3" data-precio="20.00">Producto C</option>
+                                <option value="4" data-precio="25.75">Producto D</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cantidadModal" class="form-label">Cantidad</label>
+                            <input type="number" id="cantidadModal" class="form-control" value="1" min="1" required>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Pie del modal con botones -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnGuardarProducto">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL DE CONFIRMACIÓN DE ELIMINACIÓN ========== -->
+    <div class="modal fade" id="modalEliminar" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">¿Desea eliminar este producto de la venta?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">Sí, Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL DE CONFIRMACIÓN DE PAGO ========== -->
+    <div class="modal fade" id="modalPago" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Confirmar Pago</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">Subtotal: <strong id="subtotalPago"></strong></p>
+                    <p>IVA (13%): <strong id="ivaPago"></strong></p>
+                    <p>Total a pagar: <strong id="totalPago"></strong></p>
+                    <p>¿Confirmar el pago de la factura?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" id="btnConfirmarPago">Confirmar Pago</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL DE ÉXITO ========== -->
+    <div class="modal fade" id="modalExito" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Éxito</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0" id="mensajeExito"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL DE ERROR ========== -->
+    <div class="modal fade" id="modalError" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Error</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0" id="mensajeError"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

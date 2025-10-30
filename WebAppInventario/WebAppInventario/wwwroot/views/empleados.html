@@ -3,160 +3,313 @@
 <head>
     <meta charset="utf-8" />
     <title>Empleados</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .contenedor {
-            display: flex;
-            gap: 20px;
-        }
-
-        .formulario {
-            flex: 1;
-        }
-
-        .tabla-empleados {
-            flex: 2;
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        .botones-crud {
-            margin-top: 10px;
-            display: flex;
-            justify-content: flex-end; /* Cambiado a flex-end para alinear a la derecha */
-            gap: 10px;
-        }
-
-        .tabla-desactivada {
-            pointer-events: none;
-            opacity: 0.5;
-        }
-    </style>
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container mt-3">
-        <h2 class="mb-3">Gestión de Empleados</h2>
-
-        <div class="contenedor">
-            <!-- Formulario lado izquierdo -->
-            <div class="formulario">
-                <form id="formEmpleado">
-                    <input type="hidden" id="idEmpleado">
-                    <input type="hidden" id="idRol">
-                    <div class="mb-2">
-                        <label for="rol" class="form-label">Rol</label>
-                        <select id="rol" class="form-select" required disabled>
-                            <option value="">Seleccione un rol</option>
-                            <option value="1">Administrador</option>
-                            <option value="2">Bodega</option>
-                            <option value="3">Cajero</option>
-                        </select>
-                    </div>
-                    <div class="mb-2">
-                        <input type="text" class="form-control" id="nombre" placeholder="Nombre" required disabled>
-                    </div>
-                    <div class="mb-2">
-                        <input type="text" class="form-control" id="credencial" placeholder="Credencial" required disabled>
-                    </div>
-                    <div class="mb-2">
-                        <input type="password" class="form-control" id="contrasena" placeholder="Contraseña" required disabled>
-                    </div>
-                    <div class="mb-2">
-                        <input type="tel" class="form-control" id="telefono" placeholder="Teléfono" required disabled>
-                    </div>
-                    <div class="mb-2">
-                        <input type="email" class="form-control" id="email" placeholder="Email" required disabled>
-                    </div>
-                    <div class="mb-2">
-                        <input type="text" class="form-control" id="direccion" placeholder="Dirección" required disabled>
-                    </div>
-                    <div class="mb-2">
-                        <input type="date" class="form-control" id="fechaNacimiento" placeholder="Fecha de Nacimiento" required disabled>
-                    </div>
-                </form>
+    <!-- Contenedor principal -->
+    <div class="container mt-4">
+        <!-- Tarjeta principal -->
+        <div class="card shadow">
+            <!-- Encabezado de la tarjeta -->
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">Gestión de Empleados</h2>
             </div>
 
-            <!-- Tabla lado derecho informacion de empleado -->
-            <div class="tabla-empleados">
-                <table class="table table-dark table-striped" id="tablaEmpleados">
-                    <thead>
-                        <tr>
-                            <th>Rol</th>
-                            <th>Nombre</th>
-                            <th>Credencial</th>
-                            <th>Teléfono</th>
-                            <th>Email</th>
-                            <th>Dirección</th>
-                            <th>Fecha Nac.</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Datos de empleados completos -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
+            <!-- Cuerpo de la tarjeta -->
+            <div class="card-body">
+                <!-- Botones de acción y búsqueda en una fila -->
+                <div class="row mb-3 align-items-center">
+                    <!-- Botones CRUD al lado izquierdo -->
+                    <div class="col-md-6">
+                        <button id="btnNuevo" class="btn btn-primary">Nuevo Empleado</button>
+                        <button id="btnEditar" class="btn btn-warning" disabled>Editar</button>
+                        <button id="btnEliminar" class="btn btn-danger" disabled>Eliminar</button>
+                    </div>
 
-        <!-- Botones CRUD debajo de la tabla segun las ventanas -->
-        <div class="botones-crud">
-            <button id="btnAgregar" class="btn btn-primary">Agregar</button>
-            <button id="btnEditar" class="btn btn-warning">Editar</button>
-            <button id="btnEliminar" class="btn btn-danger">Eliminar</button>
+                    <!-- Buscador al lado derecho -->
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text bg-primary text-white">
+                                <i class="bi bi-search"></i><!--ICONO-->
+                            </span>
+                            <input type="text" class="form-control" id="inputBuscar" placeholder="Buscar por nombre o credencial...">
+                            <button class="btn btn-outline-secondary" type="button" id="btnLimpiarBusqueda" title="Limpiar búsqueda">
+                                <i class="bi bi-x-lg"></i><!--ICONO-->
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de empleados con scroll responsive -->
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover" id="tablaEmpleados">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Rol</th>
+                                <th>Nombre</th>
+                                <th>Credencial</th>
+                                <th>Teléfono</th>
+                                <th>Email</th>
+                                <th>Dirección</th>
+                                <th>Fecha Nac.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Los datos de empleados se cargan dinámicamente aquí -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- ========== MODAL PARA AGREGAR/EDITAR EMPLEADO ========== -->
+    <div class="modal fade" id="modalEmpleado" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <!-- Encabezado del modal -->
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="modalTitulo">Nuevo Empleado</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Cuerpo del modal con formulario -->
+                <div class="modal-body">
+                    <form id="formEmpleado">
+                        <!-- Campo oculto para el ID del empleado (solo se usa al editar) -->
+                        <input type="hidden" id="idEmpleado">
+
+                        <!-- Primera fila: Rol y Nombre -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="rol" class="form-label">Rol</label>
+                                <select id="rol" class="form-select" required>
+                                    <option value="">Seleccione un rol</option>
+                                    <option value="1">Administrador</option>
+                                    <option value="2">Bodega</option>
+                                    <option value="3">Cajero</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="nombre" class="form-label">Nombre Completo</label>
+                                <input type="text" class="form-control" id="nombre" required>
+                            </div>
+                        </div>
+
+                        <!-- Segunda fila: Credencial y Contraseña -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="credencial" class="form-label">Credencial</label>
+                                <input type="text" class="form-control" id="credencial" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="contrasena" class="form-label">Contraseña</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="contrasena" required>
+                                    <!-- Botón para mostrar/ocultar contraseña -->
+                                    <button class="btn btn-outline-secondary" type="button" id="btnTogglePassword">
+                                        <i class="bi bi-eye" id="iconoPassword"></i><!--ICONO-->
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tercera fila: Teléfono y Email -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="telefono" class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control" id="telefono" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                        </div>
+
+                        <!-- Cuarta fila: Dirección y Fecha de Nacimiento -->
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                <label for="direccion" class="form-label">Dirección</label>
+                                <input type="text" class="form-control" id="direccion" required>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label for="fechaNacimiento" class="form-label">Fecha Nacimiento</label>
+                                <input type="date" class="form-control" id="fechaNacimiento" required>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Pie del modal con botones -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnGuardar">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL DE CONFIRMACIÓN DE ELIMINACIÓN ========== -->
+    <div class="modal fade" id="modalEliminar" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Mensaje de confirmación con nombre del empleado -->
+                    <p class="mb-0">¿Desea eliminar al empleado <strong id="nombreEmpleadoEliminar"></strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">Sí, Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL DE ÉXITO ========== -->
+    <div class="modal fade" id="modalExito" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Éxito</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Mensaje dinámico de éxito (se cambia desde JavaScript) -->
+                    <p class="mb-0" id="mensajeExito"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL DE ERROR ========== -->
+    <div class="modal fade" id="modalError" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Error</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Mensaje dinámico de error (se cambia desde JavaScript) -->
+                    <p class="mb-0" id="mensajeError"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- ========== JAVASCRIPT PRINCIPAL ========== -->
     <script>
+        // IIFE (Immediately Invoked Function Expression) para encapsular el código
         (function () {
-            let empleados = [];
-            let filaSeleccionada = null;
-            let modo = 'normal'; // Estados: 'normal', 'agregar', 'editar'
+            // ========== VARIABLES GLOBALES ==========
+            let empleados = [];              // Array para almacenar todos los empleados
+            let empleadosFiltrados = [];     // Array para almacenar empleados filtrados por búsqueda
+            let filaSeleccionada = null;     // Índice de la fila seleccionada en la tabla
+            let modoEdicion = false;         // Bandera para saber si estamos editando o agregando
+            let modalEmpleado;               // Instancia del modal de empleado
 
-            function renderTabla() {
-                let tbody = $("#tablaEmpleados tbody");
-                tbody.empty();
-                empleados.forEach((emp, i) => {
-                    tbody.append(`
-                                    <tr data-index="${i}">
-                                        <td>${emp.rolNombre}</td>
-                                        <td>${emp.nombre}</td>
-                                        <td>${emp.credencial}</td>
-                                        <td>${emp.telefono}</td>
-                                        <td>${emp.email}</td>
-                                        <td>${emp.direccion}</td>
-                                        <td>${emp.fechaNacimiento}</td>
-                                    </tr>
-                                `);
-                });
-
-                // Solo agregar el evento click si estamos en modo normal
-                if (modo === 'normal') {
-                    $("#tablaEmpleados tbody tr").click(function () {
-                        $("#tablaEmpleados tbody tr").removeClass("table-primary");
-                        $(this).addClass("table-primary");
-                        filaSeleccionada = $(this).data("index");
-
-                        // Llenar formulario
-                        let emp = empleados[filaSeleccionada];
-                        $("#idEmpleado").val(emp.idEmpleado);
-                        $("#idRol").val(emp.idRol);
-                        $("#rol").val(emp.idRol);
-                        $("#nombre").val(emp.nombre);
-                        $("#credencial").val(emp.credencial);
-                        $("#contrasena").val(emp.contrasena);
-                        $("#telefono").val(emp.telefono);
-                        $("#email").val(emp.email);
-                        $("#direccion").val(emp.direccion);
-                        $("#fechaNacimiento").val(emp.fechaNacimiento);
-                    });
+            // ========== FUNCIÓN PARA FILTRAR EMPLEADOS POR BÚSQUEDA ==========
+            function filtrarEmpleados(textoBusqueda) {
+                // Si no hay texto de búsqueda, mostrar todos
+                if (!textoBusqueda || textoBusqueda.trim() === "") {
+                    empleadosFiltrados = empleados;
+                    return;
                 }
+
+                // Convertir a minúsculas para búsqueda case-insensitive
+                let busqueda = textoBusqueda.toLowerCase().trim();
+
+                // Filtrar empleados que coincidan en nombre o credencial
+                empleadosFiltrados = empleados.filter(emp => {
+                    let nombre = emp.nombre.toLowerCase();
+                    let credencial = emp.credencial.toLowerCase();
+                    return nombre.includes(busqueda) || credencial.includes(busqueda);
+                });
             }
 
+            // ========== FUNCIÓN PARA RENDERIZAR LA TABLA ==========
+            function renderTabla() {
+                let tbody = $("#tablaEmpleados tbody");
+                tbody.empty(); // Limpiar el contenido actual de la tabla
+
+                // Determinar qué array mostrar (filtrado o completo)
+                let datosAMostrar = empleadosFiltrados;
+
+                // Si no hay empleados, mostrar mensaje
+                if (datosAMostrar.length === 0) {
+                    let mensaje = empleados.length === 0
+                        ? "No hay empleados registrados"
+                        : "No se encontraron empleados con ese criterio de búsqueda";
+                    tbody.append(`
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">
+                                    ${mensaje}
+                                </td>
+                            </tr>
+                        `);
+                    return;
+                }
+
+                // Recorrer el array de empleados y crear filas
+                datosAMostrar.forEach((emp, i) => {
+                    // Buscar el índice real en el array original
+                    let indiceReal = empleados.findIndex(e => e.idEmpleado === emp.idEmpleado);
+                    tbody.append(`
+                            <tr data-index="${indiceReal}">
+                                <td>${emp.rolNombre}</td>
+                                <td>${emp.nombre}</td>
+                                <td>${emp.credencial}</td>
+                                <td>${emp.telefono}</td>
+                                <td>${emp.email}</td>
+                                <td>${emp.direccion}</td>
+                                <td>${emp.fechaNacimiento}</td>
+                            </tr>
+                        `);
+                });
+
+                // Agregar evento click a cada fila de la tabla
+                $("#tablaEmpleados tbody tr").click(function () {
+                    // No hacer nada si es la fila de "no hay empleados"
+                    if ($(this).find('td').length === 1) return;
+
+                    // Remover la clase de selección de todas las filas
+                    $("#tablaEmpleados tbody tr").removeClass("table-primary");
+                    // Agregar clase de selección a la fila clickeada
+                    $(this).addClass("table-primary");
+                    // Guardar el índice de la fila seleccionada
+                    filaSeleccionada = $(this).data("index");
+
+                    // Habilitar los botones de Editar y Eliminar
+                    $("#btnEditar, #btnEliminar").prop("disabled", false);
+                });
+            }
+
+            // ========== FUNCIÓN PARA CARGAR EMPLEADOS DESDE LA API ==========
             function cargarEmpleados() {
                 $.ajax({
-                    url: "/api/Empleados",
+                    url: "/api/Empleados",  // Endpoint de la API
                     method: "GET",
                     success: function (data) {
+                        // Mapear los datos recibidos al formato que usamos
                         empleados = data.map(emp => ({
                             idEmpleado: emp.idEmpleado,
                             idRol: emp.idRol,
@@ -169,158 +322,238 @@
                             direccion: emp.direccion.trim(),
                             fechaNacimiento: emp.fechaNacimiento
                         }));
-                        renderTabla();
+                        empleadosFiltrados = empleados; // Inicializar filtrados con todos
+                        renderTabla(); // Actualizar la tabla con los datos
                     },
                     error: function (err) {
                         console.error("Error cargando empleados:", err);
+                        alert("Error al cargar empleados");
                     }
                 });
             }
 
-            function activarModoAgregar() {
-                modo = 'agregar';
-                $("#btnAgregar").text("Guardar").removeClass("btn-primary").addClass("btn-success");
-                $("#btnEditar").text("Cancelar").removeClass("btn-warning").addClass("btn-secondary");
-                $("#btnEliminar").prop("disabled", true);
-                $("#tablaEmpleados").addClass("tabla-desactivada");
-                $("#formEmpleado")[0].reset();
-                filaSeleccionada = null;
-                // Habilitar campos del formulario
-                $("#rol, #nombre, #credencial, #contrasena, #telefono, #email, #direccion, #fechaNacimiento").prop("disabled", false);
-                renderTabla(); // Re-render para quitar eventos de click
+            // ========== FUNCIÓN PARA LIMPIAR EL FORMULARIO ==========
+            function limpiarFormulario() {
+                $("#formEmpleado")[0].reset();  // Reset del formulario HTML
+                $("#idEmpleado").val("");       // Limpiar el ID oculto
             }
 
-            function activarModoEditar() {
+            // ========== FUNCIÓN PARA ABRIR MODAL EN MODO "NUEVO" ==========
+            function abrirModalNuevo() {
+                modoEdicion = false;  // Indicar que estamos agregando
+                limpiarFormulario();  // Limpiar el formulario
+                // Configurar el título y botón para "Nuevo"
+                $("#modalTitulo").text("Nuevo Empleado");
+                $("#btnGuardar").text("Guardar").removeClass("btn-warning").addClass("btn-primary");
+                modalEmpleado.show();  // Mostrar el modal
+            }
+
+            // ========== FUNCIÓN PARA ABRIR MODAL EN MODO "EDITAR" ==========
+            function abrirModalEditar() {
+                // Validar que hay una fila seleccionada
                 if (filaSeleccionada === null) {
                     alert("Seleccione un empleado para editar");
                     return;
                 }
-                modo = 'editar';
-                $("#btnAgregar").text("Guardar Cambios").removeClass("btn-primary").addClass("btn-success");
-                $("#btnEditar").text("Cancelar").removeClass("btn-warning").addClass("btn-secondary");
-                $("#btnEliminar").prop("disabled", true);
-                $("#tablaEmpleados").addClass("tabla-desactivada");
-                // Habilitar campos del formulario
-                $("#rol, #nombre, #credencial, #contrasena, #telefono, #email, #direccion, #fechaNacimiento").prop("disabled", false);
-                renderTabla(); // Re-render para quitar eventos de click
+
+                modoEdicion = true;  // Indicar que estamos editando
+                let emp = empleados[filaSeleccionada];  // Obtener datos del empleado
+
+                // Llenar el formulario con los datos del empleado
+                $("#idEmpleado").val(emp.idEmpleado);
+                $("#rol").val(emp.idRol);
+                $("#nombre").val(emp.nombre);
+                $("#credencial").val(emp.credencial);
+                $("#contrasena").val(emp.contrasena);
+                $("#telefono").val(emp.telefono);
+                $("#email").val(emp.email);
+                $("#direccion").val(emp.direccion);
+                $("#fechaNacimiento").val(emp.fechaNacimiento);
+
+                // Configurar el título y botón para "Editar"
+                $("#modalTitulo").text("Editar Empleado");
+                $("#btnGuardar").text("Guardar Cambios").removeClass("btn-primary").addClass("btn-warning");
+                modalEmpleado.show();  // Mostrar el modal
             }
 
-            function desactivarModo() {
-                modo = 'normal';
-                $("#btnAgregar").text("Agregar").removeClass("btn-success").addClass("btn-primary");
-                $("#btnEditar").text("Editar").removeClass("btn-secondary").addClass("btn-warning");
-                $("#btnEliminar").prop("disabled", false);
-                $("#tablaEmpleados").removeClass("tabla-desactivada");
-                $("#formEmpleado")[0].reset();
-                filaSeleccionada = null;
-                // Deshabilitar campos del formulario
-                $("#rol, #nombre, #credencial, #contrasena, #telefono, #email, #direccion, #fechaNacimiento").prop("disabled", true);
-                renderTabla(); // Re-render para restaurar eventos
+            // ========== FUNCIÓN PARA GUARDAR EMPLEADO (AGREGAR O EDITAR) ==========
+            function guardarEmpleado() {
+                // Validar que el formulario esté completo
+                if (!$("#formEmpleado")[0].checkValidity()) {
+                    $("#formEmpleado")[0].reportValidity();
+                    return;
+                }
+
+                // Recopilar datos del formulario
+                let datos = {
+                    idRol: Number($("#rol").val()),
+                    nombre: $("#nombre").val(),
+                    credencial: $("#credencial").val(),
+                    contraseña: $("#contrasena").val(),
+                    telefono: $("#telefono").val(),
+                    email: $("#email").val(),
+                    direccion: $("#direccion").val(),
+                    fechaNacimiento: $("#fechaNacimiento").val(),
+                    estado: true
+                };
+
+                // ===== MODO EDICIÓN (PUT) =====
+                if (modoEdicion) {
+                    datos.idEmpleado = Number($("#idEmpleado").val());
+                    $.ajax({
+                        url: `/api/Empleados/${datos.idEmpleado}`,
+                        method: "PUT",
+                        contentType: "application/json",
+                        data: JSON.stringify(datos),
+                        success: function () {
+                            modalEmpleado.hide();  // Ocultar modal del formulario
+                            // Mostrar modal de éxito
+                            $("#mensajeExito").text("El empleado fue actualizado exitosamente.");
+                            let modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
+                            modalExito.show();
+                            // Recargar datos y resetear selección
+                            cargarEmpleados();
+                            filaSeleccionada = null;
+                            $("#btnEditar, #btnEliminar").prop("disabled", true);
+                        },
+                        error: function (err) {
+                            console.error(err);
+                            modalEmpleado.hide();  // Ocultar modal del formulario
+                            // Mostrar modal de error
+                            $("#mensajeError").text("No se pudo actualizar el empleado. Por favor, intente nuevamente.");
+                            let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                            modalError.show();
+                        }
+                    });
+                }
+                // ===== MODO AGREGAR (POST) =====
+                else {
+                    $.ajax({
+                        url: "/api/Empleados",
+                        method: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(datos),
+                        success: function () {
+                            modalEmpleado.hide();  // Ocultar modal del formulario
+                            // Mostrar modal de éxito
+                            $("#mensajeExito").text("El empleado fue agregado exitosamente.");
+                            let modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
+                            modalExito.show();
+                            // Recargar datos
+                            cargarEmpleados();
+                        },
+                        error: function (err) {
+                            console.error(err);
+                            modalEmpleado.hide();  // Ocultar modal del formulario
+                            // Mostrar modal de error
+                            $("#mensajeError").text("No se pudo agregar el empleado. Por favor, intente nuevamente.");
+                            let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                            modalError.show();
+                        }
+                    });
+                }
             }
 
+            // ========== FUNCIÓN PARA MOSTRAR MODAL DE CONFIRMACIÓN DE ELIMINACIÓN ==========
+            function eliminarEmpleado() {
+                // Validar que hay una fila seleccionada
+                if (filaSeleccionada === null) {
+                    alert("Seleccione un empleado para eliminar");
+                    return;
+                }
+
+                let emp = empleados[filaSeleccionada];
+
+                // Mostrar el nombre del empleado en el modal de confirmación
+                $("#nombreEmpleadoEliminar").text(emp.nombre);
+                let modalEliminar = new bootstrap.Modal(document.getElementById('modalEliminar'));
+                modalEliminar.show();
+            }
+
+            // ========== FUNCIÓN PARA CONFIRMAR Y EJECUTAR LA ELIMINACIÓN ==========
+            function confirmarEliminacion() {
+                let emp = empleados[filaSeleccionada];
+                let modalEliminar = bootstrap.Modal.getInstance(document.getElementById('modalEliminar'));
+
+                // Llamada DELETE a la API
+                $.ajax({
+                    url: `/api/Empleados/${emp.idEmpleado}`,
+                    method: "DELETE",
+                    success: function () {
+                        modalEliminar.hide();  // Ocultar modal de confirmación
+                        // Mostrar modal de éxito
+                        $("#mensajeExito").text("El empleado fue eliminado exitosamente.");
+                        let modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
+                        modalExito.show();
+                        // Recargar datos y resetear selección
+                        cargarEmpleados();
+                        filaSeleccionada = null;
+                        $("#btnEditar, #btnEliminar").prop("disabled", true);
+                    },
+                    error: function (err) {
+                        console.error(err);
+                        modalEliminar.hide();  // Ocultar modal de confirmación
+                        // Mostrar modal de error
+                        $("#mensajeError").text("No se pudo eliminar el empleado. Por favor, intente nuevamente.");
+                        let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                        modalError.show();
+                    }
+                });
+            }
+
+            // ========== INICIALIZACIÓN CUANDO EL DOCUMENTO ESTÁ LISTO ==========
             $(document).ready(function () {
+                // Crear instancia del modal de empleado
+                modalEmpleado = new bootstrap.Modal(document.getElementById('modalEmpleado'));
+
+                // Cargar empleados al iniciar
                 cargarEmpleados();
 
-                // Botón Agregar / Guardar
-                $("#btnAgregar").click(function () {
-                    if (modo === 'agregar') {
-                        // Guardar nuevo empleado
-                        if (!$("#formEmpleado")[0].checkValidity()) {
-                            $("#formEmpleado")[0].reportValidity();
-                            return;
-                        }
-                        let nuevo = {
-                            idRol: Number($("#rol").val()),
-                            nombre: $("#nombre").val(),
-                            credencial: $("#credencial").val(),
-                            contraseña: $("#contrasena").val(),
-                            telefono: $("#telefono").val(),
-                            email: $("#email").val(),
-                            direccion: $("#direccion").val(),
-                            fechaNacimiento: $("#fechaNacimiento").val(),
-                            estado: true
-                        };
-                        $.ajax({
-                            url: "/api/Empleados",
-                            method: "POST",
-                            contentType: "application/json",
-                            data: JSON.stringify(nuevo),
-                            success: function () {
-                                alert("Empleado agregado");
-                                cargarEmpleados();
-                                desactivarModo();
-                            },
-                            error: function (err) { console.error(err); }
-                        });
-                    } else if (modo === 'editar') {
-                        // Guardar cambios en edición
-                        if (!$("#formEmpleado")[0].checkValidity()) {
-                            $("#formEmpleado")[0].reportValidity();
-                            return;
-                        }
-                        let actualizar = {
-                            idEmpleado: Number($("#idEmpleado").val()),
-                            idRol: Number($("#rol").val()),
-                            nombre: $("#nombre").val(),
-                            credencial: $("#credencial").val(),
-                            contraseña: $("#contrasena").val(),
-                            telefono: $("#telefono").val(),
-                            email: $("#email").val(),
-                            direccion: $("#direccion").val(),
-                            fechaNacimiento: $("#fechaNacimiento").val(),
-                            estado: true
-                        };
-                        $.ajax({
-                            url: `/api/Empleados/${actualizar.idEmpleado}`,
-                            method: "PUT",
-                            contentType: "application/json",
-                            data: JSON.stringify(actualizar),
-                            success: function () {
-                                alert("Empleado actualizado");
-                                cargarEmpleados();
-                                desactivarModo();
-                            },
-                            error: function (err) { console.error(err); }
-                        });
+                // ===== ASIGNAR EVENTOS A LOS BOTONES =====
+                $("#btnNuevo").click(abrirModalNuevo);                    // Botón "Nuevo Empleado"
+                $("#btnEditar").click(abrirModalEditar);                  // Botón "Editar"
+                $("#btnEliminar").click(eliminarEmpleado);                // Botón "Eliminar"
+                $("#btnGuardar").click(guardarEmpleado);                  // Botón "Guardar" en el modal
+                $("#btnConfirmarEliminar").click(confirmarEliminacion);   // Botón "Sí, Eliminar"
+
+                // ===== TOGGLE PARA MOSTRAR/OCULTAR CONTRASEÑA =====
+                $("#btnTogglePassword").click(function () {
+                    let input = $("#contrasena");
+                    let icono = $("#iconoPassword");
+
+                    // Cambiar tipo de input entre password y text
+                    if (input.attr("type") === "password") {
+                        input.attr("type", "text");    // Mostrar contraseña
+                        icono.removeClass("bi-eye").addClass("bi-eye-slash");  // Cambiar a ojo tachado
                     } else {
-                        // Inicia modo agregar
-                        activarModoAgregar();
+                        input.attr("type", "password"); // Ocultar contraseña
+                        icono.removeClass("bi-eye-slash").addClass("bi-eye");  // Cambiar a ojo normal
                     }
                 });
 
-                // Botón Editar / Cancelar
-                $("#btnEditar").click(function () {
-                    if (modo === 'agregar' || modo === 'editar') {
-                        // Cancelar
-                        desactivarModo();
-                    } else {
-                        // Inicia modo editar
-                        activarModoEditar();
-                    }
+                // ===== LIMPIAR FORMULARIO AL CERRAR EL MODAL =====
+                $('#modalEmpleado').on('hidden.bs.modal', function () {
+                    limpiarFormulario();
                 });
 
-                // Eliminar empleado
-                $("#btnEliminar").click(function () {
-                    if (modo !== 'normal') return; // Deshabilitado en modos agregar/editar
-                    if (filaSeleccionada === null) {
-                        alert("Seleccione un empleado para eliminar");
-                        return;
-                    }
-                    let id = Number($("#idEmpleado").val());
-                    const nombreEmpleado = $("#nombre").val();
-                    if (confirm(`¿Desea eliminar a ${nombreEmpleado}?`)) {
-                        $.ajax({
-                            url: `/api/Empleados/${id}`,
-                            method: "DELETE",
-                            success: function () {
-                                alert("Empleado eliminado");
-                                cargarEmpleados();
-                                $("#formEmpleado")[0].reset();
-                                filaSeleccionada = null;
-                            },
-                            error: function (err) { console.error(err); }
-                        });
-                    }
+                // ===== BÚSQUEDA EN TIEMPO REAL =====
+                $("#inputBuscar").on("input", function () {
+                    let textoBusqueda = $(this).val();
+                    filtrarEmpleados(textoBusqueda);
+                    renderTabla();
+                    // Resetear selección al buscar
+                    filaSeleccionada = null;
+                    $("#btnEditar, #btnEliminar").prop("disabled", true);
+                });
+
+                // ===== LIMPIAR BÚSQUEDA =====
+                $("#btnLimpiarBusqueda").click(function () {
+                    $("#inputBuscar").val("");
+                    filtrarEmpleados("");
+                    renderTabla();
+                    // Resetear selección
+                    filaSeleccionada = null;
+                    $("#btnEditar, #btnEliminar").prop("disabled", true);
                 });
             });
         })();

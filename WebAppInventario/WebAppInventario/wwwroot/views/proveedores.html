@@ -3,130 +3,266 @@
 <head>
     <meta charset="utf-8" />
     <title>Proveedores</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .contenedor {
-            display: flex;
-            gap: 20px;
-        }
-
-        .formulario {
-            flex: 1;
-        }
-
-        .tabla-proveedores {
-            flex: 2;
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        .botones-crud {
-            margin-top: 10px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-
-        .tabla-desactivada {
-            pointer-events: none;
-            opacity: 0.5;
-        }
-    </style>
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container mt-3">
-        <h2 class="mb-3">Gestión de Proveedores</h2>
-
-        <div class="contenedor">
-            <!-- Formulario lado izquierdo -->
-            <div class="formulario">
-                <form id="formProveedor">
-                    <input type="hidden" id="idProveedor">
-                    <div class="mb-2">
-                        <input type="text" class="form-control" id="nombre" placeholder="Nombre" required disabled>
-                    </div>
-                    <div class="mb-2">
-                        <input type="tel" class="form-control" id="telefono" placeholder="Teléfono" required disabled>
-                    </div>
-                    <div class="mb-2">
-                        <input type="email" class="form-control" id="email" placeholder="Email" required disabled>
-                    </div>
-                    <div class="mb-2">
-                        <input type="text" class="form-control" id="direccion" placeholder="Dirección" required disabled>
-                    </div>
-                </form>
+    <!-- Contenedor principal -->
+    <div class="container mt-4">
+        <!-- Tarjeta principal -->
+        <div class="card shadow">
+            <!-- Encabezado de la tarjeta -->
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">Gestión de Proveedores</h2>
             </div>
 
-            <!-- Tabla lado derecho información de proveedor -->
-            <div class="tabla-proveedores">
-                <table class="table table-dark table-striped" id="tablaProveedores">
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Teléfono</th>
-                            <th>Email</th>
-                            <th>Dirección</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Datos de proveedores -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
+            <!-- Cuerpo de la tarjeta -->
+            <div class="card-body">
+                <!-- Botones de acción y búsqueda en una fila -->
+                <div class="row mb-3 align-items-center">
+                    <!-- Botones CRUD al lado izquierdo -->
+                    <div class="col-md-6">
+                        <button id="btnNuevo" class="btn btn-primary">Nuevo Proveedor</button>
+                        <button id="btnEditar" class="btn btn-warning" disabled>Editar</button>
+                        <button id="btnEliminar" class="btn btn-danger" disabled>Eliminar</button>
+                    </div>
 
-        <!-- Botones CRUD debajo de la tabla -->
-        <div class="botones-crud">
-            <button id="btnAgregar" class="btn btn-primary">Agregar</button>
-            <button id="btnEditar" class="btn btn-warning">Editar</button>
-            <button id="btnEliminar" class="btn btn-danger">Eliminar</button>
+                    <!-- Buscador al lado derecho -->
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text bg-primary text-white">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" class="form-control" id="inputBuscar" placeholder="Buscar por nombre...">
+                            <button class="btn btn-outline-secondary" type="button" id="btnLimpiarBusqueda" title="Limpiar búsqueda">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de proveedores con scroll responsive -->
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover" id="tablaProveedores">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Teléfono</th>
+                                <th>Email</th>
+                                <th>Dirección</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Los datos de proveedores se cargan dinámicamente aquí -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- ========== MODAL PARA AGREGAR/EDITAR PROVEEDOR ========== -->
+    <div class="modal fade" id="modalProveedor" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <!-- Encabezado del modal -->
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="modalTitulo">Nuevo Proveedor</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Cuerpo del modal con formulario -->
+                <div class="modal-body">
+                    <form id="formProveedor">
+                        <!-- Campo oculto para el ID del proveedor (solo se usa al editar) -->
+                        <input type="hidden" id="idProveedor">
+
+                        <!-- Campo Nombre -->
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre del Proveedor</label>
+                            <input type="text" class="form-control" id="nombre" required>
+                        </div>
+
+                        <!-- Campo Teléfono -->
+                        <div class="mb-3">
+                            <label for="telefono" class="form-label">Teléfono</label>
+                            <input type="tel" class="form-control" id="telefono" required>
+                        </div>
+
+                        <!-- Campo Email -->
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+
+                        <!-- Campo Dirección -->
+                        <div class="mb-3">
+                            <label for="direccion" class="form-label">Dirección</label>
+                            <input type="text" class="form-control" id="direccion" required>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Pie del modal con botones -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnGuardar">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL DE CONFIRMACIÓN DE ELIMINACIÓN ========== -->
+    <div class="modal fade" id="modalEliminar" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Mensaje de confirmación con nombre del proveedor -->
+                    <p class="mb-0">¿Desea eliminar al proveedor <strong id="nombreProveedorEliminar"></strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">Sí, Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL DE ÉXITO ========== -->
+    <div class="modal fade" id="modalExito" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Éxito</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Mensaje dinámico de éxito (se cambia desde JavaScript) -->
+                    <p class="mb-0" id="mensajeExito"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL DE ERROR ========== -->
+    <div class="modal fade" id="modalError" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Error</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Mensaje dinámico de error (se cambia desde JavaScript) -->
+                    <p class="mb-0" id="mensajeError"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ========== JAVASCRIPT PRINCIPAL ========== -->
     <script>
+        // IIFE (Immediately Invoked Function Expression) para encapsular el código
         (function () {
-            let proveedores = [];
-            let filaSeleccionada = null;
-            let modo = 'normal'; // Estados: 'normal', 'agregar', 'editar'
+            // ========== VARIABLES GLOBALES ==========
+            let proveedores = [];            // Array para almacenar todos los proveedores
+            let proveedoresFiltrados = [];   // Array para almacenar proveedores filtrados por búsqueda
+            let filaSeleccionada = null;     // Índice de la fila seleccionada en la tabla
+            let modoEdicion = false;         // Bandera para saber si estamos editando o agregando
+            let modalProveedor;              // Instancia del modal de proveedor
 
-            function renderTabla() {
-                let tbody = $("#tablaProveedores tbody");
-                tbody.empty();
-                proveedores.forEach((prov, i) => {
-                    tbody.append(`
-                                    <tr data-index="${i}">
-                                        <td>${prov.nombre}</td>
-                                        <td>${prov.telefono}</td>
-                                        <td>${prov.email}</td>
-                                        <td>${prov.direccion}</td>
-                                    </tr>
-                                `);
-                });
-
-                // Solo agregar el evento click si estamos en modo normal
-                if (modo === 'normal') {
-                    $("#tablaProveedores tbody tr").click(function () {
-                        $("#tablaProveedores tbody tr").removeClass("table-primary");
-                        $(this).addClass("table-primary");
-                        filaSeleccionada = $(this).data("index");
-
-                        // Llenar formulario
-                        let prov = proveedores[filaSeleccionada];
-                        $("#idProveedor").val(prov.idProveedor);
-                        $("#nombre").val(prov.nombre);
-                        $("#telefono").val(prov.telefono);
-                        $("#email").val(prov.email);
-                        $("#direccion").val(prov.direccion);
-                    });
+            // ========== FUNCIÓN PARA FILTRAR PROVEEDORES POR BÚSQUEDA ==========
+            function filtrarProveedores(textoBusqueda) {
+                // Si no hay texto de búsqueda, mostrar todos
+                if (!textoBusqueda || textoBusqueda.trim() === "") {
+                    proveedoresFiltrados = proveedores;
+                    return;
                 }
+
+                // Convertir a minúsculas para búsqueda case-insensitive
+                let busqueda = textoBusqueda.toLowerCase().trim();
+
+                // Filtrar proveedores que coincidan en nombre
+                proveedoresFiltrados = proveedores.filter(prov => {
+                    let nombre = prov.nombre.toLowerCase();
+                    return nombre.includes(busqueda);
+                });
             }
 
+            // ========== FUNCIÓN PARA RENDERIZAR LA TABLA ==========
+            function renderTabla() {
+                let tbody = $("#tablaProveedores tbody");
+                tbody.empty(); // Limpiar el contenido actual de la tabla
+
+                // Determinar qué array mostrar (filtrado o completo)
+                let datosAMostrar = proveedoresFiltrados;
+
+                // Si no hay proveedores, mostrar mensaje
+                if (datosAMostrar.length === 0) {
+                    let mensaje = proveedores.length === 0
+                        ? "No hay proveedores registrados"
+                        : "No se encontraron proveedores con ese criterio de búsqueda";
+                    tbody.append(`
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">
+                                    ${mensaje}
+                                </td>
+                            </tr>
+                        `);
+                    return;
+                }
+
+                // Recorrer el array de proveedores y crear filas
+                datosAMostrar.forEach((prov, i) => {
+                    // Buscar el índice real en el array original
+                    let indiceReal = proveedores.findIndex(p => p.idProveedor === prov.idProveedor);
+                    tbody.append(`
+                            <tr data-index="${indiceReal}">
+                                <td>${prov.nombre}</td>
+                                <td>${prov.telefono}</td>
+                                <td>${prov.email}</td>
+                                <td>${prov.direccion}</td>
+                            </tr>
+                        `);
+                });
+
+                // Agregar evento click a cada fila de la tabla
+                $("#tablaProveedores tbody tr").click(function () {
+                    // No hacer nada si es la fila de "no hay proveedores"
+                    if ($(this).find('td').length === 1) return;
+
+                    // Remover la clase de selección de todas las filas
+                    $("#tablaProveedores tbody tr").removeClass("table-primary");
+                    // Agregar clase de selección a la fila clickeada
+                    $(this).addClass("table-primary");
+                    // Guardar el índice de la fila seleccionada
+                    filaSeleccionada = $(this).data("index");
+
+                    // Habilitar los botones de Editar y Eliminar
+                    $("#btnEditar, #btnEliminar").prop("disabled", false);
+                });
+            }
+
+            // ========== FUNCIÓN PARA CARGAR PROVEEDORES DESDE LA API ==========
             function cargarProveedores() {
                 $.ajax({
-                    url: "/api/Proveedores",
+                    url: "/api/Proveedores",  // Endpoint de la API
                     method: "GET",
                     success: function (data) {
+                        // Mapear los datos recibidos al formato que usamos
                         proveedores = data.map(prov => ({
                             idProveedor: prov.idProveedor,
                             nombre: prov.nombre.trim(),
@@ -135,151 +271,216 @@
                             direccion: prov.direccion.trim(),
                             estado: prov.estado
                         }));
-                        renderTabla();
+                        proveedoresFiltrados = proveedores; // Inicializar filtrados con todos
+                        renderTabla(); // Actualizar la tabla con los datos
                     },
                     error: function (err) {
                         console.error("Error cargando proveedores:", err);
+                        alert("Error al cargar proveedores");
                     }
                 });
             }
 
-            function activarModoAgregar() {
-                modo = 'agregar';
-                $("#btnAgregar").text("Guardar").removeClass("btn-primary").addClass("btn-success");
-                $("#btnEditar").text("Cancelar").removeClass("btn-warning").addClass("btn-secondary");
-                $("#btnEliminar").prop("disabled", true);
-                $("#tablaProveedores").addClass("tabla-desactivada");
-                $("#formProveedor")[0].reset();
-                filaSeleccionada = null;
-                // Habilitar campos del formulario
-                $("#nombre, #telefono, #email, #direccion").prop("disabled", false);
-                renderTabla(); // Re-render para quitar eventos de click
+            // ========== FUNCIÓN PARA LIMPIAR EL FORMULARIO ==========
+            function limpiarFormulario() {
+                $("#formProveedor")[0].reset();  // Reset del formulario HTML
+                $("#idProveedor").val("");       // Limpiar el ID oculto
             }
 
-            function activarModoEditar() {
+            // ========== FUNCIÓN PARA ABRIR MODAL EN MODO "NUEVO" ==========
+            function abrirModalNuevo() {
+                modoEdicion = false;  // Indicar que estamos agregando
+                limpiarFormulario();  // Limpiar el formulario
+                // Configurar el título y botón para "Nuevo"
+                $("#modalTitulo").text("Nuevo Proveedor");
+                $("#btnGuardar").text("Guardar").removeClass("btn-warning").addClass("btn-primary");
+                modalProveedor.show();  // Mostrar el modal
+            }
+
+            // ========== FUNCIÓN PARA ABRIR MODAL EN MODO "EDITAR" ==========
+            function abrirModalEditar() {
+                // Validar que hay una fila seleccionada
                 if (filaSeleccionada === null) {
                     alert("Seleccione un proveedor para editar");
                     return;
                 }
-                modo = 'editar';
-                $("#btnAgregar").text("Guardar Cambios").removeClass("btn-primary").addClass("btn-success");
-                $("#btnEditar").text("Cancelar").removeClass("btn-warning").addClass("btn-secondary");
-                $("#btnEliminar").prop("disabled", true);
-                $("#tablaProveedores").addClass("tabla-desactivada");
-                // Habilitar campos del formulario
-                $("#nombre, #telefono, #email, #direccion").prop("disabled", false);
-                renderTabla(); // Re-render para quitar eventos de click
+
+                modoEdicion = true;  // Indicar que estamos editando
+                let prov = proveedores[filaSeleccionada];  // Obtener datos del proveedor
+
+                // Llenar el formulario con los datos del proveedor
+                $("#idProveedor").val(prov.idProveedor);
+                $("#nombre").val(prov.nombre);
+                $("#telefono").val(prov.telefono);
+                $("#email").val(prov.email);
+                $("#direccion").val(prov.direccion);
+
+                // Configurar el título y botón para "Editar"
+                $("#modalTitulo").text("Editar Proveedor");
+                $("#btnGuardar").text("Guardar Cambios").removeClass("btn-primary").addClass("btn-warning");
+                modalProveedor.show();  // Mostrar el modal
             }
 
-            function desactivarModo() {
-                modo = 'normal';
-                $("#btnAgregar").text("Agregar").removeClass("btn-success").addClass("btn-primary");
-                $("#btnEditar").text("Editar").removeClass("btn-secondary").addClass("btn-warning");
-                $("#btnEliminar").prop("disabled", false);
-                $("#tablaProveedores").removeClass("tabla-desactivada");
-                $("#formProveedor")[0].reset();
-                filaSeleccionada = null;
-                // Deshabilitar campos del formulario
-                $("#nombre, #telefono, #email, #direccion").prop("disabled", true);
-                renderTabla(); // Re-render para restaurar eventos
+            // ========== FUNCIÓN PARA GUARDAR PROVEEDOR (AGREGAR O EDITAR) ==========
+            function guardarProveedor() {
+                // Validar que el formulario esté completo
+                if (!$("#formProveedor")[0].checkValidity()) {
+                    $("#formProveedor")[0].reportValidity();
+                    return;
+                }
+
+                // Recopilar datos del formulario
+                let datos = {
+                    nombre: $("#nombre").val(),
+                    telefono: $("#telefono").val(),
+                    email: $("#email").val(),
+                    direccion: $("#direccion").val(),
+                    estado: true
+                };
+
+                // ===== MODO EDICIÓN (PUT) =====
+                if (modoEdicion) {
+                    datos.idProveedor = Number($("#idProveedor").val());
+                    $.ajax({
+                        url: `/api/Proveedores/${datos.idProveedor}`,
+                        method: "PUT",
+                        contentType: "application/json",
+                        data: JSON.stringify(datos),
+                        success: function () {
+                            modalProveedor.hide();  // Ocultar modal del formulario
+                            // Mostrar modal de éxito
+                            $("#mensajeExito").text("El proveedor fue actualizado exitosamente.");
+                            let modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
+                            modalExito.show();
+                            // Recargar datos y resetear selección
+                            cargarProveedores();
+                            filaSeleccionada = null;
+                            $("#btnEditar, #btnEliminar").prop("disabled", true);
+                        },
+                        error: function (err) {
+                            console.error(err);
+                            modalProveedor.hide();  // Ocultar modal del formulario
+                            // Mostrar modal de error
+                            $("#mensajeError").text("No se pudo actualizar el proveedor. Por favor, intente nuevamente.");
+                            let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                            modalError.show();
+                        }
+                    });
+                }
+                // ===== MODO AGREGAR (POST) =====
+                else {
+                    datos.idProveedor = 0;  // ID 0 para nuevo registro
+                    $.ajax({
+                        url: "/api/Proveedores",
+                        method: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(datos),
+                        success: function () {
+                            modalProveedor.hide();  // Ocultar modal del formulario
+                            // Mostrar modal de éxito
+                            $("#mensajeExito").text("El proveedor fue agregado exitosamente.");
+                            let modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
+                            modalExito.show();
+                            // Recargar datos
+                            cargarProveedores();
+                        },
+                        error: function (err) {
+                            console.error(err);
+                            modalProveedor.hide();  // Ocultar modal del formulario
+                            // Mostrar modal de error
+                            $("#mensajeError").text("No se pudo agregar el proveedor. Por favor, intente nuevamente.");
+                            let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                            modalError.show();
+                        }
+                    });
+                }
             }
 
+            // ========== FUNCIÓN PARA MOSTRAR MODAL DE CONFIRMACIÓN DE ELIMINACIÓN ==========
+            function eliminarProveedor() {
+                // Validar que hay una fila seleccionada
+                if (filaSeleccionada === null) {
+                    alert("Seleccione un proveedor para eliminar");
+                    return;
+                }
+
+                let prov = proveedores[filaSeleccionada];
+
+                // Mostrar el nombre del proveedor en el modal de confirmación
+                $("#nombreProveedorEliminar").text(prov.nombre);
+                let modalEliminar = new bootstrap.Modal(document.getElementById('modalEliminar'));
+                modalEliminar.show();
+            }
+
+            // ========== FUNCIÓN PARA CONFIRMAR Y EJECUTAR LA ELIMINACIÓN ==========
+            function confirmarEliminacion() {
+                let prov = proveedores[filaSeleccionada];
+                let modalEliminar = bootstrap.Modal.getInstance(document.getElementById('modalEliminar'));
+
+                // Llamada DELETE a la API
+                $.ajax({
+                    url: `/api/Proveedores/${prov.idProveedor}`,
+                    method: "DELETE",
+                    success: function () {
+                        modalEliminar.hide();  // Ocultar modal de confirmación
+                        // Mostrar modal de éxito
+                        $("#mensajeExito").text("El proveedor fue eliminado exitosamente.");
+                        let modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
+                        modalExito.show();
+                        // Recargar datos y resetear selección
+                        cargarProveedores();
+                        filaSeleccionada = null;
+                        $("#btnEditar, #btnEliminar").prop("disabled", true);
+                    },
+                    error: function (err) {
+                        console.error(err);
+                        modalEliminar.hide();  // Ocultar modal de confirmación
+                        // Mostrar modal de error
+                        $("#mensajeError").text("No se pudo eliminar el proveedor. Por favor, intente nuevamente.");
+                        let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                        modalError.show();
+                    }
+                });
+            }
+
+            // ========== INICIALIZACIÓN CUANDO EL DOCUMENTO ESTÁ LISTO ==========
             $(document).ready(function () {
+                // Crear instancia del modal de proveedor
+                modalProveedor = new bootstrap.Modal(document.getElementById('modalProveedor'));
+
+                // Cargar proveedores al iniciar
                 cargarProveedores();
 
-                // Botón Agregar / Guardar
-                $("#btnAgregar").click(function () {
-                    if (modo === 'agregar') {
-                        // Guardar nuevo proveedor
-                        if (!$("#formProveedor")[0].checkValidity()) {
-                            $("#formProveedor")[0].reportValidity();
-                            return;
-                        }
-                        let nuevo = {
-                            idProveedor: 0,
-                            nombre: $("#nombre").val(),
-                            telefono: $("#telefono").val(),
-                            email: $("#email").val(),
-                            direccion: $("#direccion").val(),
-                            estado: true
-                        };
-                        $.ajax({
-                            url: "/api/Proveedores",
-                            method: "POST",
-                            contentType: "application/json",
-                            data: JSON.stringify(nuevo),
-                            success: function () {
-                                alert("Proveedor agregado");
-                                cargarProveedores();
-                                desactivarModo();
-                            },
-                            error: function (err) { console.error(err); }
-                        });
-                    } else if (modo === 'editar') {
-                        // Guardar cambios en edición
-                        if (!$("#formProveedor")[0].checkValidity()) {
-                            $("#formProveedor")[0].reportValidity();
-                            return;
-                        }
-                        let actualizar = {
-                            idProveedor: Number($("#idProveedor").val()),
-                            nombre: $("#nombre").val(),
-                            telefono: $("#telefono").val(),
-                            email: $("#email").val(),
-                            direccion: $("#direccion").val(),
-                            estado: true
-                        };
-                        $.ajax({
-                            url: `/api/Proveedores/${actualizar.idProveedor}`,
-                            method: "PUT",
-                            contentType: "application/json",
-                            data: JSON.stringify(actualizar),
-                            success: function () {
-                                alert("Proveedor actualizado");
-                                cargarProveedores();
-                                desactivarModo();
-                            },
-                            error: function (err) { console.error(err); }
-                        });
-                    } else {
-                        // Inicia modo agregar
-                        activarModoAgregar();
-                    }
+                // ===== ASIGNAR EVENTOS A LOS BOTONES =====
+                $("#btnNuevo").click(abrirModalNuevo);                    // Botón "Nuevo Proveedor"
+                $("#btnEditar").click(abrirModalEditar);                  // Botón "Editar"
+                $("#btnEliminar").click(eliminarProveedor);               // Botón "Eliminar"
+                $("#btnGuardar").click(guardarProveedor);                 // Botón "Guardar" en el modal
+                $("#btnConfirmarEliminar").click(confirmarEliminacion);   // Botón "Sí, Eliminar"
+
+                // ===== LIMPIAR FORMULARIO AL CERRAR EL MODAL =====
+                $('#modalProveedor').on('hidden.bs.modal', function () {
+                    limpiarFormulario();
                 });
 
-                // Botón Editar / Cancelar
-                $("#btnEditar").click(function () {
-                    if (modo === 'agregar' || modo === 'editar') {
-                        // Cancelar
-                        desactivarModo();
-                    } else {
-                        // Inicia modo editar
-                        activarModoEditar();
-                    }
+                // ===== BÚSQUEDA EN TIEMPO REAL =====
+                $("#inputBuscar").on("input", function () {
+                    let textoBusqueda = $(this).val();
+                    filtrarProveedores(textoBusqueda);
+                    renderTabla();
+                    // Resetear selección al buscar
+                    filaSeleccionada = null;
+                    $("#btnEditar, #btnEliminar").prop("disabled", true);
                 });
 
-                // Eliminar proveedor
-                $("#btnEliminar").click(function () {
-                    if (modo !== 'normal') return; // Deshabilitado en modos agregar/editar
-                    if (filaSeleccionada === null) {
-                        alert("Seleccione un proveedor para eliminar");
-                        return;
-                    }
-                    let id = Number($("#idProveedor").val());
-                    const nombreProveedor = $("#nombre").val();
-                    if (confirm(`¿Desea eliminar a ${nombreProveedor}?`)) {
-                        $.ajax({
-                            url: `/api/Proveedores/${id}`,
-                            method: "DELETE",
-                            success: function () {
-                                alert("Proveedor eliminado");
-                                cargarProveedores();
-                                $("#formProveedor")[0].reset();
-                                filaSeleccionada = null;
-                            },
-                            error: function (err) { console.error(err); }
-                        });
-                    }
+                // ===== LIMPIAR BÚSQUEDA =====
+                $("#btnLimpiarBusqueda").click(function () {
+                    $("#inputBuscar").val("");
+                    filtrarProveedores("");
+                    renderTabla();
+                    // Resetear selección
+                    filaSeleccionada = null;
+                    $("#btnEditar, #btnEliminar").prop("disabled", true);
                 });
             });
         })();
