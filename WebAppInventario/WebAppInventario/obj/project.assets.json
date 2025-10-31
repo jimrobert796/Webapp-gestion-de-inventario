@@ -8192,11 +8192,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jimmy\\Desktop\\WEB APP PROYECTO\\WebAppInventario\\WebAppInventario\\WebAppInventario.csproj",
+      "projectUniqueName": "C:\\Users\\jimmy\\Desktop\\repo prueba\\WebAppInventario\\WebAppInventario\\WebAppInventario.csproj",
       "projectName": "WebAppInventario",
-      "projectPath": "C:\\Users\\jimmy\\Desktop\\WEB APP PROYECTO\\WebAppInventario\\WebAppInventario\\WebAppInventario.csproj",
+      "projectPath": "C:\\Users\\jimmy\\Desktop\\repo prueba\\WebAppInventario\\WebAppInventario\\WebAppInventario.csproj",
       "packagesPath": "C:\\Users\\jimmy\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jimmy\\Desktop\\WEB APP PROYECTO\\WebAppInventario\\WebAppInventario\\obj\\",
+      "outputPath": "C:\\Users\\jimmy\\Desktop\\repo prueba\\WebAppInventario\\WebAppInventario\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

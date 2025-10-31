@@ -78,15 +78,18 @@
 
     <!-- ========== MODAL PARA AGREGAR/EDITAR PRODUCTO/INVENTARIO ========== -->
     <div class="modal fade" id="modalInventario" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
+            <!-- Grande para que quepa todo -->
             <div class="modal-content">
                 <!-- Encabezado del modal -->
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="modalTitulo">Nuevo Producto</h5>
+                    <h5 class="modal-title" id="modalTitulo">
+                        <i class="bi bi-box-seam"></i> Nuevo Producto
+                    </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
 
-                <!-- Cuerpo del modal con formulario -->
+                <!-- Cuerpo del modal con todo visible -->
                 <div class="modal-body">
                     <form id="formInventario">
                         <!-- Campos ocultos -->
@@ -94,69 +97,126 @@
                         <input type="hidden" id="idProducto">
 
                         <!-- Sección Producto -->
-                        <h6>Producto</h6>
-                        <div class="mb-3">
-                            <label for="idProveedor" class="form-label">Proveedor</label>
-                            <select id="idProveedor" class="form-select" required>
-                                <option value="">Seleccione un proveedor</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="idCategoria" class="form-label">Categoría</label>
-                            <select id="idCategoria" class="form-select" required>
-                                <option value="">Seleccione una categoría</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="codigo" class="form-label">Código</label>
-                            <input type="text" class="form-control" id="codigo" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="nombreProducto" class="form-label">Nombre Producto</label>
-                            <input type="text" class="form-control" id="nombreProducto" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="descripcion" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="descripcion" rows="3"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="fechaProd" class="form-label">Fecha de Producción</label>
-                            <input type="date" class="form-control" id="fechaProd">
-                        </div>
-                        <div class="mb-3">
-                            <label for="fechaVenc" class="form-label">Fecha de Vencimiento</label>
-                            <input type="date" class="form-control" id="fechaVenc">
+                        <div class="border rounded p-3 mb-4">
+                            <h6 class="text-primary mb-3">
+                                <i class="bi bi-tag"></i> Información del Producto
+                            </h6>
+
+                            <!-- Fila: Proveedor y Categoría -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="idProveedor" class="form-label">
+                                        <i class="bi bi-truck"></i> Proveedor
+                                    </label>
+                                    <select id="idProveedor" class="form-select" required>
+                                        <option value="">Seleccione un proveedor</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="idCategoria" class="form-label">
+                                        <i class="bi bi-tags"></i> Categoría
+                                    </label>
+                                    <select id="idCategoria" class="form-select" required>
+                                        <option value="">Seleccione una categoría</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Fila: Código y Nombre Producto -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="codigo" class="form-label">
+                                        <i class="bi bi-upc"></i> Código
+                                    </label>
+                                    <input type="text" class="form-control" id="codigo" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="nombreProducto" class="form-label">
+                                        <i class="bi bi-box"></i> Nombre Producto
+                                    </label>
+                                    <input type="text" class="form-control" id="nombreProducto" required>
+                                </div>
+                            </div>
+
+                            <!-- Descripción -->
+                            <div class="mb-3">
+                                <label for="descripcion" class="form-label">
+                                    <i class="bi bi-textarea"></i> Descripción
+                                </label>
+                                <textarea class="form-control" id="descripcion" rows="3"></textarea>
+                            </div>
+
+                            <!-- Fila: Fechas -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="fechaProd" class="form-label">
+                                        <i class="bi bi-calendar"></i> Fecha de Producción
+                                    </label>
+                                    <input type="date" class="form-control" id="fechaProd">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="fechaVenc" class="form-label">
+                                        <i class="bi bi-calendar-x"></i> Fecha de Vencimiento
+                                    </label>
+                                    <input type="date" class="form-control" id="fechaVenc">
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Sección Inventario -->
-                        <h6>Inventario</h6>
-                        <div class="mb-3">
-                            <label for="precio" class="form-label">Precio</label>
-                            <input type="number" step="0.01" class="form-control" id="precio" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="costo" class="form-label">Costo</label>
-                            <input type="number" step="0.01" class="form-control" id="costo" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="cantidad" class="form-label">Cantidad</label>
-                            <input type="number" class="form-control" id="cantidad" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="ubicacion" class="form-label">Ubicación</label>
-                            <input type="text" class="form-control" id="ubicacion" required>
+                        <div class="border rounded p-3">
+                            <h6 class="text-success mb-3">
+                                <i class="bi bi-clipboard-data"></i> Información del Inventario
+                            </h6>
+
+                            <!-- Fila: Precio y Costo -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="precio" class="form-label">
+                                        <i class="bi bi-cash"></i> Precio
+                                    </label>
+                                    <input type="number" step="0.01" class="form-control" id="precio" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="costo" class="form-label">
+                                        <i class="bi bi-calculator"></i> Costo
+                                    </label>
+                                    <input type="number" step="0.01" class="form-control" id="costo" required>
+                                </div>
+                            </div>
+
+                            <!-- Fila: Cantidad y Ubicación -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="cantidad" class="form-label">
+                                        <i class="bi bi-hash"></i> Cantidad
+                                    </label>
+                                    <input type="number" class="form-control" id="cantidad" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="ubicacion" class="form-label">
+                                        <i class="bi bi-geo-alt"></i> Ubicación
+                                    </label>
+                                    <input type="text" class="form-control" id="ubicacion" required>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
 
                 <!-- Pie del modal con botones -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="btnGuardar">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                    <button type="button" class="btn btn-primary" id="btnGuardar">
+                        <i class="bi bi-check-circle"></i> Guardar
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- ========== MODAL DE CONFIRMACIÓN DE ELIMINACIÓN ========== -->
     <div class="modal fade" id="modalEliminar" tabindex="-1">
@@ -283,29 +343,29 @@
                 if (inventariosFiltrados.length === 0) {
                     let mensaje = "No se encontraron productos con ese criterio de búsqueda";
                     tbody.append(`
-                                        <tr>
-                                            <td colspan="8" class="text-center text-muted">
-                                                ${mensaje}
-                                            </td>
-                                        </tr>
-                                    `);
+                                            <tr>
+                                                <td colspan="8" class="text-center text-muted">
+                                                    ${mensaje}
+                                                </td>
+                                            </tr>
+                                        `);
                     return;
                 }
 
                 // Recorrer el array de inventarios y crear filas
                 inventariosFiltrados.forEach((inv, i) => {
                     tbody.append(`
-                                        <tr data-index="${i}">
-                                            <td>${inv.productoNombre}</td>
-                                            <td>${inv.productoCodigo}</td>  <!-- Nueva columna Código -->
-                                            <td>${inv.productoproveedor}</td>
-                                            <td>${inv.precio.toFixed(2)}</td>
-                                            <td>${inv.costo.toFixed(2)}</td>
-                                            <td>${inv.cantidad}</td>
-                                            <td>${inv.ubicacion}</td>
-                                            <td>${new Date(inv.ultimaActualizacion).toLocaleDateString()}</td>
-                                        </tr>
-                                    `);
+                                            <tr data-index="${i}">
+                                                <td>${inv.productoNombre}</td>
+                                                <td>${inv.productoCodigo}</td>  <!-- Nueva columna Código -->
+                                                <td>${inv.productoproveedor}</td>
+                                                <td>${inv.precio.toFixed(2)}</td>
+                                                <td>${inv.costo.toFixed(2)}</td>
+                                                <td>${inv.cantidad}</td>
+                                                <td>${inv.ubicacion}</td>
+                                                <td>${new Date(inv.ultimaActualizacion).toLocaleDateString()}</td>
+                                            </tr>
+                                        `);
                 });
 
                 // Agregar evento click a cada fila de la tabla

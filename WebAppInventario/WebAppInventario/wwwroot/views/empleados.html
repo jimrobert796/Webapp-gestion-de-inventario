@@ -73,83 +73,103 @@
             </div>
         </div>
     </div>
-
     <!-- ========== MODAL PARA AGREGAR/EDITAR EMPLEADO ========== -->
     <div class="modal fade" id="modalEmpleado" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <!-- Encabezado del modal -->
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="modalTitulo">Nuevo Empleado</h5>
+                    <h5 class="modal-title" id="modalTitulo">
+                        <i class="bi bi-person-badge"></i> Nuevo Empleado
+                    </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
 
-                <!-- Cuerpo del modal con formulario -->
+                <!-- Cuerpo del modal con todo visible -->
                 <div class="modal-body">
                     <form id="formEmpleado">
                         <!-- Campo oculto para el ID del empleado (solo se usa al editar) -->
                         <input type="hidden" id="idEmpleado">
 
-                        <!-- Primera fila: Rol y Nombre -->
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="rol" class="form-label">Rol</label>
-                                <select id="rol" class="form-select" required>
-                                    <option value="">Seleccione un rol</option>
-                                    <option value="1">Administrador</option>
-                                    <option value="2">Bodega</option>
-                                    <option value="3">Cajero</option>
-                                </select>
-                            </div>
+                        <!-- Sección Información del Empleado -->
+                        <div class="border rounded p-3">
+                            <h6 class="text-primary mb-3">
+                                <i class="bi bi-person"></i> Información del Empleado
+                            </h6>
 
-                            <div class="col-md-6 mb-3">
-                                <label for="nombre" class="form-label">Nombre Completo</label>
-                                <input type="text" class="form-control" id="nombre" required>
-                            </div>
-                        </div>
-
-                        <!-- Segunda fila: Credencial y Contraseña -->
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="credencial" class="form-label">Credencial</label>
-                                <input type="text" class="form-control" id="credencial" required>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label for="contrasena" class="form-label">Contraseña</label>
-                                <div class="input-group">
-                                    <input type="password" class="form-control" id="contrasena" required>
-                                    <!-- Botón para mostrar/ocultar contraseña -->
-                                    <button class="btn btn-outline-secondary" type="button" id="btnTogglePassword">
-                                        <i class="bi bi-eye" id="iconoPassword"></i>
-                                    </button>
+                            <!-- Primera fila: Rol y Nombre -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="rol" class="form-label">
+                                        <i class="bi bi-shield-check"></i> Rol
+                                    </label>
+                                    <select id="rol" class="form-select" required>
+                                        <option value="">Seleccione un rol</option>
+                                        <option value="1">Administrador</option>
+                                        <option value="2">Bodega</option>
+                                        <option value="3">Cajero</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="nombre" class="form-label">
+                                        <i class="bi bi-person-fill"></i> Nombre Completo
+                                    </label>
+                                    <input type="text" class="form-control" id="nombre" required>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Tercera fila: Teléfono y Email -->
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="telefono" class="form-label">Teléfono</label>
-                                <input type="tel" class="form-control" id="telefono" required>
+                            <!-- Segunda fila: Credencial y Contraseña -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="credencial" class="form-label">
+                                        <i class="bi bi-key"></i> Credencial
+                                    </label>
+                                    <input type="text" class="form-control" id="credencial" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="contrasena" class="form-label">
+                                        <i class="bi bi-lock"></i> Contraseña
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" id="contrasena" required>
+                                        <!-- Botón para mostrar/ocultar contraseña -->
+                                        <button class="btn btn-outline-secondary" type="button" id="btnTogglePassword">
+                                            <i class="bi bi-eye" id="iconoPassword"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="col-md-6 mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" required>
+                            <!-- Tercera fila: Teléfono y Email -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="telefono" class="form-label">
+                                        <i class="bi bi-telephone"></i> Teléfono
+                                    </label>
+                                    <input type="tel" class="form-control" id="telefono" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">
+                                        <i class="bi bi-envelope"></i> Email
+                                    </label>
+                                    <input type="email" class="form-control" id="email" required>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Cuarta fila: Dirección y Fecha de Nacimiento -->
-                        <div class="row">
-                            <div class="col-md-8 mb-3">
-                                <label for="direccion" class="form-label">Dirección</label>
-                                <input type="text" class="form-control" id="direccion" required>
-                            </div>
-
-                            <div class="col-md-4 mb-3">
-                                <label for="fechaNacimiento" class="form-label">Fecha Nacimiento</label>
-                                <input type="date" class="form-control" id="fechaNacimiento" required>
+                            <!-- Cuarta fila: Dirección y Fecha de Nacimiento -->
+                            <div class="row">
+                                <div class="col-md-8 mb-3">
+                                    <label for="direccion" class="form-label">
+                                        <i class="bi bi-geo-alt"></i> Dirección
+                                    </label>
+                                    <input type="text" class="form-control" id="direccion" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="fechaNacimiento" class="form-label">
+                                        <i class="bi bi-calendar-event"></i> Fecha Nacimiento
+                                    </label>
+                                    <input type="date" class="form-control" id="fechaNacimiento" required>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -157,12 +177,17 @@
 
                 <!-- Pie del modal con botones -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="btnGuardar">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                    <button type="button" class="btn btn-primary" id="btnGuardar">
+                        <i class="bi bi-check-circle"></i> Guardar
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- ========== MODAL DE CONFIRMACIÓN DE ELIMINACIÓN ========== -->
     <div class="modal fade" id="modalEliminar" tabindex="-1">
@@ -281,28 +306,28 @@
                 if (empleadosFiltrados.length === 0) {
                     let mensaje = "No se encontraron empleados con ese criterio de búsqueda";
                     tbody.append(`
-                                    <tr>
-                                        <td colspan="7" class="text-center text-muted">
-                                            ${mensaje}
-                                        </td>
-                                    </tr>
-                                `);
+                                        <tr>
+                                            <td colspan="7" class="text-center text-muted">
+                                                ${mensaje}
+                                            </td>
+                                        </tr>
+                                    `);
                     return;
                 }
 
                 // Recorrer el array de empleados y crear filas
                 empleadosFiltrados.forEach((emp, i) => {
                     tbody.append(`
-                                    <tr data-index="${i}">
-                                        <td>${emp.rolNombre}</td>
-                                        <td>${emp.nombre}</td>
-                                        <td>${emp.credencial}</td>
-                                        <td>${emp.telefono}</td>
-                                        <td>${emp.email}</td>
-                                        <td>${emp.direccion}</td>
-                                        <td>${emp.fechaNacimiento}</td>
-                                    </tr>
-                                `);
+                                        <tr data-index="${i}">
+                                            <td>${emp.rolNombre}</td>
+                                            <td>${emp.nombre}</td>
+                                            <td>${emp.credencial}</td>
+                                            <td>${emp.telefono}</td>
+                                            <td>${emp.email}</td>
+                                            <td>${emp.direccion}</td>
+                                            <td>${emp.fechaNacimiento}</td>
+                                        </tr>
+                                    `);
                 });
 
                 // Agregar evento click a cada fila de la tabla
@@ -400,7 +425,7 @@
                         method: "PUT",
                         contentType: "application/json",
                         data: JSON.stringify(datos),
-                            success: function () {
+                        success: function () {
                             modalEmpleado.hide();  // Ocultar modal del formulario
                             // Mostrar modal de éxito
                             $("#mensajeExito").text("El empleado fue actualizado exitosamente.");
@@ -411,15 +436,15 @@
                             filaSeleccionada = null;
                             $("#btnEditar, #btnEliminar").prop("disabled", true);
                         },
-                            error: function (err) {
-                                console.error(err);
-                                modalEmpleado.hide();  // Ocultar modal del formulario
-                                // Mostrar modal de error
-                                $("#mensajeError").text("No se pudo actualizar el empleado. Por favor, intente nuevamente.");
-                                let modalError = new bootstrap.Modal(document.getElementById('modalError'));
-                                modalError.show();
-                            }
-                        });
+                        error: function (err) {
+                            console.error(err);
+                            modalEmpleado.hide();  // Ocultar modal del formulario
+                            // Mostrar modal de error
+                            $("#mensajeError").text("No se pudo actualizar el empleado. Por favor, intente nuevamente.");
+                            let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                            modalError.show();
+                        }
+                    });
                 }
                 // ===== MODO AGREGAR (POST) =====
                 else {

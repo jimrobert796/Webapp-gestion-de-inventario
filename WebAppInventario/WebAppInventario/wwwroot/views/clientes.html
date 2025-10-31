@@ -76,46 +76,67 @@
             <div class="modal-content">
                 <!-- Encabezado del modal -->
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="modalTitulo">Nuevo Cliente</h5>
+                    <h5 class="modal-title" id="modalTitulo">
+                        <i class="bi bi-person-plus"></i> Nuevo Cliente
+                    </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
 
-                <!-- Cuerpo del modal con formulario -->
+                <!-- Cuerpo del modal con todo visible -->
                 <div class="modal-body">
                     <form id="formCliente">
                         <!-- Campo oculto para el ID del cliente (solo se usa al editar) -->
                         <input type="hidden" id="idCliente">
 
-                        <!-- Campo Nombre -->
-                        <div class="mb-3">
-                            <label for="nombre" class="form-label">Nombre del Cliente</label>
-                            <input type="text" class="form-control" id="nombre" required>
-                        </div>
+                        <!-- Sección Información del Cliente -->
+                        <div class="border rounded p-3">
+                            <h6 class="text-primary mb-3">
+                                <i class="bi bi-person"></i> Información del Cliente
+                            </h6>
 
-                        <!-- Campo Email -->
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" required>
-                        </div>
+                            <!-- Fila: Nombre y Email -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="nombre" class="form-label">
+                                        <i class="bi bi-person-fill"></i> Nombre del Cliente
+                                    </label>
+                                    <input type="text" class="form-control" id="nombre" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">
+                                        <i class="bi bi-envelope"></i> Email
+                                    </label>
+                                    <input type="email" class="form-control" id="email" required>
+                                </div>
+                            </div>
 
-                        <!-- Campo Dirección -->
-                        <div class="mb-3">
-                            <label for="direccion" class="form-label">Dirección</label>
-                            <input type="text" class="form-control" id="direccion" required>
-                        </div>
-
-                        <!-- Campo Teléfono -->
-                        <div class="mb-3">
-                            <label for="telefono" class="form-label">Teléfono</label>
-                            <input type="tel" class="form-control" id="telefono" required>
+                            <!-- Fila: Dirección y Teléfono -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="direccion" class="form-label">
+                                        <i class="bi bi-geo-alt"></i> Dirección
+                                    </label>
+                                    <input type="text" class="form-control" id="direccion" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="telefono" class="form-label">
+                                        <i class="bi bi-telephone"></i> Teléfono
+                                    </label>
+                                    <input type="tel" class="form-control" id="telefono" required>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
 
                 <!-- Pie del modal con botones -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="btnGuardar">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                    <button type="button" class="btn btn-primary" id="btnGuardar">
+                        <i class="bi bi-check-circle"></i> Guardar
+                    </button>
                 </div>
             </div>
         </div>
@@ -235,26 +256,26 @@
                 if (clientesFiltrados.length === 0) {
                     let mensaje = "No se encontraron clientes con ese criterio de búsqueda";
                     tbody.append(`
-                                        <tr>
-                                            <td colspan="5" class="text-center text-muted">
-                                                ${mensaje}
-                                            </td>
-                                        </tr>
-                                    `);
+                                            <tr>
+                                                <td colspan="5" class="text-center text-muted">
+                                                    ${mensaje}
+                                                </td>
+                                            </tr>
+                                        `);
                     return;
                 }
 
                 // Recorrer el array de clientes y crear filas
                 clientesFiltrados.forEach((cli, i) => {
                     tbody.append(`
-                                        <tr data-index="${i}">
-                                            <td>${cli.nombre}</td>
-                                            <td>${cli.email}</td>
-                                            <td>${cli.direccion}</td>
-                                            <td>${cli.telefono}</td>
-                                            <td>${new Date(cli.creaccion).toLocaleDateString()}</td>
-                                        </tr>
-                                    `);
+                                            <tr data-index="${i}">
+                                                <td>${cli.nombre}</td>
+                                                <td>${cli.email}</td>
+                                                <td>${cli.direccion}</td>
+                                                <td>${cli.telefono}</td>
+                                                <td>${new Date(cli.creaccion).toLocaleDateString()}</td>
+                                            </tr>
+                                        `);
                 });
 
                 // Agregar evento click a cada fila de la tabla

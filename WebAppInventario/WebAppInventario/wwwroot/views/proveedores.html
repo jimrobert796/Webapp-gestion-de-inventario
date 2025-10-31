@@ -71,57 +71,78 @@
             </div>
         </div>
     </div>
-
     <!-- ========== MODAL PARA AGREGAR/EDITAR PROVEEDOR ========== -->
     <div class="modal fade" id="modalProveedor" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <!-- Encabezado del modal -->
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="modalTitulo">Nuevo Proveedor</h5>
+                    <h5 class="modal-title" id="modalTitulo">
+                        <i class="bi bi-building"></i> Nuevo Proveedor
+                    </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
 
-                <!-- Cuerpo del modal con formulario -->
+                <!-- Cuerpo del modal con todo visible -->
                 <div class="modal-body">
                     <form id="formProveedor">
                         <!-- Campo oculto para el ID del proveedor (solo se usa al editar) -->
                         <input type="hidden" id="idProveedor">
 
-                        <!-- Campo Nombre -->
-                        <div class="mb-3">
-                            <label for="nombre" class="form-label">Nombre del Proveedor</label>
-                            <input type="text" class="form-control" id="nombre" required>
-                        </div>
+                        <!-- Sección Información del Proveedor -->
+                        <div class="border rounded p-3">
+                            <h6 class="text-primary mb-3">
+                                <i class="bi bi-shop"></i> Información del Proveedor
+                            </h6>
 
-                        <!-- Campo Teléfono -->
-                        <div class="mb-3">
-                            <label for="telefono" class="form-label">Teléfono</label>
-                            <input type="tel" class="form-control" id="telefono" required>
-                        </div>
+                            <!-- Fila: Nombre y Teléfono -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="nombre" class="form-label">
+                                        <i class="bi bi-building"></i> Nombre del Proveedor
+                                    </label>
+                                    <input type="text" class="form-control" id="nombre" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="telefono" class="form-label">
+                                        <i class="bi bi-telephone"></i> Teléfono
+                                    </label>
+                                    <input type="tel" class="form-control" id="telefono" required>
+                                </div>
+                            </div>
 
-                        <!-- Campo Email -->
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" required>
-                        </div>
-
-                        <!-- Campo Dirección -->
-                        <div class="mb-3">
-                            <label for="direccion" class="form-label">Dirección</label>
-                            <input type="text" class="form-control" id="direccion" required>
+                            <!-- Fila: Email y Dirección -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">
+                                        <i class="bi bi-envelope"></i> Email
+                                    </label>
+                                    <input type="email" class="form-control" id="email" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="direccion" class="form-label">
+                                        <i class="bi bi-geo-alt"></i> Dirección
+                                    </label>
+                                    <input type="text" class="form-control" id="direccion" required>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
 
                 <!-- Pie del modal con botones -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="btnGuardar">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                    <button type="button" class="btn btn-primary" id="btnGuardar">
+                        <i class="bi bi-check-circle"></i> Guardar
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- ========== MODAL DE CONFIRMACIÓN DE ELIMINACIÓN ========== -->
     <div class="modal fade" id="modalEliminar" tabindex="-1">
@@ -236,25 +257,25 @@
                 if (proveedoresFiltrados.length === 0) {
                     let mensaje = "No se encontraron proveedores con ese criterio de búsqueda";
                     tbody.append(`
-                                    <tr>
-                                        <td colspan="4" class="text-center text-muted">
-                                            ${mensaje}
-                                        </td>
-                                    </tr>
-                                `);
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted">
+                                                ${mensaje}
+                                            </td>
+                                        </tr>
+                                    `);
                     return;
                 }
 
                 // Recorrer el array de proveedores y crear filas
                 proveedoresFiltrados.forEach((prov, i) => {
                     tbody.append(`
-                                    <tr data-index="${i}">
-                                        <td>${prov.nombre}</td>
-                                        <td>${prov.telefono}</td>
-                                        <td>${prov.email}</td>
-                                        <td>${prov.direccion}</td>
-                                    </tr>
-                                `);
+                                        <tr data-index="${i}">
+                                            <td>${prov.nombre}</td>
+                                            <td>${prov.telefono}</td>
+                                            <td>${prov.email}</td>
+                                            <td>${prov.direccion}</td>
+                                        </tr>
+                                    `);
                 });
 
                 // Agregar evento click a cada fila de la tabla
