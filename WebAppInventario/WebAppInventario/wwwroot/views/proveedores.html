@@ -7,6 +7,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Estilos personalizados para scroll interno en la tabla -->
+    <style>
+        .table-scroll {
+            max-height: 400px; /* Altura máxima de la tabla (ajusta según necesites) */
+            overflow-y: auto; /* Scroll vertical interno */
+        }
+    </style>
 </head>
 <body>
     <!-- Contenedor principal -->
@@ -43,8 +51,9 @@
                     </div>
                 </div>
 
-                <!-- Tabla de proveedores con scroll responsive -->
-                <div class="table-responsive">
+                <!-- Tabla de proveedores con scroll responsive e interno -->
+                <div class="table-responsive table-scroll">
+                    <!-- Agrega 'table-scroll' para scroll interno -->
                     <table class="table table-striped table-hover" id="tablaProveedores">
                         <thead class="table-dark">
                             <tr>
@@ -172,34 +181,50 @@
         </div>
     </div>
 
-
     <!-- ========== JAVASCRIPT PRINCIPAL ========== -->
     <script>
         // IIFE (Immediately Invoked Function Expression) para encapsular el código
         (function () {
             // ========== VARIABLES GLOBALES ==========
-            let proveedores = [];            // Array para almacenar todos los proveedores
-            let proveedoresFiltrados = [];   // Array para almacenar proveedores filtrados por búsqueda
+            let proveedoresFiltrados = [];   // Array para almacenar proveedores filtrados desde la API
             let filaSeleccionada = null;     // Índice de la fila seleccionada en la tabla
             let modoEdicion = false;         // Bandera para saber si estamos editando o agregando
             let modalProveedor;              // Instancia del modal de proveedor
+            let debounceTimer;               // Timer para debounce en búsqueda
 
-            // ========== FUNCIÓN PARA FILTRAR PROVEEDORES POR BÚSQUEDA ==========
-            function filtrarProveedores(textoBusqueda) {
-                // Si no hay texto de búsqueda, mostrar todos
-                if (!textoBusqueda || textoBusqueda.trim() === "") {
-                    proveedoresFiltrados = proveedores;
-                    return;
-                }
-
-                // Convertir a minúsculas para búsqueda case-insensitive
-                let busqueda = textoBusqueda.toLowerCase().trim();
-
-                // Filtrar proveedores que coincidan en nombre
-                proveedoresFiltrados = proveedores.filter(prov => {
-                    let nombre = prov.nombre.toLowerCase();
-                    return nombre.includes(busqueda);
-                });
+            // ========== FUNCIÓN PARA BUSCAR PROVEEDORES DESDE LA API ==========
+            function buscarProveedores(textoBusqueda = '') {
+                // Limpiar timer anterior para debounce
+                clearTimeout(debounceTimer);
+                // Esperar 300ms antes de hacer la llamada (evita llamadas excesivas)
+                debounceTimer = setTimeout(() => {
+                    $.ajax({
+                        url: `/api/Proveedores/buscar?buscar=${encodeURIComponent(textoBusqueda)}`,  // Endpoint de búsqueda
+                        method: "GET",
+                        success: function (data) {
+                            // Mapear los datos recibidos al formato que usamos
+                            proveedoresFiltrados = data.map(prov => ({
+                                idProveedor: prov.idProveedor,
+                                nombre: prov.nombre.trim(),
+                                telefono: prov.telefono.trim(),
+                                email: prov.email.trim(),
+                                direccion: prov.direccion.trim(),
+                                estado: prov.estado
+                            }));
+                            renderTabla(); // Actualizar la tabla con los datos filtrados
+                            // Resetear selección al buscar
+                            filaSeleccionada = null;
+                            $("#btnEditar, #btnEliminar").prop("disabled", true);
+                        },
+                        error: function (err) {
+                            console.error("Error buscando proveedores:", err);
+                            // Mostrar modal de error
+                            $("#mensajeError").text("Error al buscar proveedores. Intente nuevamente.");
+                            let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                            modalError.show();
+                        }
+                    });
+                }, 300);  // Debounce de 300ms
             }
 
             // ========== FUNCIÓN PARA RENDERIZAR LA TABLA ==========
@@ -207,36 +232,29 @@
                 let tbody = $("#tablaProveedores tbody");
                 tbody.empty(); // Limpiar el contenido actual de la tabla
 
-                // Determinar qué array mostrar (filtrado o completo)
-                let datosAMostrar = proveedoresFiltrados;
-
                 // Si no hay proveedores, mostrar mensaje
-                if (datosAMostrar.length === 0) {
-                    let mensaje = proveedores.length === 0
-                        ? "No hay proveedores registrados"
-                        : "No se encontraron proveedores con ese criterio de búsqueda";
+                if (proveedoresFiltrados.length === 0) {
+                    let mensaje = "No se encontraron proveedores con ese criterio de búsqueda";
                     tbody.append(`
-                            <tr>
-                                <td colspan="4" class="text-center text-muted">
-                                    ${mensaje}
-                                </td>
-                            </tr>
-                        `);
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">
+                                            ${mensaje}
+                                        </td>
+                                    </tr>
+                                `);
                     return;
                 }
 
                 // Recorrer el array de proveedores y crear filas
-                datosAMostrar.forEach((prov, i) => {
-                    // Buscar el índice real en el array original
-                    let indiceReal = proveedores.findIndex(p => p.idProveedor === prov.idProveedor);
+                proveedoresFiltrados.forEach((prov, i) => {
                     tbody.append(`
-                            <tr data-index="${indiceReal}">
-                                <td>${prov.nombre}</td>
-                                <td>${prov.telefono}</td>
-                                <td>${prov.email}</td>
-                                <td>${prov.direccion}</td>
-                            </tr>
-                        `);
+                                    <tr data-index="${i}">
+                                        <td>${prov.nombre}</td>
+                                        <td>${prov.telefono}</td>
+                                        <td>${prov.email}</td>
+                                        <td>${prov.direccion}</td>
+                                    </tr>
+                                `);
                 });
 
                 // Agregar evento click a cada fila de la tabla
@@ -256,29 +274,9 @@
                 });
             }
 
-            // ========== FUNCIÓN PARA CARGAR PROVEEDORES DESDE LA API ==========
+            // ========== FUNCIÓN PARA CARGAR PROVEEDORES DESDE LA API (PARA INICIALIZACIÓN) ==========
             function cargarProveedores() {
-                $.ajax({
-                    url: "/api/Proveedores",  // Endpoint de la API
-                    method: "GET",
-                    success: function (data) {
-                        // Mapear los datos recibidos al formato que usamos
-                        proveedores = data.map(prov => ({
-                            idProveedor: prov.idProveedor,
-                            nombre: prov.nombre.trim(),
-                            telefono: prov.telefono.trim(),
-                            email: prov.email.trim(),
-                            direccion: prov.direccion.trim(),
-                            estado: prov.estado
-                        }));
-                        proveedoresFiltrados = proveedores; // Inicializar filtrados con todos
-                        renderTabla(); // Actualizar la tabla con los datos
-                    },
-                    error: function (err) {
-                        console.error("Error cargando proveedores:", err);
-                        alert("Error al cargar proveedores");
-                    }
-                });
+                buscarProveedores('');  // Inicializar búsqueda vacía (mostrar todos)
             }
 
             // ========== FUNCIÓN PARA LIMPIAR EL FORMULARIO ==========
@@ -306,7 +304,7 @@
                 }
 
                 modoEdicion = true;  // Indicar que estamos editando
-                let prov = proveedores[filaSeleccionada];  // Obtener datos del proveedor
+                let prov = proveedoresFiltrados[filaSeleccionada];  // Obtener datos del proveedor filtrado
 
                 // Llenar el formulario con los datos del proveedor
                 $("#idProveedor").val(prov.idProveedor);
@@ -353,7 +351,7 @@
                             let modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
                             modalExito.show();
                             // Recargar datos y resetear selección
-                            cargarProveedores();
+                            buscarProveedores($("#inputBuscar").val());  // Recargar con la búsqueda actual
                             filaSeleccionada = null;
                             $("#btnEditar, #btnEliminar").prop("disabled", true);
                         },
@@ -382,7 +380,7 @@
                             let modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
                             modalExito.show();
                             // Recargar datos
-                            cargarProveedores();
+                            buscarProveedores($("#inputBuscar").val());  // Recargar con la búsqueda actual
                         },
                         error: function (err) {
                             console.error(err);
@@ -404,7 +402,13 @@
                     return;
                 }
 
-                let prov = proveedores[filaSeleccionada];
+                // Validar que hay una fila seleccionada
+                if (filaSeleccionada === null) {
+                    alert("Seleccione un proveedor para eliminar");
+                    return;
+                }
+
+                let prov = proveedoresFiltrados[filaSeleccionada];
 
                 // Mostrar el nombre del proveedor en el modal de confirmación
                 $("#nombreProveedorEliminar").text(prov.nombre);
@@ -414,7 +418,7 @@
 
             // ========== FUNCIÓN PARA CONFIRMAR Y EJECUTAR LA ELIMINACIÓN ==========
             function confirmarEliminacion() {
-                let prov = proveedores[filaSeleccionada];
+                let prov = proveedoresFiltrados[filaSeleccionada];
                 let modalEliminar = bootstrap.Modal.getInstance(document.getElementById('modalEliminar'));
 
                 // Llamada DELETE a la API
@@ -428,7 +432,7 @@
                         let modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
                         modalExito.show();
                         // Recargar datos y resetear selección
-                        cargarProveedores();
+                        buscarProveedores($("#inputBuscar").val());  // Recargar con la búsqueda actual
                         filaSeleccionada = null;
                         $("#btnEditar, #btnEliminar").prop("disabled", true);
                     },
@@ -463,21 +467,16 @@
                     limpiarFormulario();
                 });
 
-                // ===== BÚSQUEDA EN TIEMPO REAL =====
+                // ===== BÚSQUEDA EN TIEMPO REAL CON DEBOUNCE =====
                 $("#inputBuscar").on("input", function () {
                     let textoBusqueda = $(this).val();
-                    filtrarProveedores(textoBusqueda);
-                    renderTabla();
-                    // Resetear selección al buscar
-                    filaSeleccionada = null;
-                    $("#btnEditar, #btnEliminar").prop("disabled", true);
+                    buscarProveedores(textoBusqueda);
                 });
 
                 // ===== LIMPIAR BÚSQUEDA =====
                 $("#btnLimpiarBusqueda").click(function () {
                     $("#inputBuscar").val("");
-                    filtrarProveedores("");
-                    renderTabla();
+                    buscarProveedores("");  // Limpiar búsqueda
                     // Resetear selección
                     filaSeleccionada = null;
                     $("#btnEditar, #btnEliminar").prop("disabled", true);

@@ -30,6 +30,24 @@ namespace WebAppInventario.Controllers
             return Ok(clientesActivos);
         }
 
+        // Busqueda o consulta unicamente por nombre de cliente 
+        // GET: api/Clientes/buscar?buscar={TEXTO}
+        [HttpGet("buscar")]
+        public async Task<ActionResult<IEnumerable<Cliente>>> BuscarAlumnos([FromQuery] ClienteBusquedaParametros parametros)
+        {
+            var consulta = _context.Clientes
+                .Where(c => c.estado) // solo los clientes activos
+                .AsQueryable();
+            if (!string.IsNullOrEmpty(parametros.buscar))
+            {
+                consulta = consulta.Where(Cliente => Cliente.nombre.Contains(parametros.buscar));
+            }
+
+            return await consulta.ToListAsync();
+        }
+
+
+
         // GET: api/Clientes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Cliente>> GetCliente(int id)
@@ -74,7 +92,7 @@ namespace WebAppInventario.Controllers
                 }
             }
 
-            return NoContent();
+            return CreatedAtAction("GetCliente", new { id = cliente.idCliente }, cliente);
         }
 
         // POST: api/Clientes

@@ -7,6 +7,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .table-scroll {
+            max-height: 400px; /* Altura máxima de la tabla (ajusta según necesites, ej. 500px para más filas) */
+            overflow-y: auto; /* Scroll vertical interno */
+        }
+    </style>
 </head>
 <body>
     <!-- Contenedor principal -->
@@ -44,7 +50,7 @@
                 </div>
 
                 <!-- Tabla de clientes con scroll responsive -->
-                <div class="table-responsive">
+                <div class="table-responsive table-scroll">
                     <table class="table table-striped table-hover" id="tablaClientes">
                         <thead class="table-dark">
                             <tr>
@@ -173,35 +179,51 @@
         </div>
     </div>
 
-
-
     <!-- ========== JAVASCRIPT PRINCIPAL ========== -->
     <script>
         // IIFE (Immediately Invoked Function Expression) para encapsular el código
         (function () {
             // ========== VARIABLES GLOBALES ==========
-            let clientes = [];              // Array para almacenar todos los clientes
-            let clientesFiltrados = [];     // Array para almacenar clientes filtrados por búsqueda
+            let clientesFiltrados = [];     // Array para almacenar clientes filtrados desde la API
             let filaSeleccionada = null;    // Índice de la fila seleccionada en la tabla
             let modoEdicion = false;        // Bandera para saber si estamos editando o agregando
             let modalCliente;               // Instancia del modal de cliente
+            let debounceTimer;              // Timer para debounce en búsqueda
 
-            // ========== FUNCIÓN PARA FILTRAR CLIENTES POR BÚSQUEDA ==========
-            function filtrarClientes(textoBusqueda) {
-                // Si no hay texto de búsqueda, mostrar todos
-                if (!textoBusqueda || textoBusqueda.trim() === "") {
-                    clientesFiltrados = clientes;
-                    return;
-                }
-
-                // Convertir a minúsculas para búsqueda case-insensitive
-                let busqueda = textoBusqueda.toLowerCase().trim();
-
-                // Filtrar clientes que coincidan en nombre
-                clientesFiltrados = clientes.filter(cli => {
-                    let nombre = cli.nombre.toLowerCase();
-                    return nombre.includes(busqueda);
-                });
+            // ========== FUNCIÓN PARA BUSCAR CLIENTES DESDE LA API ==========
+            function buscarClientes(textoBusqueda = '') {
+                // Limpiar timer anterior para debounce
+                clearTimeout(debounceTimer);
+                // Esperar 300ms antes de hacer la llamada (evita llamadas excesivas)
+                debounceTimer = setTimeout(() => {
+                    $.ajax({
+                        url: `/api/Clientes/buscar?buscar=${encodeURIComponent(textoBusqueda)}`,  // Endpoint de búsqueda
+                        method: "GET",
+                        success: function (data) {
+                            // Mapear los datos recibidos (similar a tu ejemplo)
+                            clientesFiltrados = data.map(cli => ({
+                                idCliente: cli.idCliente,
+                                nombre: cli.nombre.trim(),
+                                email: cli.email.trim(),
+                                direccion: cli.direccion.trim(),
+                                telefono: cli.telefono.trim(),
+                                creaccion: cli.creaccion,
+                                estado: cli.estado
+                            }));
+                            renderTabla(); // Actualizar la tabla con los datos filtrados
+                            // Resetear selección al buscar
+                            filaSeleccionada = null;
+                            $("#btnEditar, #btnEliminar").prop("disabled", true);
+                        },
+                        error: function (err) {
+                            console.error("Error buscando clientes:", err);
+                            // Mostrar modal de error
+                            $("#mensajeError").text("Error al buscar clientes. Intente nuevamente.");
+                            let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                            modalError.show();
+                        }
+                    });
+                }, 300);  // Debounce de 300ms
             }
 
             // ========== FUNCIÓN PARA RENDERIZAR LA TABLA ==========
@@ -209,37 +231,30 @@
                 let tbody = $("#tablaClientes tbody");
                 tbody.empty(); // Limpiar el contenido actual de la tabla
 
-                // Determinar qué array mostrar (filtrado o completo)
-                let datosAMostrar = clientesFiltrados;
-
                 // Si no hay clientes, mostrar mensaje
-                if (datosAMostrar.length === 0) {
-                    let mensaje = clientes.length === 0
-                        ? "No hay clientes registrados"
-                        : "No se encontraron clientes con ese criterio de búsqueda";
+                if (clientesFiltrados.length === 0) {
+                    let mensaje = "No se encontraron clientes con ese criterio de búsqueda";
                     tbody.append(`
-                                <tr>
-                                    <td colspan="5" class="text-center text-muted">
-                                        ${mensaje}
-                                    </td>
-                                </tr>
-                            `);
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted">
+                                                ${mensaje}
+                                            </td>
+                                        </tr>
+                                    `);
                     return;
                 }
 
                 // Recorrer el array de clientes y crear filas
-                datosAMostrar.forEach((cli, i) => {
-                    // Buscar el índice real en el array original
-                    let indiceReal = clientes.findIndex(c => c.idCliente === cli.idCliente);
+                clientesFiltrados.forEach((cli, i) => {
                     tbody.append(`
-                                <tr data-index="${indiceReal}">
-                                    <td>${cli.nombre}</td>
-                                    <td>${cli.email}</td>
-                                    <td>${cli.direccion}</td>
-                                    <td>${cli.telefono}</td>
-                                    <td>${new Date(cli.creaccion).toLocaleDateString()}</td>
-                                </tr>
-                            `);
+                                        <tr data-index="${i}">
+                                            <td>${cli.nombre}</td>
+                                            <td>${cli.email}</td>
+                                            <td>${cli.direccion}</td>
+                                            <td>${cli.telefono}</td>
+                                            <td>${new Date(cli.creaccion).toLocaleDateString()}</td>
+                                        </tr>
+                                    `);
                 });
 
                 // Agregar evento click a cada fila de la tabla
@@ -256,32 +271,6 @@
 
                     // Habilitar los botones de Editar y Eliminar
                     $("#btnEditar, #btnEliminar").prop("disabled", false);
-                });
-            }
-
-            // ========== FUNCIÓN PARA CARGAR CLIENTES DESDE LA API ==========
-            function cargarClientes() {
-                $.ajax({
-                    url: "/api/Clientes",  // Endpoint de la API
-                    method: "GET",
-                    success: function (data) {
-                        // Mapear los datos recibidos al formato que usamos
-                        clientes = data.map(cli => ({
-                            idCliente: cli.idCliente,
-                            nombre: cli.nombre.trim(),
-                            email: cli.email.trim(),
-                            direccion: cli.direccion.trim(),
-                            telefono: cli.telefono.trim(),
-                            creaccion: cli.creaccion,
-                            estado: cli.estado
-                        }));
-                        clientesFiltrados = clientes; // Inicializar filtrados con todos
-                        renderTabla(); // Actualizar la tabla con los datos
-                    },
-                    error: function (err) {
-                        console.error("Error cargando clientes:", err);
-                        alert("Error al cargar clientes");
-                    }
                 });
             }
 
@@ -310,7 +299,7 @@
                 }
 
                 modoEdicion = true;  // Indicar que estamos editando
-                let cli = clientes[filaSeleccionada];  // Obtener datos del cliente
+                let cli = clientesFiltrados[filaSeleccionada];  // Obtener datos del cliente filtrado
 
                 // Llenar el formulario con los datos del cliente
                 $("#idCliente").val(cli.idCliente);
@@ -339,7 +328,7 @@
                     email: $("#email").val(),
                     direccion: $("#direccion").val(),
                     telefono: $("#telefono").val(),
-                    creaccion: modoEdicion ? clientes[filaSeleccionada].creaccion : new Date().toISOString(),
+                    creaccion: modoEdicion ? clientesFiltrados[filaSeleccionada].creaccion : new Date().toISOString(),
                     estado: true
                 };
 
@@ -358,7 +347,7 @@
                             let modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
                             modalExito.show();
                             // Recargar datos y resetear selección
-                            cargarClientes();
+                            buscarClientes($("#inputBuscar").val());  // Recargar con la búsqueda actual
                             filaSeleccionada = null;
                             $("#btnEditar, #btnEliminar").prop("disabled", true);
                         },
@@ -387,12 +376,12 @@
                             let modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
                             modalExito.show();
                             // Recargar datos
-                            cargarClientes();
+                            // Recargar datos con la búsqueda actual
+                            buscarClientes($("#inputBuscar").val());
                         },
                         error: function (err) {
                             console.error(err);
                             modalCliente.hide();  // Ocultar modal del formulario
-                            // Most
                             // Mostrar modal de error
                             $("#mensajeError").text("No se pudo agregar el cliente. Por favor, intente nuevamente.");
                             let modalError = new bootstrap.Modal(document.getElementById('modalError'));
@@ -410,7 +399,7 @@
                     return;
                 }
 
-                let cli = clientes[filaSeleccionada];
+                let cli = clientesFiltrados[filaSeleccionada];
 
                 // Mostrar el nombre del cliente en el modal de confirmación
                 $("#nombreClienteEliminar").text(cli.nombre);
@@ -420,7 +409,7 @@
 
             // ========== FUNCIÓN PARA CONFIRMAR Y EJECUTAR LA ELIMINACIÓN ==========
             function confirmarEliminacion() {
-                let cli = clientes[filaSeleccionada];
+                let cli = clientesFiltrados[filaSeleccionada];
                 let modalEliminar = bootstrap.Modal.getInstance(document.getElementById('modalEliminar'));
 
                 // Llamada DELETE a la API
@@ -434,7 +423,7 @@
                         let modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
                         modalExito.show();
                         // Recargar datos y resetear selección
-                        cargarClientes();
+                        buscarClientes($("#inputBuscar").val());  // Recargar con la búsqueda actual
                         filaSeleccionada = null;
                         $("#btnEditar, #btnEliminar").prop("disabled", true);
                     },
@@ -454,8 +443,8 @@
                 // Crear instancia del modal de cliente
                 modalCliente = new bootstrap.Modal(document.getElementById('modalCliente'));
 
-                // Cargar clientes al iniciar
-                cargarClientes();
+                // Cargar clientes al iniciar (búsqueda vacía para mostrar todos)
+                buscarClientes();
 
                 // ===== ASIGNAR EVENTOS A LOS BOTONES =====
                 $("#btnNuevo").click(abrirModalNuevo);                    // Botón "Nuevo Cliente"
@@ -469,21 +458,16 @@
                     limpiarFormulario();
                 });
 
-                // ===== BÚSQUEDA EN TIEMPO REAL =====
+                // ===== BÚSQUEDA EN TIEMPO REAL CON DEBOUNCE =====
                 $("#inputBuscar").on("input", function () {
                     let textoBusqueda = $(this).val();
-                    filtrarClientes(textoBusqueda);
-                    renderTabla();
-                    // Resetear selección al buscar
-                    filaSeleccionada = null;
-                    $("#btnEditar, #btnEliminar").prop("disabled", true);
+                    buscarClientes(textoBusqueda);
                 });
 
                 // ===== LIMPIAR BÚSQUEDA =====
                 $("#btnLimpiarBusqueda").click(function () {
                     $("#inputBuscar").val("");
-                    filtrarClientes("");
-                    renderTabla();
+                    buscarClientes("");  // Limpiar búsqueda
                     // Resetear selección
                     filaSeleccionada = null;
                     $("#btnEditar, #btnEliminar").prop("disabled", true);

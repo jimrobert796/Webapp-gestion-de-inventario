@@ -218,6 +218,32 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "WebAppInventario.Controllers.ClientesController",
+    "Method": "BuscarAlumnos",
+    "RelativePath": "api/Clientes/buscar",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "buscar",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[WebAppInventario.Models.Cliente, WebAppInventario, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "WebAppInventario.Controllers.ComprasController",
     "Method": "GetCompras",
     "RelativePath": "api/Compras",
@@ -563,6 +589,32 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebAppInventario.Controllers.EmpleadosController",
+    "Method": "BuscarAlumnos",
+    "RelativePath": "api/Empleados/buscar",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "buscar",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[WebAppInventario.Models.Empleado, WebAppInventario, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "WebAppInventario.Controllers.FacturasController",
@@ -938,6 +990,32 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "WebAppInventario.Controllers.InventarioController",
+    "Method": "BuscarInventario",
+    "RelativePath": "api/Inventario/buscar",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "buscar",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[WebAppInventario.Models.Inventario, WebAppInventario, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "WebAppInventario.Controllers.ProductosController",
     "Method": "GetProductos",
     "RelativePath": "api/Productos",
@@ -1154,6 +1232,32 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebAppInventario.Controllers.ProveedoresController",
+    "Method": "BuscarProveedor",
+    "RelativePath": "api/Proveedores/buscar",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "buscar",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[WebAppInventario.Models.Proveedor, WebAppInventario, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "WebAppInventario.Controllers.WeatherForecastController",

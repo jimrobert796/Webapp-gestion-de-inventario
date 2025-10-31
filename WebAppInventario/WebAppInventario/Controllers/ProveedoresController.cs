@@ -31,6 +31,22 @@ namespace WebAppInventario.Controllers
             return Ok(proveedores);
         }
 
+        // Busqueda o consulta unicamente por nombre de Proveedor 
+        // GET: api/Proveedores/buscar?buscar={TEXTO}
+        [HttpGet("buscar")]
+        public async Task<ActionResult<IEnumerable<Proveedor>>> BuscarProveedor([FromQuery] ProveedorBusquedaParametros parametros)
+        {
+            var consulta = _context.Proveedores
+                .Where(c => c.estado) // solo los clientes activos
+                .AsQueryable();
+            if (!string.IsNullOrEmpty(parametros.buscar))
+            {
+                consulta = consulta.Where(Cliente => Cliente.nombre.Contains(parametros.buscar));
+            }
+
+            return await consulta.ToListAsync();
+        }
+
         // GET: api/Proveedores/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Proveedor>> GetProveedor(int id)

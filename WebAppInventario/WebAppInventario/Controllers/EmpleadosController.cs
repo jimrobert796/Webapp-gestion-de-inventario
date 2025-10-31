@@ -45,6 +45,49 @@ namespace WebAppInventario.Controllers
 
             return Ok(empleados);
         }
+        // Busqueda o consulta unicamente por nombre de empelado o credencial 
+        // GET: api/Empleados/buscar?buscar={TEXTO}
+        [HttpGet("buscar")]
+        public async Task<ActionResult<IEnumerable<Empleado>>> BuscarAlumnos([FromQuery] EmpleadoBusquedaParametros parametros)
+        {
+            var consulta = _context.Empleados.Where(e => e.estado) // 🔹 solo activos
+                                             .Include(e => e.Rol)
+                                             .AsQueryable();
+
+            if (!string.IsNullOrEmpty(parametros.buscar))
+            {
+                // 🔸 Buscar primero por nombre
+                consulta = consulta.Where(e => e.nombre.Contains(parametros.buscar));
+
+                // 🔸 Si no hay resultados, buscar por credencial
+                if (!await consulta.AnyAsync())
+                {
+                    consulta = _context.Empleados
+                        .Where(e => e.estado) // solo activos
+                        .Include(e => e.Rol)
+                        .Where(e => e.credencial.Contains(parametros.buscar));
+                }
+            }
+
+            var resultado = await consulta
+                .Select(e => new
+                {
+                    e.idEmpleado,
+                    e.idRol,
+                    e.nombre,
+                    e.contraseña,
+                    e.credencial,
+                    e.telefono,
+                    e.email,
+                    e.direccion,
+                    e.fechaNacimiento,
+                    e.estado,
+                    rol = e.Rol != null ? e.Rol.rol : "Sin rol"
+                })
+                .ToListAsync();
+
+            return Ok(resultado);
+        }
 
         // GET: api/Empleados/5 SOLAMENTE ACTIVOS
         [HttpGet("{id}")]

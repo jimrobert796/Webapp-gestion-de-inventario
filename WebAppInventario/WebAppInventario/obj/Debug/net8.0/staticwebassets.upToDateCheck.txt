@@ -1,5 +1,5 @@
 wwwroot\js\empleados.js
-wwwroot\views\clientes.html
+wwwroot\views\cajero.html
 wwwroot\views\compras.html
 wwwroot\views\empleados.html
 wwwroot\views\facturas.html
@@ -10,4 +10,4 @@ wwwroot\views\perfil.html
 wwwroot\views\proveedores.html
 wwwroot\views\registroCompras.html
 wwwroot\views\test.html
-wwwroot\views\cajero.html
+wwwroot\views\clientes.html

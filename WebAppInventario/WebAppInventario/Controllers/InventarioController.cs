@@ -79,6 +79,56 @@ namespace WebAppInventario.Controllers
         ]
         */
 
+        // Busqueda o consulta unicamente por nombre, proveedor, categoria o codigo de producto 
+        // GET: api/Inventario/buscar?buscar={TEXTO}
+        [HttpGet("buscar")]
+        public async Task<ActionResult<IEnumerable<Inventario>>> BuscarInventario([FromQuery] InventarioBusquedaParametros parametros)
+        {
+            var consulta = _context.Inventario
+        .Include(i => i.Producto)
+            .ThenInclude(p => p.Categoria)
+        .Include(i => i.Producto)
+            .ThenInclude(p => p.Proveedor)
+        .Where(i => i.Producto != null && i.Producto.estado) // Solo productos activos
+        .AsQueryable();
+
+            if (!string.IsNullOrEmpty(parametros.buscar))
+            {
+
+                consulta = consulta.Where(i =>
+                    (i.Producto.nombre != null && i.Producto.nombre.ToLower().Contains(parametros.buscar)) ||
+                    (i.Producto.codigo != null && i.Producto.codigo.ToLower().Contains(parametros.buscar)) ||
+                    (i.Producto.Categoria != null && i.Producto.Categoria.nombre.ToLower().Contains(parametros.buscar)) ||
+                    (i.Producto.Proveedor != null && i.Producto.Proveedor.nombre.ToLower().Contains(parametros.buscar))
+                );
+            }
+
+            var inventarios = await consulta
+                .Select(i => new
+                {
+                    i.idInventario,
+                    i.idProducto,
+                    idCategoria = i.Producto != null ? i.Producto.idCategoria : (int?)null,
+                    idProveedor = i.Producto != null ? i.Producto.idProveedor : (int?)null,
+                    i.precio,
+                    i.costo,
+                    i.cantidad,
+                    i.ubicacion,
+                    i.ultimaActualizacion,
+                    productoNombre = i.Producto != null ? i.Producto.nombre : "Sin nombre",
+                    productoDescripcion = i.Producto != null ? i.Producto.descripcion : "Sin descripción",
+                    productoCodigo = i.Producto != null ? i.Producto.codigo : "Sin código",
+                    productoEstado = i.Producto != null ? i.Producto.estado : false,
+                    productoFechaProd = i.Producto != null ? i.Producto.fechaProd : (DateOnly?)null,
+                    productoFechaVenc = i.Producto != null ? i.Producto.fechaVenc : (DateOnly?)null,
+                    Productocategoria = i.Producto != null && i.Producto.Categoria != null ? i.Producto.Categoria.nombre : "Sin categoría",
+                    Productoproveedor = i.Producto != null && i.Producto.Proveedor != null ? i.Producto.Proveedor.nombre : "Sin proveedor"
+                })
+                .ToListAsync();
+
+            return Ok(inventarios);
+        }
+
         // GET: api/Inventarios/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Inventario>> GetInventario(int id)
