@@ -128,7 +128,7 @@
                                     <label for="codigo" class="form-label">
                                         <i class="bi bi-upc"></i> Código
                                     </label>
-                                    <input type="text" class="form-control" id="codigo" required>
+                                    <input type="text" class="form-control" id="codigo" required readonly>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="nombreProducto" class="form-label">
@@ -343,29 +343,29 @@
                 if (inventariosFiltrados.length === 0) {
                     let mensaje = "No se encontraron productos con ese criterio de búsqueda";
                     tbody.append(`
-                                            <tr>
-                                                <td colspan="8" class="text-center text-muted">
-                                                    ${mensaje}
-                                                </td>
-                                            </tr>
-                                        `);
+                                                <tr>
+                                                    <td colspan="8" class="text-center text-muted">
+                                                        ${mensaje}
+                                                    </td>
+                                                </tr>
+                                            `);
                     return;
                 }
 
                 // Recorrer el array de inventarios y crear filas
                 inventariosFiltrados.forEach((inv, i) => {
                     tbody.append(`
-                                            <tr data-index="${i}">
-                                                <td>${inv.productoNombre}</td>
-                                                <td>${inv.productoCodigo}</td>  <!-- Nueva columna Código -->
-                                                <td>${inv.productoproveedor}</td>
-                                                <td>${inv.precio.toFixed(2)}</td>
-                                                <td>${inv.costo.toFixed(2)}</td>
-                                                <td>${inv.cantidad}</td>
-                                                <td>${inv.ubicacion}</td>
-                                                <td>${new Date(inv.ultimaActualizacion).toLocaleDateString()}</td>
-                                            </tr>
-                                        `);
+                                                <tr data-index="${i}">
+                                                    <td>${inv.productoNombre}</td>
+                                                    <td>${inv.productoCodigo}</td>  <!-- Nueva columna Código -->
+                                                    <td>${inv.productoproveedor}</td>
+                                                    <td>${inv.precio.toFixed(2)}</td>
+                                                    <td>${inv.costo.toFixed(2)}</td>
+                                                    <td>${inv.cantidad}</td>
+                                                    <td>${inv.ubicacion}</td>
+                                                    <td>${new Date(inv.ultimaActualizacion).toLocaleDateString()}</td>
+                                                </tr>
+                                            `);
                 });
 
                 // Agregar evento click a cada fila de la tabla
@@ -440,8 +440,21 @@
             // ========== FUNCIÓN PARA ABRIR MODAL EN MODO "NUEVO" ==========
             function abrirModalNuevo() {
                 modoEdicion = false;  // Indicar que estamos agregando
-                limpiarFormulario();  //
-                // Limpiar el formulario
+                limpiarFormulario();  // Limpiar el formulario
+                // Obtener nuevo código desde la API
+                $.ajax({
+                    url: "/api/Productos/nuevo-Codigo",
+                    method: "GET",
+                    success: function (data) {
+                        $("#codigo").val(data);  // data es directamente el string del código, ej. "PRD000009"
+                    },
+                    error: function (err) {
+                        console.error("Error obteniendo nuevo código:", err);
+                        $("#mensajeError").text("Error al generar código. Intente nuevamente.");
+                        let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                        modalError.show();
+                    }
+                });
                 // Configurar el título y botón para "Nuevo"
                 $("#modalTitulo").text("Nuevo Producto");
                 $("#btnGuardar").text("Guardar").removeClass("btn-warning").addClass("btn-primary");

@@ -89,6 +89,34 @@ namespace WebAppInventario.Controllers
             return Ok(resultado);
         }
 
+        // GET: api/Empleados/nueva-credencial
+        [HttpGet("nueva-credencial")]
+        public async Task<ActionResult<string>> GetNuevaCredencial()
+        {
+            // Buscar la última credencial existente (ordenada descendentemente)
+            var ultima = await _context.Empleados
+                .OrderByDescending(e => e.credencial)
+                .Select(e => e.credencial)
+                .FirstOrDefaultAsync();
+
+            string nuevaCredencial;
+
+            if (string.IsNullOrEmpty(ultima))
+            {
+                // Si no hay ninguna credencial aún
+                nuevaCredencial = "USR000001";
+            }
+            else
+            {
+                // Extraer el número, incrementarlo y formatearlo con ceros
+                int numero = int.Parse(ultima.Substring(3)); // quita 'USR'
+                nuevaCredencial = $"USR{(numero + 1).ToString("D6")}";
+            }
+
+            return Ok(nuevaCredencial);
+        }
+
+
         // GET: api/Empleados/5 SOLAMENTE ACTIVOS
         [HttpGet("{id}")]
         public async Task<ActionResult<Empleado>> GetEmpleado(int id)

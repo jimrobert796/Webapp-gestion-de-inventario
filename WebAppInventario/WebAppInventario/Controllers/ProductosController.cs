@@ -67,6 +67,37 @@ namespace WebAppInventario.Controllers
 
         }
 
+        // GET: api/Productos/nuevo-Codigo
+        [HttpGet("nuevo-Codigo")]
+        public async Task<ActionResult<string>> GetNuevoCodigo()
+        {
+            // Busca el último código existente
+            var ultimoCodigo = await _context.Productos
+                .OrderByDescending(p => p.codigo)
+                .Select(p => p.codigo)
+                .FirstOrDefaultAsync();
+
+            string nuevoCodigo;
+
+            if (string.IsNullOrEmpty(ultimoCodigo))
+            {
+                // Si no hay productos aún
+                nuevoCodigo = "PRD000001";
+            }
+            else
+            {
+                // Extrae la parte numérica del código (por ejemplo, de "PRD000056" -> 56)
+                int numero = int.Parse(ultimoCodigo.Substring(3));
+                // Incrementa el número
+                numero++;
+                // Genera el nuevo código con ceros a la izquierda
+                nuevoCodigo = $"PRD{numero:D6}";
+            }
+
+            return Ok(nuevoCodigo);
+        }
+
+
         // GET: api/Productoes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Producto>> GetProducto(int id)

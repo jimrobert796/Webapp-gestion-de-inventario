@@ -123,15 +123,19 @@
                                 <div class="col-md-6 mb-3">
                                     <label for="credencial" class="form-label">
                                         <i class="bi bi-key"></i> Credencial
-                                    </label>
-                                    <input type="text" class="form-control" id="credencial" required>
+                                    </label><!-- Credencial solamente vista -->
+                                    <input type="text" class="form-control" id="credencial" required readonly>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="contrasena" class="form-label">
                                         <i class="bi bi-lock"></i> Contraseña
                                     </label>
                                     <div class="input-group">
-                                        <input type="password" class="form-control" id="contrasena" required>
+                                        <!-- Contraseña con lo basico para lo seguro -->
+                                        <input type="password" class="form-control" id="contrasena"
+                                               minlength="8" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&amp;#]).{8,}$" 
+                                               title="Debe tener al menos 8 caracteres, incluyendo mayúscula, minúscula, número y símbolo (@$!%*?&#)">
+
                                         <!-- Botón para mostrar/ocultar contraseña -->
                                         <button class="btn btn-outline-secondary" type="button" id="btnTogglePassword">
                                             <i class="bi bi-eye" id="iconoPassword"></i>
@@ -258,6 +262,13 @@
             let modalEmpleado;               // Instancia del modal de empleado
             let debounceTimer;               // Timer para debounce en búsqueda
 
+            // ========== FUNCIÓN PARA CALCULAR LA FECHA MÁXIMA (MAYOR DE EDAD) ==========
+            function calcularFechaMaxima() {
+                let hoy = new Date();
+                let fechaMax = new Date(hoy.getFullYear() - 18, hoy.getMonth(), hoy.getDate());
+                return fechaMax.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+            }
+
             // ========== FUNCIÓN PARA BUSCAR EMPLEADOS DESDE LA API ==========
             function buscarEmpleados(textoBusqueda = '') {
                 // Limpiar timer anterior para debounce
@@ -306,28 +317,28 @@
                 if (empleadosFiltrados.length === 0) {
                     let mensaje = "No se encontraron empleados con ese criterio de búsqueda";
                     tbody.append(`
-                                        <tr>
-                                            <td colspan="7" class="text-center text-muted">
-                                                ${mensaje}
-                                            </td>
-                                        </tr>
-                                    `);
+                                                <tr>
+                                                    <td colspan="7" class="text-center text-muted">
+                                                        ${mensaje}
+                                                    </td>
+                                                </tr>
+                                            `);
                     return;
                 }
 
                 // Recorrer el array de empleados y crear filas
                 empleadosFiltrados.forEach((emp, i) => {
                     tbody.append(`
-                                        <tr data-index="${i}">
-                                            <td>${emp.rolNombre}</td>
-                                            <td>${emp.nombre}</td>
-                                            <td>${emp.credencial}</td>
-                                            <td>${emp.telefono}</td>
-                                            <td>${emp.email}</td>
-                                            <td>${emp.direccion}</td>
-                                            <td>${emp.fechaNacimiento}</td>
-                                        </tr>
-                                    `);
+                                                <tr data-index="${i}">
+                                                    <td>${emp.rolNombre}</td>
+                                                    <td>${emp.nombre}</td>
+                                                    <td>${emp.credencial}</td>
+                                                    <td>${emp.telefono}</td>
+                                                    <td>${emp.email}</td>
+                                                    <td>${emp.direccion}</td>
+                                                    <td>${emp.fechaNacimiento}</td>
+                                                </tr>
+                                            `);
                 });
 
                 // Agregar evento click a cada fila de la tabla
@@ -356,12 +367,31 @@
             function limpiarFormulario() {
                 $("#formEmpleado")[0].reset();  // Reset del formulario HTML
                 $("#idEmpleado").val("");       // Limpiar el ID oculto
+                // Resetear el toggle de contraseña a estado inicial (oculto)
+                $("#contrasena").attr("type", "password");
+                $("#iconoPassword").removeClass("bi-eye-slash").addClass("bi-eye");
             }
 
             // ========== FUNCIÓN PARA ABRIR MODAL EN MODO "NUEVO" ==========
             function abrirModalNuevo() {
                 modoEdicion = false;  // Indicar que estamos agregando
                 limpiarFormulario();  // Limpiar el formulario
+                // Configurar la fecha máxima para mayor de edad
+                $("#fechaNacimiento").attr("max", calcularFechaMaxima());
+                // Obtener nueva credencial desde la API
+                $.ajax({
+                    url: "/api/Empleados/nueva-credencial",
+                    method: "GET",
+                    success: function (data) {
+                        $("#credencial").val(data);  // data es directamente el string de la credencial, por ej. "USR000010" 
+                    },
+                    error: function (err) {
+                        console.error("Error obteniendo nueva credencial:", err);
+                        $("#mensajeError").text("Error al generar credencial. Intente nuevamente.");
+                        let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                        modalError.show();
+                    }
+                });
                 // Configurar el título y botón para "Nuevo"
                 $("#modalTitulo").text("Nuevo Empleado");
                 $("#btnGuardar").text("Guardar").removeClass("btn-warning").addClass("btn-primary");
@@ -389,6 +419,8 @@
                 $("#email").val(emp.email);
                 $("#direccion").val(emp.direccion);
                 $("#fechaNacimiento").val(emp.fechaNacimiento);
+                // Configurar la fecha máxima para mayor de edad
+                $("#fechaNacimiento").attr("max", calcularFechaMaxima());
 
                 // Configurar el título y botón para "Editar"
                 $("#modalTitulo").text("Editar Empleado");

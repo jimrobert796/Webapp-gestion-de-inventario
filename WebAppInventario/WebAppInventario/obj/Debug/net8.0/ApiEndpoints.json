@@ -617,6 +617,26 @@
     ]
   },
   {
+    "ContainingType": "WebAppInventario.Controllers.EmpleadosController",
+    "Method": "GetNuevaCredencial",
+    "RelativePath": "api/Empleados/nueva-credencial",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "WebAppInventario.Controllers.FacturasController",
     "Method": "GetFacturas",
     "RelativePath": "api/Facturas",
@@ -1123,6 +1143,26 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebAppInventario.Controllers.ProductosController",
+    "Method": "GetNuevoCodigo",
+    "RelativePath": "api/Productos/nuevo-Codigo",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "WebAppInventario.Controllers.ProveedoresController",
