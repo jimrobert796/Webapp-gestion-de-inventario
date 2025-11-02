@@ -618,6 +618,22 @@
   },
   {
     "ContainingType": "WebAppInventario.Controllers.EmpleadosController",
+    "Method": "Login",
+    "RelativePath": "api/Empleados/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "WebAppInventario.Models.EmpleadoLoginParametros",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebAppInventario.Controllers.EmpleadosController",
     "Method": "GetNuevaCredencial",
     "RelativePath": "api/Empleados/nueva-credencial",
     "HttpMethod": "GET",

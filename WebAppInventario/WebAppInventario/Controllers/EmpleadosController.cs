@@ -45,6 +45,8 @@ namespace WebAppInventario.Controllers
 
             return Ok(empleados);
         }
+
+
         // Busqueda o consulta unicamente por nombre de empelado o credencial 
         // GET: api/Empleados/buscar?buscar={TEXTO}
         [HttpGet("buscar")]
@@ -116,6 +118,33 @@ namespace WebAppInventario.Controllers
             return Ok(nuevaCredencial);
         }
 
+        // Testeado el login
+        // GET: api/Empleados/login
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] EmpleadoLoginParametros request)
+        {
+            var empleado = _context.Empleados
+                .Include(e => e.Rol)
+                .FirstOrDefault(e =>
+                    e.credencial.Trim() == request.credencial &&
+                    e.estado == true  // Solo empleados activos
+                );
+
+            if (empleado == null || empleado.contraseña.Trim() != request.contraseña)
+            {
+                return Unauthorized(new { mensaje = "Credenciales incorrectas" });
+            }
+
+            // Devolver solo lo necesario (sin contraseña)
+            return Ok(new
+            {
+                idEmpleado = empleado.idEmpleado,
+                idRol = empleado.idRol,
+                nombre = empleado.nombre.Trim(),
+                credencial = empleado.credencial.Trim(),
+                rol = empleado.Rol.rol.Trim()
+            });
+        }
 
         // GET: api/Empleados/5 SOLAMENTE ACTIVOS
         [HttpGet("{id}")]

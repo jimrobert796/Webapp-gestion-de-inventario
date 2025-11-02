@@ -42,5 +42,56 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $(document).ready(() => {
+            $('#btnLogin').click(() => {
+                let credencial = $('#credencial').val().trim();
+                let contraseña = $('#contraseña').val().trim();
+
+                if (!credencial || !contraseña) {
+                    $('#mensaje').text('Por favor, complete todos los campos.');
+                    return;
+                }
+
+                // Llamada al endpoint de login
+                $.ajax({
+                    url: '/api/Empleados/login',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        credencial: credencial,
+                        contraseña: contraseña
+                    }),
+                    success: (data) => {
+                        // Login exitoso
+                        localStorage.setItem('empleadoId', data.idEmpleado);
+                        localStorage.setItem('empleadoRol', data.idRol);
+                        localStorage.setItem('empleadoNombre', data.nombre);
+                        localStorage.setItem('empleadoCredencial', data.credencial);
+                        localStorage.setItem('empleadoRolNombre', data.rol);
+
+                        // Redirigir
+                        window.location.href = '/views/index.html';
+                    },
+                    error: (xhr) => {
+                        if (xhr.status === 401) {
+                            $('#mensaje').text('Credenciales incorrectas. Intente nuevamente.');
+                        } else {
+                            $('#mensaje').text('Error al iniciar sesión. Intente nuevamente.');
+                        }
+                    }
+                });
+            });
+
+            // Login con Enter
+            $('#contraseña').keypress((e) => {
+                if (e.which === 13) {
+                    $('#btnLogin').click();
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>

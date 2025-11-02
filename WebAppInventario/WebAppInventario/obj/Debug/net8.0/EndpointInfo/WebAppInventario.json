@@ -984,6 +984,37 @@
         }
       }
     },
+    "/api/Empleados/login": {
+      "post": {
+        "tags": [
+          "Empleados"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmpleadoLoginParametros"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmpleadoLoginParametros"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmpleadoLoginParametros"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Empleados/{id}": {
       "get": {
         "tags": [
@@ -2455,6 +2486,20 @@
           },
           "rol": {
             "$ref": "#/components/schemas/Rol"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EmpleadoLoginParametros": {
+        "type": "object",
+        "properties": {
+          "credencial": {
+            "type": "string",
+            "nullable": true
+          },
+          "contraseña": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

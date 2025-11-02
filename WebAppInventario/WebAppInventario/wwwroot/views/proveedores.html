@@ -502,6 +502,16 @@
                     filaSeleccionada = null;
                     $("#btnEditar, #btnEliminar").prop("disabled", true);
                 });
+                // ===== FIX PARA ARIA-HIDDEN WARNING ===== 
+                $('.modal').on('hide.bs.modal', function () {
+                    $(this).find('*').blur();
+                });
+
+                $('.modal').on('hidden.bs.modal', function () {
+                    if (document.activeElement && document.activeElement !== document.body) {
+                        document.activeElement.blur();
+                    }
+                });
             });
         })();
     </script>
