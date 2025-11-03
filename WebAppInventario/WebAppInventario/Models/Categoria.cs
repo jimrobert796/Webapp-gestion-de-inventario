@@ -8,6 +8,8 @@ namespace WebAppInventario.Models
         public int idCategoria { get; set; }
         public string nombre { get; set; }
         // Una categoría tiene muchos productos
+        public DateTime creaccion { get; set; }
+        public bool estado { get; set; } = true;
         public ICollection<Producto>? Productos { get; set; }
 
     }

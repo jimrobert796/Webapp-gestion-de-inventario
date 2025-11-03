@@ -28,16 +28,35 @@
                     </li>
 
                     <!-- Inventario (Admin, Bodega) -->
-                    <li class="nav-item" >
-                        <a class="nav-link" href="#" data-form="inventario">
-                            <i class="bi bi-list-check"></i> Inventario
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownInventario" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-clipboard-data"></i> Inventario
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="#" data-form="productos">
+                                    <i class="bi bi-bag"></i> Productos
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" data-form="inventario">
+                                    <i class="bi bi-box-seam"></i> Inventario
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- Proveedores (Admin, Bodega) -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-form="proveedores">
+                            <i class="bi bi-shop-window"></i> Proveedores
                         </a>
                     </li>
 
                     <!-- Proveedores (Admin, Bodega) -->
-                    <li class="nav-item" >
-                        <a class="nav-link" href="#" data-form="proveedores">
-                            <i class="bi bi-shop-window"></i> Proveedores
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-form="categorias">
+                            <i class="bi bi-shop-window"></i> Categorias
                         </a>
                     </li>
 
@@ -61,19 +80,23 @@
                     </li>
 
                     <!-- Cajero (Admin, Cajero) -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" data-form="cajero">
-                            <i class="bi bi-cash"></i> Cajero
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownCajero" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-receipt"></i> Cajero
                         </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="#" data-form="cajero">
+                                    <i class="bi bi-cash-stack"></i> Cajero
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" data-form="facturas">
+                                    <i class="bi bi-list-check"></i> Facturas
+                                </a>
+                            </li>
+                        </ul>
                     </li>
-
-                    <!-- Facturas (Admin, Cajero) -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" data-form="facturas">
-                            <i class="bi bi-card-list"></i> Facturas
-                        </a>
-                    </li>
-
                     <!-- Empleados (Solo Admin) -->
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-form="empleados">

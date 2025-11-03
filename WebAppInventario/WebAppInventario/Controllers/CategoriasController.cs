@@ -19,13 +19,34 @@ namespace WebAppInventario.Controllers
         {
             _context = context;
         }
-
+        // Filtra los activos eso es perfecto
         // GET: api/Categorias
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Categoria>>> GetCategorias()
         {
-            return await _context.Categorias.ToListAsync();
+            var categoriasActivas = await _context.Categorias
+            .Where(c => c.estado == true)
+            .ToListAsync();
+
+            return categoriasActivas;
         }
+
+        // Busqueda o consulta unicamente por nombre de cliente 
+        // GET: api/Categorias/buscar?buscar={TEXTO}
+        [HttpGet("buscar")]
+        public async Task<ActionResult<IEnumerable<Categoria>>> BuscarCategoria([FromQuery] CategoriasBusquedaParametros parametros)
+        {
+            var consulta = _context.Categorias
+                .Where(c => c.estado) // solo los clientes activos
+                .AsQueryable();
+            if (!string.IsNullOrEmpty(parametros.buscar))
+            {
+                consulta = consulta.Where(Categoria => Categoria.nombre.Contains(parametros.buscar));
+            }
+
+            return await consulta.ToListAsync();
+        }
+
 
         // GET: api/Categorias/5
         [HttpGet("{id}")]
@@ -69,7 +90,7 @@ namespace WebAppInventario.Controllers
                 }
             }
 
-            return NoContent();
+            return CreatedAtAction("GetCategoria", new { id = categoria.idCategoria }, categoria);
         }
 
         // POST: api/Categorias
@@ -93,7 +114,8 @@ namespace WebAppInventario.Controllers
                 return NotFound();
             }
 
-            _context.Categorias.Remove(categoria);
+            categoria.estado = false; // Eliminacion lógica
+            _context.Categorias.Update(categoria);
             await _context.SaveChangesAsync();
 
             return NoContent();

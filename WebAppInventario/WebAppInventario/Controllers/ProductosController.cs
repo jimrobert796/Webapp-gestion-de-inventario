@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WebAppInventario.Models;
 
 namespace WebAppInventario.Controllers
@@ -96,6 +97,49 @@ namespace WebAppInventario.Controllers
 
             return Ok(nuevoCodigo);
         }
+
+        // GET: api/Productos/buscar?buscar={TEXTO}
+        [HttpGet("buscar")]
+        public async Task<ActionResult<IEnumerable<Producto>>> BuscarProductos([FromQuery] ProductoBusquedaParametros parametros)
+        {
+            var consulta = _context.Productos
+                .Include(p => p.Categoria)
+                .Include(p => p.Proveedor)
+                .Where(p => p.estado) // Solo productos activos
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(parametros.buscar))
+            {
+                var texto = parametros.buscar.Trim().ToLower();
+
+                consulta = consulta.Where(p =>
+                    (p.nombre != null && p.nombre.ToLower().Contains(parametros.buscar)) ||
+                    (p.codigo != null && p.codigo.ToLower().Contains(parametros.buscar)) ||
+                    (p.Categoria != null && p.Categoria.nombre.ToLower().Contains(parametros.buscar)) ||
+                    (p.Proveedor != null && p.Proveedor.nombre.ToLower().Contains(parametros.buscar))
+                );
+            }
+
+            var productos = await consulta
+                .Select(p => new
+                {
+                    p.idProducto,
+                    p.idProveedor,
+                    p.idCategoria,
+                    p.codigo,
+                    p.nombre,
+                    p.estado,
+                    p.descripcion,
+                    p.fechaProd,
+                    p.fechaVenc,
+                    categoria = p.Categoria != null ? p.Categoria.nombre : "Sin categoría",
+                    proveedor = p.Proveedor != null ? p.Proveedor.nombre : "Sin proveedor"
+                })
+                .ToListAsync();
+
+            return Ok(productos);
+        }
+
 
 
         // GET: api/Productoes/5
