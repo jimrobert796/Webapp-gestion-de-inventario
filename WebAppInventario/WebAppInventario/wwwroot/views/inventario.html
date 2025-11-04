@@ -11,8 +11,22 @@
     <!-- Estilos personalizados para scroll interno en la tabla -->
     <style>
         .table-scroll {
-            max-height: 400px; /* Altura máxima de la tabla (ajusta según necesites) */
+            max-height: 300px; /* Altura máxima de la tabla (ajusta según necesites) */
             overflow-y: auto; /* Scroll vertical interno */
+        }
+        /* Encabezados fijos */
+        .table-scroll thead th {
+            position: sticky;
+            top: 0;
+ 
+            z-index: 100;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        /* Asegurar que las celdas tengan buen contraste */
+        .table-scroll thead th {
+            color: white;
+            padding: 12px 8px;
         }
     </style>
 </head>
@@ -37,7 +51,7 @@
                             <span class="input-group-text bg-primary text-white">
                                 <i class="bi bi-search"></i>
                             </span>
-                            <input type="text" class="form-control" id="inputBuscar" placeholder="Buscar por nombre de producto...">
+                            <input type="text" class="form-control" id="inputBuscar" placeholder="Buscar por nombre, codigo, proveedor, categoria...">
                             <button class="btn btn-outline-secondary" type="button" id="btnLimpiarBusqueda" title="Limpiar búsqueda">
                                 <i class="bi bi-x-lg"></i>
                             </button>
@@ -53,6 +67,7 @@
                                 <th>Nombre Producto</th>
                                 <th>Código</th>
                                 <th>Proveedor</th>
+                                <th>Categoria</th>
                                 <th>Precio</th>
                                 <th>Costo</th>
                                 <th>Cantidad</th>
@@ -69,11 +84,28 @@
         </div>
     </div>
 
-    <!-- ========== MODALES REMOVIDOS ========== -->
-    <!-- Se eliminaron los modales para agregar/editar, eliminación y mensajes de éxito/error, ya que no se usan en modo solo búsqueda -->
+    <!-- ========== MODAL DE ERROR ========== -->
+    <div class="modal fade" id="modalError" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Error</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Mensaje dinámico de error (se cambia desde JavaScript) -->
+                    <p class="mb-0" id="mensajeError"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ========== JAVASCRIPT SIMPLIFICADO ========== -->
     <script>
-        // IIFE (Immediately Invoked Function Expression) para encapsular el código
+       
         (function () {
             // ========== VARIABLES GLOBALES ==========
             let inventariosFiltrados = [];     // Array para almacenar inventarios filtrados desde la API
@@ -112,8 +144,10 @@
                         },
                         error: function (err) {
                             console.error("Error buscando inventarios:", err);
-                            // Como no hay modales de error, solo logueamos (o podrías agregar un alert simple si quieres)
-                            alert("Error al buscar productos. Intente nuevamente.");
+                            // Mostrar modal de error
+                            $("#mensajeError").text("Error al buscar productos. Intente nuevamente.");
+                            let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                            modalError.show();
                         }
                     });
                 }, 300);  // Debounce de 300ms
@@ -128,29 +162,30 @@
                 if (inventariosFiltrados.length === 0) {
                     let mensaje = "No se encontraron productos con ese criterio de búsqueda";
                     tbody.append(`
-                                <tr>
-                                    <td colspan="8" class="text-center text-muted">
-                                        ${mensaje}
-                                    </td>
-                                </tr>
-                            `);
+                                    <tr>
+                                        <td colspan="9" class="text-center text-muted">  <!-- Cambiado a 9 columnas -->
+                                            ${mensaje}
+                                        </td>
+                                    </tr>
+                                `);
                     return;
                 }
 
                 // Recorrer el array de inventarios y crear filas
                 inventariosFiltrados.forEach((inv) => {
                     tbody.append(`
-                                <tr>
-                                    <td>${inv.productoNombre}</td>
-                                    <td>${inv.productoCodigo}</td>
-                                    <td>${inv.productoproveedor}</td>
-                                    <td>${inv.precio.toFixed(2)}</td>
-                                    <td>${inv.costo.toFixed(2)}</td>
-                                    <td>${inv.cantidad}</td>
-                                    <td>${inv.ubicacion}</td>
-                                    <td>${new Date(inv.ultimaActualizacion).toLocaleDateString()}</td>
-                                </tr>
-                            `);
+                                    <tr>
+                                        <td>${inv.productoNombre}</td>
+                                        <td>${inv.productoCodigo}</td>
+                                        <td>${inv.productoproveedor}</td>
+                                        <td>${inv.productocategoria}</td>
+                                        <td>${inv.precio.toFixed(2)}</td>
+                                        <td>${inv.costo.toFixed(2)}</td>
+                                        <td>${inv.cantidad}</td>
+                                        <td>${inv.ubicacion}</td>
+                                        <td>${new Date(inv.ultimaActualizacion).toLocaleString()}</td>
+                                    </tr>
+                                `);
                 });
 
                 // Removido: Eventos de clic en filas, ya que no hay acciones a realizar

@@ -9,8 +9,22 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .table-scroll {
-            max-height: 400px; /* Altura máxima de la tabla (ajusta según necesites, ej. 500px para más filas) */
+            max-height: 300px; /* Altura máxima de la tabla (ajusta según necesites, ej. 500px para más filas) */
             overflow-y: auto; /* Scroll vertical interno */
+        }
+        /* Encabezados fijos */
+        .table-scroll thead th {
+            position: sticky;
+            top: 0;
+ 
+            z-index: 100;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        /* Asegurar que las celdas tengan buen contraste */
+        .table-scroll thead th {
+            color: white;
+            padding: 12px 8px;
         }
     </style>
 </head>
@@ -58,7 +72,7 @@
                                 <th>Email</th>
                                 <th>Dirección</th>
                                 <th>Teléfono</th>
-                                <th>Fecha Creación</th>
+                                <th>Ultima Actualizacion</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -100,13 +114,13 @@
                                     <label for="nombre" class="form-label">
                                         <i class="bi bi-person-fill"></i> Nombre del Cliente
                                     </label>
-                                    <input type="text" class="form-control" id="nombre" required>
+                                    <input type="text" class="form-control" id="nombre" required  placeholder="Ingrese el nombre">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="email" class="form-label">
                                         <i class="bi bi-envelope"></i> Email
                                     </label>
-                                    <input type="email" class="form-control" id="email" required>
+                                    <input type="email" class="form-control" id="email" required  placeholder="Ejemplo@gmail.com">
                                 </div>
                             </div>
 
@@ -116,13 +130,13 @@
                                     <label for="direccion" class="form-label">
                                         <i class="bi bi-geo-alt"></i> Dirección
                                     </label>
-                                    <input type="text" class="form-control" id="direccion" required>
+                                    <input type="text" class="form-control" id="direccion" required placeholder="Ingrese la direccion">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="telefono" class="form-label">
                                         <i class="bi bi-telephone"></i> Teléfono
                                     </label>
-                                    <input type="tel" class="form-control" id="telefono" required>
+                                    <input type="tel"  required pattern="\d{4}-\d{4}" class="form-control" id="telefono" placeholder="Ingrese en este formato XXXX-XXXX">
                                 </div>
                             </div>
                         </div>
@@ -228,7 +242,7 @@
                                 email: cli.email.trim(),
                                 direccion: cli.direccion.trim(),
                                 telefono: cli.telefono.trim(),
-                                creaccion: cli.creaccion,
+                                ultimaActualizacion: cli.ultimaActualizacion,
                                 estado: cli.estado
                             }));
                             renderTabla(); // Actualizar la tabla con los datos filtrados
@@ -273,7 +287,7 @@
                                                 <td>${cli.email}</td>
                                                 <td>${cli.direccion}</td>
                                                 <td>${cli.telefono}</td>
-                                                <td>${new Date(cli.creaccion).toLocaleDateString()}</td>
+                                                <td>${new Date(cli.ultimaActualizacion).toLocaleString()}</td>
                                             </tr>
                                         `);
                 });
@@ -349,7 +363,7 @@
                     email: $("#email").val(),
                     direccion: $("#direccion").val(),
                     telefono: $("#telefono").val(),
-                    creaccion: modoEdicion ? clientesFiltrados[filaSeleccionada].creaccion : new Date().toISOString(),
+                    ultimaActualizacion: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, -1),
                     estado: true
                 };
 

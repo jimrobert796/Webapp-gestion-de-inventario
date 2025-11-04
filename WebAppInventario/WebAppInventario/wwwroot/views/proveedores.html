@@ -11,8 +11,22 @@
     <!-- Estilos personalizados para scroll interno en la tabla -->
     <style>
         .table-scroll {
-            max-height: 400px; /* Altura máxima de la tabla (ajusta según necesites) */
+            max-height: 300px; /* Altura máxima de la tabla (ajusta según necesites) */
             overflow-y: auto; /* Scroll vertical interno */
+        }
+                /* Encabezados fijos */
+        .table-scroll thead th {
+            position: sticky;
+            top: 0;
+ 
+            z-index: 100;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        /* Asegurar que las celdas tengan buen contraste */
+        .table-scroll thead th {
+            color: white;
+            padding: 12px 8px;
         }
     </style>
 </head>
@@ -61,6 +75,7 @@
                                 <th>Teléfono</th>
                                 <th>Email</th>
                                 <th>Dirección</th>
+                                <th>Ultima Actualizacion</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -101,13 +116,13 @@
                                     <label for="nombre" class="form-label">
                                         <i class="bi bi-building"></i> Nombre del Proveedor
                                     </label>
-                                    <input type="text" class="form-control" id="nombre" required>
+                                    <input type="text" class="form-control" id="nombre" required placeholder="Ingrese el nombre">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="telefono" class="form-label">
                                         <i class="bi bi-telephone"></i> Teléfono
                                     </label>
-                                    <input type="tel" class="form-control" id="telefono" required>
+                                    <input type="tel" class="form-control" id="telefono" required pattern="\d{4}-\d{4}" placeholder="Ingrese en este formato XXXX-XXXX">
                                 </div>
                             </div>
 
@@ -117,13 +132,13 @@
                                     <label for="email" class="form-label">
                                         <i class="bi bi-envelope"></i> Email
                                     </label>
-                                    <input type="email" class="form-control" id="email" required>
+                                    <input type="email" class="form-control" id="email" required placeholder="Ejemplo@gmail.com">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="direccion" class="form-label">
                                         <i class="bi bi-geo-alt"></i> Dirección
                                     </label>
-                                    <input type="text" class="form-control" id="direccion" required>
+                                    <input type="text" class="form-control" id="direccion" required placeholder="Ingrese la direccion">
                                 </div>
                             </div>
                         </div>
@@ -230,6 +245,7 @@
                                 telefono: prov.telefono.trim(),
                                 email: prov.email.trim(),
                                 direccion: prov.direccion.trim(),
+                                ultimaActualizacion: prov.ultimaActualizacion,
                                 estado: prov.estado
                             }));
                             renderTabla(); // Actualizar la tabla con los datos filtrados
@@ -274,6 +290,7 @@
                                             <td>${prov.telefono}</td>
                                             <td>${prov.email}</td>
                                             <td>${prov.direccion}</td>
+                                            <td>${new Date(prov.ultimaActualizacion).toLocaleString()}</td>
                                         </tr>
                                     `);
                 });
@@ -354,6 +371,7 @@
                     telefono: $("#telefono").val(),
                     email: $("#email").val(),
                     direccion: $("#direccion").val(),
+                    ultimaActualizacion: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, -1),
                     estado: true
                 };
 

@@ -2392,7 +2392,7 @@
             "type": "string",
             "nullable": true
           },
-          "creaccion": {
+          "ultimaActualizacion": {
             "type": "string",
             "format": "date-time"
           },
@@ -2432,7 +2432,7 @@
             "type": "string",
             "nullable": true
           },
-          "creaccion": {
+          "ultimaActualizacion": {
             "type": "string",
             "format": "date-time"
           },
@@ -2730,7 +2730,7 @@
           },
           "ultimaActualizacion": {
             "type": "string",
-            "format": "date"
+            "format": "date-time"
           },
           "producto": {
             "$ref": "#/components/schemas/Producto"
@@ -2833,6 +2833,10 @@
           },
           "estado": {
             "type": "boolean"
+          },
+          "ultimaActualizacion": {
+            "type": "string",
+            "format": "date-time"
           },
           "productos": {
             "type": "array",

@@ -11,8 +11,22 @@
     <!-- Estilos personalizados para scroll interno en la tabla -->
     <style>
         .table-scroll {
-            max-height: 400px; /* Altura máxima de la tabla (ajusta según necesites) */
+            max-height: 300px; /* Altura máxima de la tabla (ajusta según necesites) */
             overflow-y: auto; /* Scroll vertical interno */
+        }
+                /* Encabezados fijos */
+        .table-scroll thead th {
+            position: sticky;
+            top: 0;
+ 
+            z-index: 100;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        /* Asegurar que las celdas tengan buen contraste */
+        .table-scroll thead th {
+            color: white;
+            padding: 12px 8px;
         }
     </style>
 </head>
@@ -51,7 +65,7 @@
                         <thead class="table-dark">
                             <tr>
                                 <th>Nombre</th>
-                                <th>Fecha de Creación</th>
+                                <th>Ultima Actualizacion</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -78,7 +92,7 @@
                             <label for="nombreCategoria" class="form-label">
                                 <i class="bi bi-tag"></i> Nombre de la Categoría
                             </label>
-                            <input type="text" class="form-control" id="nombreCategoria" required>
+                            <input type="text" class="form-control" id="nombreCategoria" required placeholder="Ingrese el nombre">
                         </div>
                     </form>
                 </div>
@@ -169,7 +183,7 @@
                             categoriasFiltradas = data.map(cat => ({
                                 idCategoria: cat.idCategoria,
                                 nombre: cat.nombre.trim(),
-                                creaccion: cat.creaccion,
+                                ultimaActualizacion: cat.ultimaActualizacion,
                                 estado: cat.estado
                             }));
                             renderTablaCategorias();
@@ -198,7 +212,7 @@
                     tbody.append(`
                         <tr data-index="${i}">
                             <td>${cat.nombre}</td>
-                            <td>${new Date(cat.creaccion).toLocaleDateString()}</td>
+                            <td>${new Date(cat.ultimaActualizacion).toLocaleString()}</td>
                         </tr>
                     `);
                 });
@@ -249,7 +263,7 @@
                     let datos = {
                         idCategoria: cat.idCategoria,
                         nombre: $("#nombreCategoria").val(),
-                        creaccion: cat.creaccion,  // Mantener fecha original
+                        ultimaActualizacion: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, -1),
                         estado: true
                     };
 
@@ -280,7 +294,7 @@
                     let datos = {
                         idCategoria: 0,
                         nombre: $("#nombreCategoria").val(),
-                        creaccion: new Date().toISOString(),  // Fecha actual en formato ISO
+                        ultimaActualizacion: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, -1),  // Fecha actual y hora actual donde se creo
                         estado: true
                     };
 
@@ -330,7 +344,7 @@
                 let datos = {
                     idCategoria: cat.idCategoria,
                     nombre: cat.nombre,
-                    creaccion: cat.creaccion,
+                    ultimaActualizacion: cat.ultimaActualizacion,
                     estado: false  // Marcar como inactivo
                 };
 

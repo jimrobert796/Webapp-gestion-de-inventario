@@ -11,8 +11,22 @@
     <!-- Estilos personalizados para scroll interno en la tabla -->
     <style>
         .table-scroll {
-            max-height: 400px; /* Altura máxima de la tabla (ajusta según necesites) */
+            max-height: 300px; /* Altura máxima de la tabla (ajusta según necesites) */
             overflow-y: auto; /* Scroll vertical interno */
+        }
+                /* Encabezados fijos */
+        .table-scroll thead th {
+            position: sticky;
+            top: 0;
+ 
+            z-index: 100;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        /* Asegurar que las celdas tengan buen contraste */
+        .table-scroll thead th {
+            color: white;
+            padding: 12px 8px;
         }
     </style>
 </head>
@@ -131,7 +145,7 @@
                                     <label for="nombreProducto" class="form-label">
                                         <i class="bi bi-box"></i> Nombre Producto
                                     </label>
-                                    <input type="text" class="form-control" id="nombreProducto" required>
+                                    <input type="text" class="form-control" id="nombreProducto" required placeholder="Ingrese el nombre">
                                 </div>
                             </div>
 
@@ -140,7 +154,7 @@
                                 <label for="descripcion" class="form-label">
                                     <i class="bi bi-textarea"></i> Descripción
                                 </label>
-                                <textarea class="form-control" id="descripcion" rows="3"></textarea>
+                                <textarea class="form-control" id="descripcion" rows="3" placeholder="Ingrese la descripcion, es opcional"></textarea>
                             </div>
 
                             <!-- Fila: Fechas -->
@@ -173,13 +187,13 @@
                                     <label for="precio" class="form-label">
                                         <i class="bi bi-cash"></i> Precio
                                     </label>
-                                    <input type="number" step="0.01" class="form-control" id="precio" required>
+                                    <input type="number" min="0" step="0.01" class="form-control" id="precio" required placeholder="Ingrese el precio">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="costo" class="form-label">
                                         <i class="bi bi-calculator"></i> Costo
                                     </label>
-                                    <input type="number" step="0.01" class="form-control" id="costo" required>
+                                    <input type="number" min="0" step="0.01" class="form-control" id="costo" required placeholder="Ingrese el costo">
                                 </div>
                             </div>
 
@@ -189,13 +203,13 @@
                                     <label for="cantidad" class="form-label">
                                         <i class="bi bi-hash"></i> Cantidad
                                     </label>
-                                    <input type="number" class="form-control" id="cantidad" required>
+                                    <input type="number" min="0" class="form-control" id="cantidad" required placeholder="Ingrese la cantidad">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="ubicacion" class="form-label">
                                         <i class="bi bi-geo-alt"></i> Ubicación
                                     </label>
-                                    <input type="text" class="form-control" id="ubicacion" required>
+                                    <input type="text" class="form-control" id="ubicacion" required placeholder="Ingrese su ubicacion">
                                 </div>
                             </div>
                         </div>
@@ -535,7 +549,7 @@
                             $("#mensajeError").text("No se pudo actualizar el producto. Por favor, intente nuevamente.");
                             let modalError = new bootstrap.Modal(document.getElementById('modalError'));
                             modalError.show();
-                        }
+                        } 
                     });
                 }
                 // ===== MODO AGREGAR (POST) =====
@@ -556,7 +570,7 @@
                                 costo: Number($("#costo").val()),
                                 cantidad: Number($("#cantidad").val()),
                                 ubicacion: $("#ubicacion").val(),
-                                ultimaActualizacion: new Date().toISOString().split('T')[0]
+                                ultimaActualizacion: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, -1),
                             };
                             // Crear inventario
                             $.ajax({
@@ -619,7 +633,7 @@
                 // Soft Delete: actualizar estado del producto a false
                 $.ajax({
                     url: `/api/Productos/${prod.idProducto}`,
-                    method: "PUT",  // Usar PUT para soft delete
+                    method: "DELETE",  // Usar DELLETE para soft delete
                     contentType: "application/json",
                     data: JSON.stringify({ estado: false }),
                     success: function () {
