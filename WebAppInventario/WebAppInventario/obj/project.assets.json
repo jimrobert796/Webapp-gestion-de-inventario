@@ -8186,23 +8186,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\jimmy\\.nuget\\packages\\": {},
+    "C:\\Users\\Baal8\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jimmy\\Desktop\\repo prueba\\WebAppInventario\\WebAppInventario\\WebAppInventario.csproj",
+      "projectUniqueName": "C:\\Users\\Baal8\\Desktop\\prototipo\\WebAppInventario\\WebAppInventario\\WebAppInventario.csproj",
       "projectName": "WebAppInventario",
-      "projectPath": "C:\\Users\\jimmy\\Desktop\\repo prueba\\WebAppInventario\\WebAppInventario\\WebAppInventario.csproj",
-      "packagesPath": "C:\\Users\\jimmy\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jimmy\\Desktop\\repo prueba\\WebAppInventario\\WebAppInventario\\obj\\",
+      "projectPath": "C:\\Users\\Baal8\\Desktop\\prototipo\\WebAppInventario\\WebAppInventario\\WebAppInventario.csproj",
+      "packagesPath": "C:\\Users\\Baal8\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Baal8\\Desktop\\prototipo\\WebAppInventario\\WebAppInventario\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\jimmy\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Baal8\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -8273,7 +8273,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
