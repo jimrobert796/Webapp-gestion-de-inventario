@@ -62,7 +62,8 @@
                                 <th>Teléfono</th>
                                 <th>Email</th>
                                 <th>Dirección</th>
-                                <th>Fecha Nac.</th>
+                                <th>Edad</th>
+                                <th>Ultima Actualizacion</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -291,7 +292,8 @@
                                 telefono: emp.telefono.trim(),
                                 email: emp.email.trim(),
                                 direccion: emp.direccion.trim(),
-                                fechaNacimiento: emp.fechaNacimiento
+                                fechaNacimiento: emp.fechaNacimiento,
+                                ultimaActualizacion: emp.ultimaActualizacion,
                             }));
                             renderTabla(); // Actualizar la tabla con los datos filtrados
                             // Resetear selección al buscar
@@ -326,6 +328,22 @@
                                             `);
                     return;
                 }
+                // ======== FUNCION PARA CALCULAR EDAD DE EMPELADO ===========
+                function calcularEdad(fechaNacimiento) {
+                    const hoy = new Date();
+                    const nacimiento = new Date(fechaNacimiento);
+                    let edad = hoy.getFullYear() - nacimiento.getFullYear();
+                    const mes = hoy.getMonth() - nacimiento.getMonth();
+
+                    // Si aún no ha cumplido años este año, resta 1
+                    if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+                        edad--;
+                    }
+
+                    return edad;
+                }
+
+
 
                 // Recorrer el array de empleados y crear filas
                 empleadosFiltrados.forEach((emp, i) => {
@@ -337,7 +355,8 @@
                                                     <td>${emp.telefono}</td>
                                                     <td>${emp.email}</td>
                                                     <td>${emp.direccion}</td>
-                                                    <td>${emp.fechaNacimiento}</td>
+                                                    <td>${calcularEdad(emp.fechaNacimiento)}</td>
+                                                    <td>${new Date(emp.ultimaActualizacion).toLocaleString()}</td>
                                                 </tr>
                                             `);
                 });
@@ -447,7 +466,8 @@
                     email: $("#email").val(),
                     direccion: $("#direccion").val(),
                     fechaNacimiento: $("#fechaNacimiento").val(),
-                    estado: true
+                    estado: true,
+                    ultimaActualizacion: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, -1)
                 };
 
                 // ===== MODO EDICIÓN (PUT) =====

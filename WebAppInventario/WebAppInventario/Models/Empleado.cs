@@ -17,6 +17,7 @@ namespace WebAppInventario.Models
         public string direccion { get; set; }
         public DateOnly fechaNacimiento { get; set; }
         public bool estado { get; set; } = true; // true = activo, false = inactivo
+        public DateTime ultimaActualizacion { get; set; }
 
         public ICollection<Compra>? Compras { get; set; }
         public ICollection<Factura>? Facturas { get; set; }

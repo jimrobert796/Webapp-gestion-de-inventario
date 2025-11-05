@@ -8,7 +8,7 @@ namespace WebAppInventario.Models
         public int idFactura { get; set; }
         public int idEmpleado { get; set; }
         public int? idCliente { get; set; }  
-        public int numeroFactura { get; set; }
+        public string numeroFactura { get; set; }
         public decimal subtotal { get; set; }
         public decimal total { get; set; }
 
@@ -17,6 +17,7 @@ namespace WebAppInventario.Models
 
         public DateOnly fecha { get; set; }
         public TimeOnly hora { get; set; }
+        public string estado { get; set; }
 
         // Relaciones
         public ICollection<FacturaDetalle>? FacturaDetalles { get; set; }

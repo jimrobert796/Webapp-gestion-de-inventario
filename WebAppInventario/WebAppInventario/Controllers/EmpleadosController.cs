@@ -39,6 +39,7 @@ namespace WebAppInventario.Controllers
            e.direccion,
            e.fechaNacimiento,
            e.estado,
+           e.ultimaActualizacion,
            rol = e.Rol != null ? e.Rol.rol : "Sin rol"
        })
        .ToListAsync();
@@ -84,6 +85,7 @@ namespace WebAppInventario.Controllers
                     e.direccion,
                     e.fechaNacimiento,
                     e.estado,
+                    e.ultimaActualizacion,
                     rol = e.Rol != null ? e.Rol.rol : "Sin rol"
                 })
                 .ToListAsync();
@@ -165,6 +167,7 @@ namespace WebAppInventario.Controllers
             e.direccion,
             e.fechaNacimiento,
             e.estado,
+            e.ultimaActualizacion,
             rol = e.Rol != null ? e.Rol.rol : "Sin rol"
         })
         .FirstOrDefaultAsync();

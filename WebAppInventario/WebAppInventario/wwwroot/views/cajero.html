@@ -3,252 +3,797 @@
 <head>
     <meta charset="utf-8" />
     <title>Cajero</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* Layout para ocupar toda la pantalla sin scroll */
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container-fluid {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-info {
+            flex-shrink: 0;
+            background: var(--bs-primary-bg-subtle);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.2rem;
+            margin-bottom: 0.3rem;
+            font-size: 0.7rem;
+        }
+
+        .contenido-principal {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .row-contenido {
+            height: 100%;
+        }
+
+        .card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            flex-shrink: 0;
+            padding: 0.2rem 0.4rem;
+        }
+
+            .card-header h6 {
+                font-size: 0.75rem;
+            }
+
+        .card-body {
+            flex: 1;
+            padding: 0.4rem !important;
+            overflow-y: auto;
+        }
+
+        .table-container {
+            max-height: 180px;
+            overflow-y: auto;
+        }
+
+        .form-label {
+            margin-bottom: 0.05rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .mb-compact {
+            margin-bottom: 0.2rem !important;
+        }
+
+        .totales-box {
+            background: var(--bs-light);
+            padding: 0.4rem;
+            border-radius: 0.2rem;
+            margin-top: 0.2rem;
+            font-size: 0.7rem;
+        }
+
+            .totales-box .row {
+                margin-bottom: 0.05rem;
+            }
+
+            .totales-box h6 {
+                font-size: 0.85rem;
+            }
+
+        hr.compact {
+            margin: 0.2rem 0;
+        }
+
+        .table-sm {
+            font-size: 0.65rem;
+        }
+
+        .btn-sm {
+            padding: 0.15rem 0.3rem;
+            font-size: 0.65rem;
+        }
+
+        /* Estilos para los modales */
+        .modal-producto-info {
+            background: var(--bs-light);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+            .modal-producto-info .producto-nombre {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: var(--bs-primary);
+            }
+
+            .modal-producto-info .producto-detalle {
+                font-size: 0.9rem;
+                color: var(--bs-secondary);
+            }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .row-contenido {
+                flex-direction: column;
+            }
+
+            .col-md-5, .col-md-7 {
+                height: 50%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-4">
-        <div class="row">
-            <!-- Header Info -->
-            <div class="col-12 mb-4">
-                <div class="row text-center">
-                    <div class="col-md-3"><strong>Cajero:</strong> <span id="cajeroNombre">-----</span></div>
-                    <div class="col-md-3"><strong>Factura Nº:</strong> <span id="facturaNumero">--</span></div>
-                    <div class="col-md-3"><strong>Fecha:</strong> <span id="fechaActual">--</span></div>
-                    <div class="col-md-3"><strong>Hora:</strong> <span id="horaActual">--</span></div>
-                </div>
+    <div class="container-fluid">
+        <!-- Header Info Compacto -->
+        <div class="header-info">
+            <div class="row text-center">
+                <div class="col-3"><strong>Cajero:</strong> <span id="cajeroNombre">Cargando...</span></div>
+                <div class="col-3"><strong>Factura:</strong> <span id="facturaNumero">--</span></div>
+                <div class="col-3"><strong>Fecha:</strong> <span id="fechaActual">--</span></div>
+                <div class="col-3"><strong>Hora:</strong> <span id="horaActual">--</span></div>
             </div>
         </div>
 
-        <div class="row">
-            <!-- Panel Izquierdo -->
-            <div class="col-md-6">
-                <div class="card p-4 mb-4">
-                    <h5 class="card-title mb-3">Información del Cliente y Producto</h5>
+        <!-- Contenido Principal -->
+        <div class="contenido-principal">
+            <div class="row row-contenido g-1">
+                <!-- Panel Izquierdo: Formulario -->
+                <div class="col-md-5">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="mb-0"><i class="bi bi-cart-plus"></i> Nueva Venta</h6>
+                        </div>
+                        <div class="card-body">
+                            <!-- Búsqueda de Cliente -->
+                            <div class="mb-compact">
+                                <label for="busquedaCliente" class="form-label">Buscar Cliente</label>
+                                <input type="text" id="busquedaCliente" class="form-control form-control-sm" placeholder="Escribe nombre o email..." data-bs-toggle="tooltip" title="Busca clientes por nombre o email">
+                            </div>
 
-                    <!-- Búsqueda de Cliente -->
-                    <div class="mb-3">
-                        <label for="busquedaCliente" class="form-label">Buscar Cliente</label>
-                        <input type="text" id="busquedaCliente" class="form-control" placeholder="Escribe para buscar...">
+                            <!-- Cliente -->
+                            <div class="mb-compact">
+                                <label for="cliente" class="form-label">Cliente</label>
+                                <select id="cliente" class="form-select form-select-sm">
+                                    <option value="">Seleccione un cliente...</option>
+                                </select>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="mb-compact">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" id="email" class="form-control form-control-sm" readonly>
+                            </div>
+
+                            <hr class="compact">
+
+                            <!-- Búsqueda de Producto -->
+                            <div class="mb-compact">
+                                <label for="busquedaProducto" class="form-label">Buscar Producto</label>
+                                <input type="text" id="busquedaProducto" class="form-control form-control-sm" placeholder="Escribe nombre de producto..." data-bs-toggle="tooltip" title="Busca productos por nombre">
+                            </div>
+
+                            <!-- Producto -->
+                            <div class="mb-compact">
+                                <label for="producto" class="form-label">Producto</label>
+                                <select id="producto" class="form-select form-select-sm">
+                                    <option value="">Seleccione un producto...</option>
+                                </select>
+                            </div>
+
+                            <!-- Precio y Cantidad en fila -->
+                            <div class="row g-1 mb-compact">
+                                <div class="col-6">
+                                    <label for="precio" class="form-label">Precio Unit.</label>
+                                    <input type="text" id="precio" class="form-control form-control-sm" readonly>
+                                </div>
+                                <div class="col-6">
+                                    <label for="cantidad" class="form-label">Cantidad</label>
+                                    <input type="number" id="cantidad" class="form-control form-control-sm" value="1" min="1">
+                                </div>
+                            </div>
+
+                            <!-- Botón Agregar -->
+                            <button id="btnAgregar" class="btn btn-primary btn-sm w-100 mb-1">
+                                <i class="bi bi-plus-circle"></i> Agregar
+                            </button>
+
+                            <hr class="compact">
+
+                            <!-- Tipo de Pago -->
+                            <div class="mb-compact">
+                                <label for="tipoPago" class="form-label">Tipo de Pago</label>
+                                <select id="tipoPago" class="form-select form-select-sm">
+                                    <option value="">Seleccione...</option>
+                                    <option value="efectivo">Efectivo</option>
+                                    <option value="tarjeta">Tarjeta</option>
+                                </select>
+                            </div>
+
+                            <!-- Botones -->
+                            <div class="row g-1">
+                                <div class="col-7">
+                                    <button id="btnPagar" class="btn btn-success btn-sm w-100" disabled>
+                                        <i class="bi bi-cash-coin"></i> Pagar
+                                    </button>
+                                </div>
+                                <div class="col-5">
+                                    <button id="btnLimpiar" class="btn btn-secondary btn-sm w-100">
+                                        <i class="bi bi-arrow-clockwise"></i> Limpiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    <!-- Cliente con búsqueda -->
-                    <div class="mb-3">
-                        <label for="cliente" class="form-label">Cliente</label>
-                        <select id="cliente" class="form-select" required>
-                            <option value="">Seleccione un cliente...</option>
-                            <option value="1" data-email="clienteA@example.com">Cliente A</option>
-                            <option value="2" data-email="clienteB@example.com">Cliente B</option>
-                            <option value="3" data-email="clienteC@example.com">Cliente C</option>
-                            <option value="4" data-email="clienteD@example.com">Cliente D</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="email" class="form-label">E-mail</label>
-                        <input type="email" id="email" class="form-control" readonly>
-                    </div>
-
-                    <!-- Búsqueda de Producto -->
-                    <div class="mb-3">
-                        <label for="busquedaProducto" class="form-label">Buscar Producto</label>
-                        <input type="text" id="busquedaProducto" class="form-control" placeholder="Escribe para buscar...">
-                    </div>
-
-                    <!-- Producto con búsqueda -->
-                    <div class="mb-3">
-                        <label for="producto" class="form-label">Producto</label>
-                        <select id="producto" class="form-select" required>
-                            <option value="">Seleccione un producto...</option>
-                            <option value="1" data-precio="10.00">Producto A</option>
-                            <option value="2" data-precio="15.50">Producto B</option>
-                            <option value="3" data-precio="20.00">Producto C</option>
-                            <option value="4" data-precio="25.75">Producto D</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="cantidad" class="form-label">Cantidad</label>
-                        <input type="number" id="cantidad" class="form-control" value="1" min="1" required>
-                    </div>
-
-                    <!-- Combo de Pago -->
-                    <div class="mb-3">
-                        <label for="tipoPago" class="form-label">Tipo de Pago</label>
-                        <select id="tipoPago" class="form-select" required>
-                            <option value="">Seleccione tipo de pago...</option>
-                            <option value="efectivo">Efectivo</option>
-                            <option value="tarjeta">Tarjeta</option>
-                        </select>
-                    </div>
-
-                    <button id="btnPagar" class="btn btn-success w-100">Pagar</button>
                 </div>
-            </div>
 
-            <!-- Panel Derecho -->
-            <div class="col-md-6">
-                <div class="card p-4">
-                    <h5 class="card-title mb-3">Acciones y Detalles</h5>
-                    <div class="d-flex flex-wrap gap-2 mb-3">
-                        <button id="btnAgregar" class="btn btn-primary">Agregar</button>
-                        <button id="btnEditar" class="btn btn-warning" disabled>Editar</button>
-                        <button id="btnEliminar" class="btn btn-danger" disabled>Eliminar</button>
-                        <button id="btnLimpiar" class="btn btn-secondary">Limpiar</button>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-striped" id="tablaDetalles">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Producto</th>
-                                    <th>Precio</th>
-                                    <th>Cantidad</th>
-                                    <th>Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted">No hay productos agregados</td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="3" class="text-end">Subtotal:</th>
-                                    <th id="subtotalFactura">0.00</th>
-                                </tr>
-                                <tr>
-                                    <th colspan="3" class="text-end">IVA (13%):</th>
-                                    <th id="ivaFactura">0.00</th>
-                                </tr>
-                                <tr>
-                                    <th colspan="3" class="text-end">Total:</th>
-                                    <th id="totalFactura">0.00</th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                <!-- Panel Derecho: Tabla -->
+                <div class="col-md-7">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h6 class="mb-0"><i class="bi bi-receipt"></i> Detalle de la Venta</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="table table-sm table-striped table-hover mb-0" id="tablaDetalles">
+                                    <thead class="table-dark sticky-top">
+                                        <tr>
+                                            <th width="45%">Producto</th>
+                                            <th width="15%" class="text-end">Precio</th>
+                                            <th width="12%" class="text-center">Cant.</th>
+                                            <th width="18%" class="text-end">Subtotal</th>
+                                            <th width="10%" class="text-center">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted py-2">No hay productos</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Totales -->
+                            <div class="totales-box">
+                                <div class="row">
+                                    <div class="col-7 text-end">Subtotal:</div>
+                                    <div class="col-5 text-end fw-bold">$<span id="subtotalFactura">0.00</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-7 text-end">IVA (13%):</div>
+                                    <div class="col-5 text-end fw-bold">$<span id="ivaFactura">0.00</span></div>
+                                </div>
+                                <hr class="my-1">
+                                <div class="row">
+                                    <div class="col-7 text-end"><h6 class="mb-0">TOTAL:</h6></div>
+                                    <div class="col-5 text-end"><h6 class="mb-0 text-success">$<span id="totalFactura">0.00</span></h6></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ========== MODAL PARA AGREGAR/EDITAR PRODUCTO EN VENTA ========== -->
-    <div class="modal fade" id="modalProductoVenta" tabindex="-1">
-        <div class="modal-dialog">
+    <!-- Modal de Edición de Producto -->
+    <div class="modal fade" id="modalEditarProducto" tabindex="-1" aria-labelledby="modalEditarProductoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <!-- Encabezado del modal -->
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="modalProductoTitulo">Agregar Producto</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="modalEditarProductoLabel">
+                        <i class="bi bi-pencil-square me-2"></i>
+                        Editar Cantidad
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
-                <!-- Cuerpo del modal con formulario -->
                 <div class="modal-body">
-                    <form id="formProductoVenta">
-                        <input type="hidden" id="indiceEditar">
-                        <div class="mb-3">
-                            <label for="productoModal" class="form-label">Producto</label>
-                            <select id="productoModal" class="form-select" required>
-                                <option value="">Seleccione un producto...</option>
-                                <option value="1" data-precio="10.00">Producto A</option>
-                                <option value="2" data-precio="15.50">Producto B</option>
-                                <option value="3" data-precio="20.00">Producto C</option>
-                                <option value="4" data-precio="25.75">Producto D</option>
-                            </select>
+                    <div class="modal-producto-info">
+                        <div class="producto-nombre" id="editProductoNombre">Nombre del Producto</div>
+                        <div class="producto-detalle mt-2">
+                            <i class="bi bi-tag me-1"></i>
+                            Precio unitario: <strong>$<span id="editProductoPrecio">0.00</span></strong>
                         </div>
-                        <div class="mb-3">
-                            <label for="cantidadModal" class="form-label">Cantidad</label>
-                            <input type="number" id="cantidadModal" class="form-control" value="1" min="1" required>
+                        <div class="producto-detalle">
+                            <i class="bi bi-box me-1"></i>
+                            Cantidad actual: <strong><span id="editProductoCantidadActual">0</span></strong>
                         </div>
-                    </form>
-                </div>
+                    </div>
 
-                <!-- Pie del modal con botones -->
+                    <div class="mb-3">
+                        <label for="editCantidad" class="form-label fw-bold">Nueva Cantidad</label>
+                        <input type="number" class="form-control form-control-lg text-center" id="editCantidad" min="1" value="1">
+                        <small class="text-muted">La cantidad debe ser mayor a 0</small>
+                    </div>
+
+                    <div class="alert alert-info mb-0">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Nuevo subtotal: <strong>$<span id="editNuevoSubtotal">0.00</span></strong>
+                    </div>
+                </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="btnGuardarProducto">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-warning" id="btnConfirmarEdicion">
+                        <i class="bi bi-check-circle me-1"></i>
+                        Guardar Cambios
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ========== MODAL DE CONFIRMACIÓN DE ELIMINACIÓN ========== -->
-    <div class="modal fade" id="modalEliminar" tabindex="-1">
-        <div class="modal-dialog">
+    <!-- Modal de Eliminación de Producto -->
+    <div class="modal fade" id="modalEliminarProducto" tabindex="-1" aria-labelledby="modalEliminarProductoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Confirmar Eliminación</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title" id="modalEliminarProductoLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Confirmar Eliminación
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="mb-0">¿Desea eliminar este producto de la venta?</p>
+                    <div class="text-center py-3">
+                        <i class="bi bi-trash3 text-danger" style="font-size: 3rem;"></i>
+                        <p class="mt-3 mb-2 fs-5">¿Estás seguro de eliminar este producto?</p>
+
+                        <div class="modal-producto-info mt-3">
+                            <div class="producto-nombre" id="delProductoNombre">Nombre del Producto</div>
+                            <div class="producto-detalle mt-2">
+                                <i class="bi bi-box me-1"></i>
+                                Cantidad: <strong><span id="delProductoCantidad">0</span></strong>
+                            </div>
+                            <div class="producto-detalle">
+                                <i class="bi bi-currency-dollar me-1"></i>
+                                Subtotal: <strong>$<span id="delProductoSubtotal">0.00</span></strong>
+                            </div>
+                        </div>
+
+                        <p class="text-muted small mt-3 mb-0">Esta acción no se puede deshacer</p>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                    <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">Sí, Eliminar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmarEliminacion">
+                        <i class="bi bi-trash3 me-1"></i>
+                        Sí, Eliminar
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ========== MODAL DE CONFIRMACIÓN DE PAGO ========== -->
-    <div class="modal fade" id="modalPago" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">Confirmar Pago</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="mb-0">Subtotal: <strong id="subtotalPago"></strong></p>
-                    <p>IVA (13%): <strong id="ivaPago"></strong></p>
-                    <p>Total a pagar: <strong id="totalPago"></strong></p>
-                    <p>¿Confirmar el pago de la factura?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success" id="btnConfirmarPago">Confirmar Pago</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <script>
+        (function () {
+            // Inicialización de tooltips
+            (() => {
+                'use strict';
+                const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.forEach(tooltipTriggerEl => {
+                    new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+            })();
 
-    <!-- ========== MODAL DE ÉXITO ========== -->
-    <div class="modal fade" id="modalExito" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">Éxito</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="mb-0" id="mensajeExito"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Aceptar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+            // Variables globales
+            let detallesVenta = [];
+            let numeroFacturaActual = '';
+            let debounceCliente, debounceProducto;
+            let indexEditar = -1;
+            let indexEliminar = -1;
 
-    <!-- ========== MODAL DE ERROR ========== -->
-    <div class="modal fade" id="modalError" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Error</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="mb-0" id="mensajeError"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+            // Inicializar modales
+            let modalEditarProducto, modalEliminarProducto;
+
+            // Función de inicialización principal
+            function inicializar() {
+                inicializarCajero();
+                obtenerNumeroFactura();
+                cargarClientes();
+                cargarProductos();
+                actualizarFechaHora();
+
+                // Limpiar intervalo previo si existe
+                if (window.cajeroInterval) {
+                    clearInterval(window.cajeroInterval);
+                }
+                window.cajeroInterval = setInterval(actualizarFechaHora, 1000);
+
+                // Inicializar modales
+                modalEditarProducto = new bootstrap.Modal(document.getElementById('modalEditarProducto'));
+                modalEliminarProducto = new bootstrap.Modal(document.getElementById('modalEliminarProducto'));
+
+                // Eventos de búsqueda
+                $('#busquedaCliente').off('input').on('input', filtrarClientes);
+                $('#busquedaProducto').off('input').on('input', filtrarProductos);
+
+                // Eventos de modales
+                $('#editCantidad').off('input').on('input', actualizarNuevoSubtotal);
+                $('#btnConfirmarEdicion').off('click').on('click', confirmarEdicion);
+                $('#btnConfirmarEliminacion').off('click').on('click', confirmarEliminacion);
+
+                // Eventos de botones principales
+                $('#btnAgregar').off('click').on('click', agregarProducto);
+                $('#btnPagar').off('click').on('click', validarPago);
+                $('#btnLimpiar').off('click').on('click', confirmarLimpiar);
+
+                // Eventos de selects
+                $('#cliente').off('change').on('change', cambioCliente);
+                $('#producto').off('change').on('change', cambioProducto);
+            }
+
+            // Ejecutar inicialización cuando el DOM esté listo
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', inicializar);
+            } else {
+                inicializar();
+            }
+
+            function inicializarCajero() {
+                const nombreEmpleado = localStorage.getItem('empleadoNombre') || 'Sin asignar';
+                const partes = nombreEmpleado.trim().split(' ');
+                const nombreCorto = partes.length >= 2 ? `${partes[0]} ${partes[partes.length - 2]}` : nombreEmpleado;
+                $('#cajeroNombre').text(nombreCorto);
+            }
+
+            function obtenerNumeroFactura() {
+                $.ajax({
+                    url: '/api/Facturas/nueva-factura',
+                    method: 'GET',
+                    success: function (numeroFactura) {
+                        numeroFacturaActual = numeroFactura;
+                        $('#facturaNumero').text(numeroFactura);
+                    },
+                    error: function (err) {
+                        console.error('Error obteniendo número de factura:', err);
+                        $('#facturaNumero').text('ERROR');
+                        alert('Error al obtener el número de factura. Intente recargar la página.');
+                    }
+                });
+            }
+
+            function actualizarFechaHora() {
+                const ahora = new Date();
+                $('#fechaActual').text(ahora.toLocaleDateString('es-SV'));
+                $('#horaActual').text(ahora.toLocaleTimeString('es-SV'));
+            }
+
+            function cargarClientes() {
+                $.ajax({
+                    url: '/api/Clientes/buscar?buscar=',
+                    method: 'GET',
+                    success: function (data) {
+                        const clientes = data.map(cliente => ({
+                            id: cliente.idCliente,
+                            nombre: cliente.nombre,
+                            email: cliente.email
+                        }));
+                        actualizarSelectClientes(clientes);
+                    },
+                    error: function (err) {
+                        console.error('Error cargando clientes:', err);
+                        alert('Error al cargar clientes. Intente nuevamente.');
+                    }
+                });
+            }
+
+            function cargarProductos() {
+                $.ajax({
+                    url: '/api/Inventario/buscar?buscar=',
+                    method: 'GET',
+                    success: function (data) {
+                        const productos = data.map(inv => ({
+                            id: inv.idProducto,
+                            nombre: inv.productoNombre,
+                            precio: parseFloat(inv.precio)
+                        }));
+                        actualizarSelectProductos(productos);
+                    },
+                    error: function (err) {
+                        console.error('Error cargando productos:', err);
+                        alert('Error al cargar productos. Intente nuevamente.');
+                    }
+                });
+            }
+
+            function filtrarClientes() {
+                clearTimeout(debounceCliente);
+                debounceCliente = setTimeout(() => {
+                    const busqueda = $('#busquedaCliente').val();
+                    $.ajax({
+                        url: `/api/Clientes/buscar?buscar=${encodeURIComponent(busqueda)}`,
+                        method: 'GET',
+                        success: function (data) {
+                            const clientes = data.map(cliente => ({
+                                id: cliente.idCliente,
+                                nombre: cliente.nombre,
+                                email: cliente.email
+                            }));
+                            actualizarSelectClientes(clientes);
+                        },
+                        error: function (err) {
+                            console.error('Error filtrando clientes:', err);
+                        }
+                    });
+                }, 300);
+            }
+
+            function filtrarProductos() {
+                clearTimeout(debounceProducto);
+                debounceProducto = setTimeout(() => {
+                    const busqueda = $('#busquedaProducto').val();
+                    $.ajax({
+                        url: `/api/Inventario/buscar?buscar=${encodeURIComponent(busqueda)}`,
+                        method: 'GET',
+                        success: function (data) {
+                            const productos = data.map(inv => ({
+                                id: inv.idProducto,
+                                nombre: inv.productoNombre,
+                                precio: parseFloat(inv.precio)
+                            }));
+                            actualizarSelectProductos(productos);
+                        },
+                        error: function (err) {
+                            console.error('Error filtrando productos:', err);
+                        }
+                    });
+                }, 300);
+            }
+
+            function actualizarSelectClientes(clientes) {
+                const select = $('#cliente');
+                select.empty().append('<option value="">Seleccione un cliente...</option>');
+                if (clientes.length === 0) {
+                    select.append('<option value="" disabled>No se encontraron resultados</option>');
+                } else {
+                    clientes.forEach(cliente => {
+                        select.append(`<option value="${cliente.id}" data-email="${cliente.email}">${cliente.nombre}</option>`);
+                    });
+                }
+            }
+
+            function actualizarSelectProductos(productos) {
+                const select = $('#producto');
+                select.empty().append('<option value="">Seleccione un producto...</option>');
+                if (productos.length === 0) {
+                    select.append('<option value="" disabled>No se encontraron resultados</option>');
+                } else {
+                    productos.forEach(producto => {
+                        select.append(`<option value="${producto.id}" data-precio="${producto.precio}">${producto.nombre}</option>`);
+                    });
+                }
+            }
+
+            function cambioCliente() {
+                const email = $('#cliente').find(':selected').data('email') || '';
+                $('#email').val(email);
+            }
+
+            function cambioProducto() {
+                const precio = $('#producto').find(':selected').data('precio') || 0;
+                $('#precio').val(precio > 0 ? `${precio.toFixed(2)}` : '');
+            }
+
+            function agregarProducto() {
+                const productoId = $('#producto').val();
+                const productoNombre = $('#producto option:selected').text();
+                const precio = parseFloat($('#producto option:selected').data('precio')) || 0;
+                const cantidad = parseInt($('#cantidad').val()) || 1;
+
+                if (!productoId) {
+                    alert('Debe seleccionar un producto');
+                    return;
+                }
+
+                if (cantidad <= 0) {
+                    alert('La cantidad debe ser mayor a 0');
+                    return;
+                }
+
+                const subtotal = precio * cantidad;
+
+                const indiceExistente = detallesVenta.findIndex(d => d.productoId === productoId);
+                if (indiceExistente >= 0) {
+                    detallesVenta[indiceExistente].cantidad += cantidad;
+                    detallesVenta[indiceExistente].subtotal = detallesVenta[indiceExistente].precio * detallesVenta[indiceExistente].cantidad;
+                } else {
+                    detallesVenta.push({
+                        productoId,
+                        productoNombre,
+                        precio,
+                        cantidad,
+                        subtotal
+                    });
+                }
+
+                actualizarTabla();
+                limpiarFormularioProducto();
+            };
+
+            function limpiarFormularioProducto() {
+                $('#producto').val('');
+                $('#precio').val('');
+                $('#cantidad').val(1);
+            }
+
+            function actualizarTabla() {
+                const tbody = $('#tablaDetalles tbody');
+                tbody.empty();
+
+                if (detallesVenta.length === 0) {
+                    tbody.html('<tr><td colspan="5" class="text-center text-muted">No hay productos agregados</td></tr>');
+                    $('#btnPagar').prop('disabled', true);
+                } else {
+                    detallesVenta.forEach((detalle, index) => {
+                        tbody.append(`
+                            <tr>
+                                <td>${detalle.productoNombre}</td>
+                                <td class="text-end">$${detalle.precio.toFixed(2)}</td>
+                                <td class="text-center">${detalle.cantidad}</td>
+                                <td class="text-end">$${detalle.subtotal.toFixed(2)}</td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-outline-warning btn-sm" onclick="abrirModalEditar(${index})">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm" onclick="abrirModalEliminar(${index})">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `);
+                    });
+                    $('#btnPagar').prop('disabled', false);
+                }
+
+                calcularTotales();
+            }
+
+            function abrirModalEditar(index) {
+                indexEditar = index;
+                const detalle = detallesVenta[index];
+
+                $('#editProductoNombre').text(detalle.productoNombre);
+                $('#editProductoPrecio').text(detalle.precio.toFixed(2));
+                $('#editProductoCantidadActual').text(detalle.cantidad);
+                $('#editCantidad').val(detalle.cantidad);
+
+                actualizarNuevoSubtotal();
+                modalEditarProducto.show();
+            }
+
+            function actualizarNuevoSubtotal() {
+                const cantidad = parseInt($('#editCantidad').val()) || 0;
+                const precio = parseFloat($('#editProductoPrecio').text()) || 0;
+                const nuevoSubtotal = cantidad * precio;
+                $('#editNuevoSubtotal').text(nuevoSubtotal.toFixed(2));
+            }
+
+            function confirmarEdicion() {
+                const nuevaCantidad = parseInt($('#editCantidad').val());
+
+                if (nuevaCantidad <= 0) {
+                    alert('La cantidad debe ser mayor a 0');
+                    return;
+                }
+
+                detallesVenta[indexEditar].cantidad = nuevaCantidad;
+                detallesVenta[indexEditar].subtotal = detallesVenta[indexEditar].precio * nuevaCantidad;
+
+                actualizarTabla();
+                modalEditarProducto.hide();
+            }
+
+            function abrirModalEliminar(index) {
+                indexEliminar = index;
+                const detalle = detallesVenta[index];
+
+                $('#delProductoNombre').text(detalle.productoNombre);
+                $('#delProductoCantidad').text(detalle.cantidad);
+                $('#delProductoSubtotal').text(detalle.subtotal.toFixed(2));
+
+                modalEliminarProducto.show();
+            }
+
+            function confirmarEliminacion() {
+                detallesVenta.splice(indexEliminar, 1);
+                actualizarTabla();
+                modalEliminarProducto.hide();
+            }
+
+            // Exponer funciones globalmente para los onclick
+            window.abrirModalEditar = abrirModalEditar;
+            window.abrirModalEliminar = abrirModalEliminar;
+
+            function calcularTotales() {
+                const subtotal = detallesVenta.reduce((sum, d) => sum + d.subtotal, 0);
+                const iva = subtotal * 0.13;
+                const total = subtotal + iva;
+
+                $('#subtotalFactura').text(subtotal.toFixed(2));
+                $('#ivaFactura').text(iva.toFixed(2));
+                $('#totalFactura').text(total.toFixed(2));
+            }
+
+            function validarPago() {
+                const clienteId = $('#cliente').val();
+                const tipoPago = $('#tipoPago').val();
+
+                if (!clienteId) {
+                    alert('Debe seleccionar un cliente');
+                    return;
+                }
+
+                if (!tipoPago) {
+                    alert('Debe seleccionar un tipo de pago');
+                    return;
+                }
+
+                if (detallesVenta.length === 0) {
+                    alert('Debe agregar al menos un producto');
+                    return;
+                }
+
+                if (confirm('¿Confirmar el pago de esta factura?')) {
+                    procesarPago();
+                }
+            }
+
+            function procesarPago() {
+                const factura = {
+                    idEmpleado: localStorage.getItem('empleadoId'),
+                    idCliente: $('#cliente').val(),
+                    tipoPago: $('#tipoPago').val(),
+                    subtotal: parseFloat($('#subtotalFactura').text()),
+                    iva: parseFloat($('#ivaFactura').text()),
+                    total: parseFloat($('#totalFactura').text()),
+                    detalles: detallesVenta
+                };
+
+                console.log('Factura a enviar:', factura);
+
+                // Aquí llamarías a tu API
+                // $.ajax({ url: '/api/Facturas', method: 'POST', data: JSON.stringify(factura), ... })
+
+                alert('✅ Pago procesado exitosamente!\nFactura Nº: ' + numeroFacturaActual);
+                limpiarTodo();
+            }
+
+            function confirmarLimpiar() {
+                if (confirm('¿Desea limpiar toda la venta actual?')) {
+                    limpiarTodo();
+                }
+            }
+
+            function limpiarTodo() {
+                detallesVenta = [];
+                $('#cliente').val('');
+                $('#email').val('');
+                $('#tipoPago').val('');
+                limpiarFormularioProducto();
+                actualizarTabla();
+                // Obtener nuevo número de factura
+                obtenerNumeroFactura();
+            }
+        })();
+    </script>
 </body>
 </html>

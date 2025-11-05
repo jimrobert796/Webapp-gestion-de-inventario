@@ -17,110 +17,164 @@
                 margin-right: 5px;
                 font-weight: bold;
             }
+
+        /* Estilos específicos para #registro-compras (ultra-compactar solo aquí) */
+        #registro-compras .container {
+            max-width: 100%;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+        #registro-compras .card {
+            margin-bottom: 5px; /* Espacio mínimo entre cards */
+        }
+
+        #registro-compras .table th, #registro-compras .table td {
+            padding: 0.125rem 0.25rem; /* Padding ultra-reducido en tabla */
+            font-size: 0.75rem; /* Fuente muy pequeña */
+        }
+
+        #registro-compras .form-label {
+            font-size: 0.75rem; /* Etiquetas muy pequeñas */
+            margin-bottom: 0.125rem; /* Margen mínimo */
+        }
+
+        #registro-compras .form-control, #registro-compras .form-select {
+            font-size: 0.75rem; /* Inputs muy pequeños */
+            padding: 0.125rem 0.25rem; /* Padding reducido */
+        }
+
+        #registro-compras .btn {
+            font-size: 0.75rem; /* Botones muy pequeños */
+            padding: 0.25rem 0.5rem; /* Padding mínimo */
+        }
+
+        #registro-compras h5 {
+            font-size: 0.875rem; /* Títulos más pequeños */
+            margin-bottom: 0.5rem; /* Margen reducido */
+        }
+
+        #registro-compras .input-group-text {
+            font-size: 0.75rem; /* Símbolos de input group pequeños */
+            padding: 0.125rem 0.25rem;
+        }
+
+        #registro-compras .d-flex span {
+            font-size: 0.75rem; /* Texto en encabezado pequeño */
+        }
     </style>
 </head>
 <body>
 
-    <div class="container mt-4">
+    <div id="registro-compras">
+        <!-- Contenedor único para aislar estilos -->
 
-        <!-- Encabezado -->
-        <div class="card mb-4 p-3 shadow-sm">
-            <div class="d-flex justify-content-between">
-                <span><strong>N° compra:</strong> --</span>
-                <span><strong>Fecha:</strong> --/--/--</span>
-                <span><strong>Hora:</strong> 00:00</span>
+        <div class="container mt-1">
+            <!-- Reducido a mt-1 -->
+            <!-- Encabezado -->
+            <div class="card mb-1 p-1 shadow-sm">
+                <!-- Ultra-reducido -->
+                <div class="d-flex justify-content-between">
+                    <span><strong>N° compra:</strong> --</span>
+                    <span><strong>Fecha:</strong> --/--/--</span>
+                    <span><strong>Hora:</strong> 00:00</span>
+                </div>
             </div>
-        </div>
 
-        <div class="row">
-            <!-- Panel Izquierdo: Formulario -->
-            <div class="col-md-5">
-                <div class="card p-4 shadow-sm mb-4">
-                    <h5 class="mb-3 text-center">Datos de la Compra</h5>
+            <div class="row">
+                <!-- Panel Izquierdo: Formulario -->
+                <div class="col-md-5">
+                    <div class="card p-2 shadow-sm mb-1">
+                        <!-- Reducido a p-2, mb-1 -->
+                        <h5 class="mb-1 text-center">Datos de la Compra</h5> <!-- Reducido a mb-1 -->
 
-                    <div class="mb-3">
-                        <label for="proveedor" class="form-label">Proveedor</label>
-                        <select id="proveedor" class="form-select">
-                            <option value="">Seleccione un proveedor</option>
-                            <option>Proveedor A</option>
-                            <option>Proveedor B</option>
-                        </select>
-                    </div>
+                        <div class="mb-1">
+                            <!-- Reducido a mb-1 -->
+                            <label for="proveedor" class="form-label">Proveedor</label>
+                            <select id="proveedor" class="form-select">
+                                <option value="">Seleccione un proveedor</option>
+                                <option>Proveedor A</option>
+                                <option>Proveedor B</option>
+                            </select>
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="producto" class="form-label">Producto</label>
-                        <select id="producto" class="form-select">
-                            <option value="">Seleccione un producto</option>
-                            <option>Producto A</option>
-                            <option>Producto B</option>
-                        </select>
-                    </div>
+                        <div class="mb-1">
+                            <label for="producto" class="form-label">Producto</label>
+                            <select id="producto" class="form-select">
+                                <option value="">Seleccione un producto</option>
+                                <option>Producto A</option>
+                                <option>Producto B</option>
+                            </select>
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="cantidad" class="form-label">Cantidad</label>
-                        <input type="number" id="cantidad" class="form-control" value="1" min="1">
-                    </div>
+                        <div class="mb-1">
+                            <label for="cantidad" class="form-label">Cantidad</label>
+                            <input type="number" id="cantidad" class="form-control" value="1" min="1">
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="precio-compra" class="form-label">Precio de compra</label>
-                        <div class="input-group">
-                            <span class="input-group-text">$</span>
-                            <input type="text" id="precio-compra" class="form-control" placeholder="Precio de compra">
+                        <div class="mb-1">
+                            <label for="precio-compra" class="form-label">Precio de compra</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" id="precio-compra" class="form-control" placeholder="Precio de compra">
+                            </div>
+                        </div>
+
+                        <div class="mb-1">
+                            <label for="precio-venta" class="form-label">Precio de venta</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" id="precio-venta" class="form-control" placeholder="Precio de venta">
+                            </div>
+                        </div>
+
+                        <div class="mb-1">
+                            <label for="solicitado-por" class="form-label">Solicitado por:</label>
+                            <input type="text" id="solicitado-por" class="form-control" placeholder="Nombre de quien solicita">
+                        </div>
+
+                        <div class="d-grid gap-1">
+                            <!-- Reducido gap-2 a gap-1 -->
+                            <button type="button" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Agregar</button>
+                            <button type="submit" class="btn btn-success"><i class="bi bi-save"></i> Registrar</button>
                         </div>
                     </div>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="precio-venta" class="form-label">Precio de venta</label>
-                        <div class="input-group">
-                            <span class="input-group-text">$</span>
-                            <input type="text" id="precio-venta" class="form-control" placeholder="Precio de venta">
+                <!-- Panel Derecho: Tabla -->
+                <div class="col-md-7">
+                    <div class="card p-2 shadow-sm">
+                        <!-- Reducido a p-2 -->
+                        <h5 class="mb-1 text-center">Detalle de Compras</h5> <!-- Reducido a mb-1 -->
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover text-center align-middle">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>N° Compra</th>
+                                        <th>Proveedor</th>
+                                        <th>Producto</th>
+                                        <th>Solicitado por</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio</th>
+                                        <th>Sub Total</th>
+                                        <th>Fecha</th>
+                                        <th>Hora</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="9" class="text-muted">No hay compras agregadas</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="solicitado-por" class="form-label">Solicitado por:</label>
-                        <input type="text" id="solicitado-por" class="form-control" placeholder="Nombre de quien solicita">
-                    </div>
-
-                    <div class="d-grid gap-2">
-                        <button type="button" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Agregar</button>
-                        <button type="submit" class="btn btn-success"><i class="bi bi-save"></i> Registrar</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Panel Derecho: Tabla -->
-            <div class="col-md-7">
-                <div class="card p-4 shadow-sm">
-                    <h5 class="mb-3 text-center">Detalle de Compras</h5>
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover text-center align-middle">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>N° Compra</th>
-                                    <th>Proveedor</th>
-                                    <th>Producto</th>
-                                    <th>Solicitado por</th>
-                                    <th>Cantidad</th>
-                                    <th>Precio</th>
-                                    <th>Sub Total</th>
-                                    <th>Fecha</th>
-                                    <th>Hora</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td colspan="9" class="text-muted">No hay compras agregadas</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
         </div>
 
-    </div>
-
+    </div> <!-- Fin del contenedor único -->
 
 </body>
 </html>

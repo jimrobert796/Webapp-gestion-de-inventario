@@ -1,29 +1,50 @@
 ﻿<div class="container-fluid vh-100">
     <div class="row h-100">
-        <!-- Lado izquierdo: Texto de Logo -->
+        <!-- Lado izquierdo: Logo -->
         <div class="col-md-6 d-flex justify-content-center align-items-center bg-primary text-white">
             <div class="text-center">
                 <h1 class="display-4">LOGO</h1>
-               
             </div>
         </div>
 
         <!-- Lado derecho: Información del Perfil -->
         <div class="col-md-6 d-flex justify-content-center align-items-center bg-dark text-white">
             <div class="card shadow p-4" style="width: 380px;">
-                <h3 class="text-center mb-3">Perfil de Empleado</h3>
+                <h3 class="text-center mb-3"><i class="bi bi-person-circle me-2"></i>Perfil de Empleado</h3>
 
+                <hr/> <!-- Un pequeño saltito estetico-->
                 <div class="mb-3">
-                    <label class="form-label">Nombre</label>
+                    <label class="form-label"><i class="bi bi-person me-1"></i>Nombre Completo</label>
                     <p id="perfilNombre" class="form-control-plaintext">Cargando...</p>
                 </div>
-
                 <div class="mb-3">
-                    <label class="form-label">Credencial</label>
+                    <label class="form-label"><i class="bi bi-shield-check me-1"></i>Credencial</label>
                     <p id="perfilCredencial" class="form-control-plaintext text-muted">Cargando...</p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label"><i class="bi bi-briefcase me-1"></i>Rol</label>
+                    <p id="perfilRol" class="form-control-plaintext">Cargando...</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+
+    cargarPerfilEmpleado();
+
+
+    function cargarPerfilEmpleado() {
+        // Obtener datos del localStorage
+        const nombre = localStorage.getItem('empleadoNombre') || 'No disponible';
+        const credencial = localStorage.getItem('empleadoCredencial') || 'No disponible';
+        const rol = localStorage.getItem('empleadoRolNombre') || 'No disponible';
+
+        // Mostrar en el HTML
+        $('#perfilNombre').text(nombre);
+        $('#perfilCredencial').text(credencial);
+        $('#perfilRol').text(rol);
+    }
+</script>

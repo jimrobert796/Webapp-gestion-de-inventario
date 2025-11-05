@@ -789,15 +789,15 @@
   },
   {
     "ContainingType": "WebAppInventario.Controllers.FacturasController",
-    "Method": "GetSiguienteNumeroFactura",
-    "RelativePath": "api/Facturas/siguiente-numero",
+    "Method": "GetNuevaFactura",
+    "RelativePath": "api/Facturas/nueva-factura",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Int32",
+        "Type": "WebAppInventario.Models.Factura",
         "MediaTypes": [
           "text/plain",
           "application/json",

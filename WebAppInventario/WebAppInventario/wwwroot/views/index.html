@@ -1,148 +1,270 @@
 ﻿<!DOCTYPE html>
-<html data-bs-theme="dark">
+<!--<html data-bs-theme="dark">-->
+<<html data-bs-theme="dark">
 <head>
     <meta charset="utf-8" />
-    <title>::.. Sistema de inventario ..::</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <!-- Bootstrap Icons -->
+    <title>::.. Sistema de Inventario ..::</title>
+    <!-- Bootstrap CSS e íconos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-
+    <!-- CSS personalizado -->
+    <link href="/css/styles.css" rel="stylesheet">
 </head>
-
-
-
 <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">LOGO</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <ul class="navbar-nav me-auto" id="mnxAcademica">
-                    <!-- Perfil (Todos) -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" data-form="perfil">
-                            <i class="bi bi-person"></i> Perfil
-                        </a>
-                    </li>
+    <main class="d-flex flex-nowrap">
+        <!--  -->
+        <!-- Sidebar -->
+        <div class="sidebar flex-shrink-0 p-3 bg-dark">
+            <!-- Logo del sistema -->
+            <a href="#" class="d-flex align-items-center pb-3 mb-3 link-light text-decoration-none border-bottom" id="logoLink">
+                <i class="bi bi-box-seam me-2" style="font-size: 1.8rem;"></i>
+                <span class="fs-5 fw-bold text-light">Sistema Inventario</span>
+            </a>
 
-                    <!-- Inventario (Admin, Bodega) -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownInventario" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-clipboard-data"></i> Inventario
-                        </a>
-                        <ul class="dropdown-menu">
+            <ul class="list-unstyled ps-0">
+                <!-- Perfil -->
+                <li class="mb-1">
+                    <a href="#" class="btn d-inline-flex align-items-center rounded border-0 w-100 text-start link-light text-decoration-none" data-form="perfil">
+                        <i class="bi bi-person me-2"></i> Perfil
+                    </a>
+                </li>
+
+                <!-- Inventario -->
+                <li class="mb-1">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed w-100 text-start"
+                            data-bs-toggle="collapse" data-bs-target="#inventario-collapse" aria-expanded="false">
+                        <i class="bi bi-clipboard-data me-2"></i> Inventario
+                    </button>
+                    <div class="collapse" id="inventario-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                             <li>
-                                <a class="dropdown-item" href="#" data-form="productos">
-                                    <i class="bi bi-bag"></i> Productos
+                                <a href="#" class="link-light d-inline-flex text-decoration-none rounded" data-form="productos">
+                                    <i class="bi bi-bag me-2"></i> Productos
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="#" data-form="inventario">
-                                    <i class="bi bi-box-seam"></i> Inventario
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <!-- Proveedores (Admin, Bodega) -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" data-form="proveedores">
-                            <i class="bi bi-shop-window"></i> Proveedores
-                        </a>
-                    </li>
-
-                    <!-- Categorias (Admin, Bodega) -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" data-form="categorias">
-                            <i class="bi bi-list-ul"></i> Categorias
-                        </a>
-                    </li>
-
-                    <!-- Compras (Admin, Bodega) -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownCompras" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-cart"></i> Compras
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a class="dropdown-item" href="#" data-form="compras">
-                                    <i class="bi bi-basket"></i> Compras
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#" data-form="registroCompras">
-                                    <i class="bi bi-card-checklist"></i> Registro Compras
+                                <a href="#" class="link-light d-inline-flex text-decoration-none rounded" data-form="inventario">
+                                    <i class="bi bi-box-seam me-2"></i> Inventario
                                 </a>
                             </li>
                         </ul>
-                    </li>
+                    </div>
+                </li>
 
-                    <!-- Cajero (Admin, Cajero) -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownCajero" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-receipt"></i> Cajero
-                        </a>
-                        <ul class="dropdown-menu">
+                <!-- Proveedores -->
+                <li class="mb-1">
+                    <a href="#" class="btn d-inline-flex align-items-center rounded border-0 w-100 text-start link-light text-decoration-none" data-form="proveedores">
+                        <i class="bi bi-shop-window me-2"></i> Proveedores
+                    </a>
+                </li>
+
+                <!-- Categorías -->
+                <li class="mb-1">
+                    <a href="#" class="btn d-inline-flex align-items-center rounded border-0 w-100 text-start link-light text-decoration-none" data-form="categorias">
+                        <i class="bi bi-list-ul me-2"></i> Categorías
+                    </a>
+                </li>
+
+                <!-- Compras -->
+                <li class="mb-1">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed w-100 text-start"
+                            data-bs-toggle="collapse" data-bs-target="#compras-collapse" aria-expanded="false">
+                        <i class="bi bi-cart me-2"></i> Compras
+                    </button>
+                    <div class="collapse" id="compras-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                             <li>
-                                <a class="dropdown-item" href="#" data-form="cajero">
-                                    <i class="bi bi-cash-stack"></i> Cajero
+                                <a href="#" class="link-light d-inline-flex text-decoration-none rounded" data-form="compras">
+                                    <i class="bi bi-basket me-2"></i> Compras
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="#" data-form="facturas">
-                                    <i class="bi bi-list-check"></i> Facturas
+                                <a href="#" class="link-light d-inline-flex text-decoration-none rounded" data-form="registroCompras">
+                                    <i class="bi bi-card-checklist me-2"></i> Registro Compras
                                 </a>
                             </li>
                         </ul>
-                    </li>
-                    <!-- Empleados (Solo Admin) -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" data-form="empleados">
-                            <i class="bi bi-people"></i> Empleados
-                        </a>
-                    </li>
+                    </div>
+                </li>
 
-                    <!-- Clientes (Admin, Cajero) -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" data-form="clientes">
-                            <i class="bi bi-person-square"></i> Clientes
-                        </a>
-                    </li>
-                </ul>
+                <!-- Cajero -->
+                <li class="mb-1">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed w-100 text-start"
+                            data-bs-toggle="collapse" data-bs-target="#cajero-collapse" aria-expanded="false">
+                        <i class="bi bi-receipt me-2"></i> Cajero
+                    </button>
+                    <div class="collapse" id="cajero-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                            <li>
+                                <a href="#" class="link-light d-inline-flex text-decoration-none rounded" data-form="cajero">
+                                    <i class="bi bi-cash-stack me-2"></i> Cajero
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="link-light d-inline-flex text-decoration-none rounded" data-form="facturas">
+                                    <i class="bi bi-list-check me-2"></i> Facturas
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
 
-                <!-- Información del usuario y botón de cerrar sesión -->
-                <div class="d-flex align-items-center">
-                    <span class="navbar-text me-3">
-                        <i class="bi bi-person-circle"></i>
-                        <span id="nombreUsuario">Usuario</span>
-                        (<span id="rolUsuario">Rol</span>)
-                    </span>
-                    <button class="btn btn-outline-danger btn-sm" id="btnCerrarSesion">
-                        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                <!-- Empleados -->
+                <li class="mb-1">
+                    <a href="#" class="btn d-inline-flex align-items-center rounded border-0 w-100 text-start link-light text-decoration-none" data-form="empleados">
+                        <i class="bi bi-people me-2"></i> Empleados
+                    </a>
+                </li>
+
+                <!-- Clientes -->
+                <li class="mb-1">
+                    <a href="#" class="btn d-inline-flex align-items-center rounded border-0 w-100 text-start link-light text-decoration-none" data-form="clientes">
+                        <i class="bi bi-person-square me-2"></i> Clientes
+                    </a>
+                </li>
+
+                <!-- Separador -->
+                <li class="border-top my-3"></li>
+
+                <!-- Información de Usuario -->
+                <li class="mb-1">
+                    <div class="d-flex align-items-center mb-2 px-2">
+                        <i class="bi bi-person-circle fs-4 me-2 text-primary"></i>
+                        <div>
+                            <div class="fw-semibold text-light small" id="nombreUsuario">Usuario</div>
+                            <small class="text-muted" style="font-size: 0.75rem;">
+                                <i class="bi bi-shield-check me-1"></i>
+                                <span id="rolUsuario">Rol</span>
+                            </small>
+                        </div>
+                    </div>
+                    <button class="btn btn-danger btn-sm w-100" id="btnCerrarSesion">
+                        <i class="bi bi-box-arrow-right me-1"></i> Cerrar Sesión
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Contenido Principal -->
+        <div class="main-content flex-grow-1">
+            <div id="contenido"></div>
+        </div>
+    </main>
+
+    <!-- Modal de Confirmación de Cierre de Sesión -->
+    <div class="modal fade" id="modalCerrarSesion" tabindex="-1" aria-labelledby="modalCerrarSesionLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="modalCerrarSesionLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Confirmar Cierre de Sesión
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center py-3">
+                        <i class="bi bi-box-arrow-right text-danger" style="font-size: 3rem;"></i>
+                        <p class="mt-3 mb-2 fs-5">¿Estás seguro que deseas cerrar sesión?</p>
+                        <p class="text-muted small mb-0">Tendrás que iniciar sesión nuevamente para acceder al sistema</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmarCerrarSesion">
+                        <i class="bi bi-box-arrow-right me-1"></i>
+                        Sí, Cerrar Sesión
                     </button>
                 </div>
             </div>
         </div>
-    </nav>
-
-    <div class="container-fluid">
-        <!-- Área principal para cargar el contenido en la parte inferior -->
-        <div id="contenido" class="mt-3"></div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", e => {
-            mnxAcademica.addEventListener("click", event => {
-                if (event.target.dataset.form) {
-                    event.preventDefault();
-                    abrirVentana(event.target.dataset.form);
-                }
-            })
-        })
+        // ===== PROTECCIÓN Y CARGA DE USUARIO =====
+        document.addEventListener("DOMContentLoaded", () => {
+            verificarSesion();
+            cargarInformacionUsuario();
+            mostrarBienvenida();  // Agrega esta línea para mostrar bienvenida al iniciar
+
+            // Inicializar modal
+            const modalCerrarSesion = new bootstrap.Modal(document.getElementById('modalCerrarSesion'));
+
+            // Manejo de clics en el menú
+            document.querySelectorAll('[data-form]').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    abrirVentana(link.dataset.form);
+                });
+            });
+
+            // Botón cerrar sesión - abre modal
+            document.getElementById('btnCerrarSesion').addEventListener('click', (e) => {
+                e.preventDefault();
+                modalCerrarSesion.show();
+            });
+
+            // Botón confirmar dentro del modal
+            document.getElementById('btnConfirmarCerrarSesion').addEventListener('click', () => {
+                modalCerrarSesion.hide();
+                cerrarSesion();
+            });
+
+            // Logo - pantalla de bienvenida (mantiene el evento click)
+            document.getElementById('logoLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                mostrarBienvenida();  // Reutiliza la función
+            });
+        });
+
+        // ===== FUNCIONES AUXILIARES =====
+        // Agrega esta función nueva
+        function mostrarBienvenida() {
+            $('#contenido').html(`
+        <div class="text-center mt-5">
+            <i class="bi bi-box-seam text-primary" style="font-size: 5rem;"></i>
+            <h2 class="mt-3">Bienvenido al Sistema de Inventario</h2>
+            <p class="text-muted">Selecciona una opción del menú para comenzar</p>
+        </div>
+    `);
+        }
+
+        function verificarSesion() {
+            const empleadoId = localStorage.getItem('empleadoId');
+            if (!empleadoId) {
+                window.location.href = '/views/login.html';
+            }
+        }
+
+        function cargarInformacionUsuario() {
+            const nombreCompleto = localStorage.getItem('empleadoNombre') || 'Usuario';
+            const rol = localStorage.getItem('empleadoRolNombre') || 'Sin rol';
+
+            // Extraer primer nombre y primer apellido
+            const partes = nombreCompleto.trim().split(' ');
+            const nombreCorto = partes.length >= 2
+                ? `${partes[0]} ${partes[partes.length - 2]}`
+                : nombreCompleto;
+
+            document.getElementById('nombreUsuario').textContent = nombreCorto;
+            document.getElementById('rolUsuario').textContent = rol;
+        }
+
+        function cerrarSesion() {
+            localStorage.removeItem('empleadoId');
+            localStorage.removeItem('empleadoRol');
+            localStorage.removeItem('empleadoNombre');
+            localStorage.removeItem('empleadoCredencial');
+            localStorage.removeItem('empleadoRolNombre');
+            window.location.href = '/views/login.html';
+        }
+
         function abrirVentana(form) {
             let url = `/views/${form}.html`;
             fetch(url)
@@ -152,10 +274,23 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    $('#contenido').html(`<p>Error al cargar el contenido: ${error.message}</p>`);
+                    $('#contenido').html(`<p class="alert alert-danger">Error al cargar el contenido: ${error.message}</p>`);
                 });
         }
-    </script>
 
+        // ===== FUNCIONES AUXILIARES =====
+        function obtenerEmpleadoId() {
+            return localStorage.getItem('empleadoId');
+        }
+
+        function obtenerEmpleadoNombre() {
+            return localStorage.getItem('empleadoNombre');
+        }
+
+        function obtenerEmpleadoRol() {
+            return localStorage.getItem('empleadoRol');
+        }
+
+    </script>
 </body>
 </html>

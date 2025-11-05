@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WebAppInventario.Models;
 
 namespace WebAppInventario.Controllers
@@ -37,7 +38,8 @@ namespace WebAppInventario.Controllers
                 f.iva,
                 f.fecha,
                 f.hora,
-                f.total
+                f.total,
+                f.estado
 
             })
             .ToListAsync(); 
@@ -64,7 +66,8 @@ namespace WebAppInventario.Controllers
                f.iva,
                f.fecha,
                f.hora,
-               f.total
+               f.total,
+               f.estado
            })
            .FirstOrDefaultAsync();
 
@@ -109,17 +112,30 @@ namespace WebAppInventario.Controllers
 
         //DEEVUELVE EL SIGUIENTE NUMERO DE FACTURA A HACER O REGISTRAR
 
-        // GET: api/Facturas/siguiente-numero
-        [HttpGet("siguiente-numero")]
-        public async Task<ActionResult<int>> GetSiguienteNumeroFactura()
+        // GET: api/Facturas/nueva-factura
+        [HttpGet("nueva-factura")]
+        public async Task<ActionResult<Factura>> GetNuevaFactura()
         {
-            int ultimoNumero = await _context.Facturas
-                .Select(f => (int?)f.numeroFactura)
-                .MaxAsync() ?? 0;
+            var ultima = await _context.Facturas
+                .OrderByDescending(f => f.numeroFactura)
+                .Select(f => f.numeroFactura)
+                .FirstOrDefaultAsync();
 
-            int siguienteNumero = ultimoNumero + 1;
-            return Ok(siguienteNumero);
+            string nuevaFactura;
+
+            if (string.IsNullOrEmpty(ultima))
+            {
+                nuevaFactura = "FAC000001";
+            }
+            else
+            {
+                int numero = int.Parse(ultima.Substring(3)); // quita 'FAC'
+                nuevaFactura = $"FAC{(numero + 1).ToString("D6")}";
+            }
+
+            return Ok(nuevaFactura);
         }
+
 
         // POST: api/Facturas
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

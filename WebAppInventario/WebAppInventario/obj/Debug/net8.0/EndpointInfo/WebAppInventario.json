@@ -1348,7 +1348,7 @@
         }
       }
     },
-    "/api/Facturas/siguiente-numero": {
+    "/api/Facturas/nueva-factura": {
       "get": {
         "tags": [
           "Facturas"
@@ -1359,20 +1359,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "integer",
-                  "format": "int32"
+                  "$ref": "#/components/schemas/Factura"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "integer",
-                  "format": "int32"
+                  "$ref": "#/components/schemas/Factura"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "integer",
-                  "format": "int32"
+                  "$ref": "#/components/schemas/Factura"
                 }
               }
             }
@@ -2571,6 +2568,10 @@
           "estado": {
             "type": "boolean"
           },
+          "ultimaActualizacion": {
+            "type": "string",
+            "format": "date-time"
+          },
           "compras": {
             "type": "array",
             "items": {
@@ -2622,8 +2623,8 @@
             "nullable": true
           },
           "numeroFactura": {
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "nullable": true
           },
           "subtotal": {
             "type": "number",
@@ -2648,6 +2649,10 @@
           "hora": {
             "type": "string",
             "format": "time"
+          },
+          "estado": {
+            "type": "string",
+            "nullable": true
           },
           "facturaDetalles": {
             "type": "array",
@@ -2691,6 +2696,10 @@
           "subtotal": {
             "type": "number",
             "format": "double"
+          },
+          "estado": {
+            "type": "string",
+            "nullable": true
           },
           "facturas": {
             "$ref": "#/components/schemas/Factura"
