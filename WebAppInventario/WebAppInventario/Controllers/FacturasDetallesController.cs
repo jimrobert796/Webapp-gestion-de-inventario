@@ -45,8 +45,7 @@ namespace WebAppInventario.Controllers
                 fd.cantidad,
                 fd.subtotal,
                 fd.Facturas.fecha,
-                fd.Facturas.hora,
-                fd.estado
+                fd.Facturas.hora
             })
             .ToListAsync();
 
@@ -87,8 +86,7 @@ namespace WebAppInventario.Controllers
             fd.cantidad,
             fd.subtotal,
             fd.Facturas.fecha,
-            fd.Facturas.hora,
-            fd.estado
+            fd.Facturas.hora
         })
         .ToListAsync();
 
@@ -126,8 +124,7 @@ namespace WebAppInventario.Controllers
                 fd.cantidad,
                 fd.subtotal,
                 fd.Facturas.fecha,
-                fd.Facturas.hora,
-                fd.estado
+                fd.Facturas.hora
             })
             .FirstOrDefaultAsync();
 

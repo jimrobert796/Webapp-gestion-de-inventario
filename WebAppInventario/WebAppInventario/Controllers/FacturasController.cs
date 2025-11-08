@@ -38,13 +38,56 @@ namespace WebAppInventario.Controllers
                 f.iva,
                 f.fecha,
                 f.hora,
-                f.total,
-                f.estado
+                f.total
 
             })
             .ToListAsync(); 
             return Ok(facturas);
         }
+
+
+        // Búsqueda por número de factura, cliente, cajero o fecha
+        // GET: api/Facturas/buscar?buscar={TEXTO}
+        [HttpGet("buscar")]
+        public async Task<ActionResult<IEnumerable<Factura>>> BuscarFacturas([FromQuery] FacturaBusquedaParametros parametros)
+        {
+            var consulta = _context.Facturas
+                .Include(f => f.Cliente)
+                .Include(f => f.Empleado)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(parametros.buscar))
+            {
+                string texto = parametros.buscar.ToLower();
+
+                consulta = consulta.Where(f =>
+                    f.numeroFactura.ToLower().Contains(texto) ||
+                    (f.Cliente != null && f.Cliente.nombre.ToLower().Contains(texto)) ||
+                    (f.Empleado != null && f.Empleado.nombre.ToLower().Contains(texto)) ||
+                    f.fecha.ToString().Contains(texto)
+                );
+            }
+
+            var resultado = await consulta
+                .Select(f => new
+                {
+                    f.idFactura,
+                    f.idCliente,
+                    f.idEmpleado,
+                    f.numeroFactura,
+                    f.metodoPago,
+                    clienteNombre = f.Cliente != null ? f.Cliente.nombre : "Sin cliente",
+                    cajeroNombre = f.Empleado != null ? f.Empleado.nombre : "Sin cajero",
+                    f.iva,
+                    f.fecha,
+                    f.hora,
+                    f.total
+                })
+                .ToListAsync();
+
+            return Ok(resultado);
+        }
+
 
         // GET: api/Facturas/5
         [HttpGet("{id}")]
@@ -66,8 +109,7 @@ namespace WebAppInventario.Controllers
                f.iva,
                f.fecha,
                f.hora,
-               f.total,
-               f.estado
+               f.total
            })
            .FirstOrDefaultAsync();
 
@@ -107,7 +149,7 @@ namespace WebAppInventario.Controllers
                 }
             }
 
-            return NoContent();
+            return CreatedAtAction("GetFactura", new { id = factura.idFactura }, factura);
         }
 
         //DEEVUELVE EL SIGUIENTE NUMERO DE FACTURA A HACER O REGISTRAR

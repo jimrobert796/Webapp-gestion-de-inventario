@@ -79,6 +79,105 @@ namespace WebAppInventario.Controllers
         ]
         */
 
+
+        // GET: api/Inventario/buscar-cajero?buscar=martillo
+        [HttpGet("buscar-cajero")]
+        public async Task<ActionResult<IEnumerable<object>>> BuscarProductosCajero([FromQuery] InventarioBusquedaParametros parametros)
+        {
+            var consulta = _context.Inventario
+                .Include(i => i.Producto)
+                    .ThenInclude(p => p.Categoria)
+                .Include(i => i.Producto)
+                    .ThenInclude(p => p.Proveedor)
+                .Where(i => i.Producto != null && i.Producto.estado && i.cantidad > 0) // Solo productos activos y con stock
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(parametros.buscar))
+            {
+                string texto = parametros.buscar.ToLower();
+                consulta = consulta.Where(i =>
+                    (i.Producto.nombre != null && i.Producto.nombre.ToLower().Contains(texto)) ||
+                    (i.Producto.codigo != null && i.Producto.codigo.ToLower().Contains(texto)) ||
+                    (i.Producto.Categoria != null && i.Producto.Categoria.nombre.ToLower().Contains(texto)) ||
+                    (i.Producto.Proveedor != null && i.Producto.Proveedor.nombre.ToLower().Contains(texto))
+                );
+            }
+
+            var productos = await consulta
+                .Select(i => new
+                {
+                    i.idInventario,
+                    productoNombre = i.Producto != null ? i.Producto.nombre : "Sin nombre",
+                    productoCodigo = i.Producto != null ? i.Producto.codigo : "Sin código",
+                    i.precio,
+                    i.cantidad,
+                    categoria = i.Producto != null && i.Producto.Categoria != null ? i.Producto.Categoria.nombre : "Sin categoría",
+                    proveedor = i.Producto != null && i.Producto.Proveedor != null ? i.Producto.Proveedor.nombre : "Sin proveedor"
+                })
+                .ToListAsync();
+
+            if (productos.Count == 0)
+                return NotFound("No se encontraron productos con stock disponible.");
+
+            return Ok(productos);
+        }
+
+
+
+
+        // PUT: api/Inventario/reducir-stock/5?cantidad=3
+        [HttpPut("reducir-stock/{id}")]
+        public async Task<IActionResult> ReducirStock(int id, [FromQuery] int cantidad)
+        {
+            if (cantidad <= 0)
+                return BadRequest("La cantidad a reducir debe ser mayor que cero.");
+
+            var inventario = await _context.Inventario.FindAsync(id);
+            if (inventario == null)
+                return NotFound("No se encontró el producto en inventario.");
+
+            if (inventario.cantidad < cantidad)
+                return BadRequest("No hay suficiente stock disponible.");
+
+            inventario.cantidad -= cantidad;
+
+            await _context.SaveChangesAsync();
+            return Ok(new
+            {
+                mensaje = "Stock reducido correctamente.",
+                inventario.idInventario,
+                inventario.cantidad
+            });
+        }
+
+
+        // PUT: api/Inventario/aumentar-stock/5?nuevaCantidad=10
+        [HttpPut("aumentar-stock/{id}")]
+        public async Task<IActionResult> AumentarStock(int id, [FromQuery] int cantidad)
+        {
+            if (cantidad <= 0)
+                return BadRequest("La cantidad a aumentar debe ser mayor que cero.");
+
+            var inventario = await _context.Inventario.FindAsync(id);
+            if (inventario == null)
+                return NotFound("No se encontró el producto en inventario.");
+
+            inventario.cantidad += cantidad;
+
+            await _context.SaveChangesAsync();
+            return Ok(new
+            {
+                mensaje = "Stock aumentado correctamente.",
+                inventario.idInventario,
+                inventario.cantidad
+            });
+        }
+
+
+
+
+
+
         // Busqueda o consulta unicamente por nombre, proveedor, categoria o codigo de producto 
         // GET: api/Inventario/buscar?buscar={TEXTO}
         [HttpGet("buscar")]

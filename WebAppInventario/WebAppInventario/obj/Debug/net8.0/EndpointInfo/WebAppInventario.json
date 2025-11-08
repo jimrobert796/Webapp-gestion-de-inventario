@@ -1247,6 +1247,53 @@
         }
       }
     },
+    "/api/Facturas/buscar": {
+      "get": {
+        "tags": [
+          "Facturas"
+        ],
+        "parameters": [
+          {
+            "name": "buscar",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Factura"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Factura"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Factura"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Facturas/{id}": {
       "get": {
         "tags": [
@@ -1691,6 +1738,109 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/Inventario/buscar-cajero": {
+      "get": {
+        "tags": [
+          "Inventario"
+        ],
+        "parameters": [
+          {
+            "name": "buscar",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": { }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Inventario/reducir-stock/{id}": {
+      "put": {
+        "tags": [
+          "Inventario"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "cantidad",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Inventario/aumentar-stock/{id}": {
+      "put": {
+        "tags": [
+          "Inventario"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "cantidad",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -2650,10 +2800,6 @@
             "type": "string",
             "format": "time"
           },
-          "estado": {
-            "type": "string",
-            "nullable": true
-          },
           "facturaDetalles": {
             "type": "array",
             "items": {
@@ -2696,10 +2842,6 @@
           "subtotal": {
             "type": "number",
             "format": "double"
-          },
-          "estado": {
-            "type": "string",
-            "nullable": true
           },
           "facturas": {
             "$ref": "#/components/schemas/Factura"

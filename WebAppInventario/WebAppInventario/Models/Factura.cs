@@ -17,7 +17,6 @@ namespace WebAppInventario.Models
 
         public DateOnly fecha { get; set; }
         public TimeOnly hora { get; set; }
-        public string estado { get; set; }
 
         // Relaciones
         public ICollection<FacturaDetalle>? FacturaDetalles { get; set; }

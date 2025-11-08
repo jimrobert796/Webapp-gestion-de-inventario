@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html>
+<html> 
 <head>
     <meta charset="utf-8" />
     <title>Cajero</title>
@@ -11,6 +11,15 @@
             height: 100%;
             margin: 0;
             overflow: hidden;
+        }
+
+        totales-box span {
+            color: #e0e0e0; /* gris claro legible */
+        }
+
+        .totales-box h6,
+        .totales-box div {
+            color: #e0e0e0;
         }
 
         .container-fluid {
@@ -75,7 +84,6 @@
         }
 
         .totales-box {
-            background: var(--bs-light);
             padding: 0.4rem;
             border-radius: 0.2rem;
             margin-top: 0.2rem;
@@ -105,7 +113,6 @@
 
         /* Estilos para los modales */
         .modal-producto-info {
-            background: var(--bs-light);
             padding: 1rem;
             border-radius: 0.5rem;
             margin-bottom: 1rem;
@@ -158,13 +165,13 @@
                         <div class="card-body">
                             <!-- Búsqueda de Cliente -->
                             <div class="mb-compact">
-                                <label for="busquedaCliente" class="form-label">Buscar Cliente</label>
-                                <input type="text" id="busquedaCliente" class="form-control form-control-sm" placeholder="Escribe nombre o email..." data-bs-toggle="tooltip" title="Busca clientes por nombre o email">
+                                <label for="busquedaCliente" class="form-label">Buscar Cliente (Opcional)</label>
+                                <input type="text" id="busquedaCliente" class="form-control form-control-sm" placeholder="Escribe nombre o email...">
                             </div>
 
                             <!-- Cliente -->
                             <div class="mb-compact">
-                                <label for="cliente" class="form-label">Cliente</label>
+                                <label for="cliente" class="form-label">Cliente (Opcional)</label>
                                 <select id="cliente" class="form-select form-select-sm">
                                     <option value="">Seleccione un cliente...</option>
                                 </select>
@@ -263,7 +270,6 @@
                                     </tbody>
                                 </table>
                             </div>
-
                             <!-- Totales -->
                             <div class="totales-box">
                                 <div class="row">
@@ -298,7 +304,7 @@
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class=" text-center modal-body">
                     <div class="modal-producto-info">
                         <div class="producto-nombre" id="editProductoNombre">Nombre del Producto</div>
                         <div class="producto-detalle mt-2">
@@ -381,419 +387,120 @@
         </div>
     </div>
 
-    <script>
-        (function () {
-            // Inicialización de tooltips
-            (() => {
-                'use strict';
-                const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-                tooltipTriggerList.forEach(tooltipTriggerEl => {
-                    new bootstrap.Tooltip(tooltipTriggerEl);
-                });
-            })();
+    <!-- Modal de Confirmación de Compra -->
+    <div class="modal fade" id="modalConfirmacionCompra" tabindex="-1" aria-labelledby="modalConfirmacionCompraLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="modalConfirmacionCompraLabel">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        Confirmar Compra
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Información de la Venta</h6>
+                            <p><strong>Factura:</strong> <span id="confFacturaNumero">--</span></p>
+                            <p><strong>Cliente:</strong> <span id="confCliente">--</span></p>
+                            <p><strong>Tipo de Pago:</strong> <span id="confTipoPago">--</span></p>
+                            <p><strong>Fecha:</strong> <span id="confFecha">--</span></p>
+                            <p><strong>Hora:</strong> <span id="confHora">--</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Totales</h6>
+                            <p><strong>Subtotal:</strong> $<span id="confSubtotal">0.00</span></p>
+                            <p><strong>IVA (13%):</strong> $<span id="confIva">0.00</span></p>
+                            <p><strong>Total:</strong> $<span id="confTotal">0.00</span></p>
+                        </div>
+                    </div>
+                    <hr>
+                    <h6>Productos</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th class="text-end">Precio</th>
+                                    <th class="text-center">Cant.</th>
+                                    <th class="text-end">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="confProductosTabla">
+                                <!-- Productos se agregarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-success" id="btnConfirmarCompra">
+                        <i class="bi bi-cash-coin me-1"></i>
+                        Confirmar Pago
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            // Variables globales
-            let detallesVenta = [];
-            let numeroFacturaActual = '';
-            let debounceCliente, debounceProducto;
-            let indexEditar = -1;
-            let indexEliminar = -1;
+    <!-- Modal de Error -->
+    <div class="modal fade" id="modalError" tabindex="-1" aria-labelledby="modalErrorLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="modalErrorLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Error
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="errorMensaje">Ha ocurrido un error.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            // Inicializar modales
-            let modalEditarProducto, modalEliminarProducto;
+    <!-- Modal de Confirmación de Limpieza -->
+    <div class="modal fade" id="modalConfirmarLimpiar" tabindex="-1" aria-labelledby="modalConfirmarLimpiarLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="modalConfirmarLimpiarLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Confirmar Limpieza
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center py-3">
+                        <i class="bi bi-arrow-clockwise text-warning" style="font-size: 3rem;"></i>
+                        <p class="mt-3 mb-2 fs-5">¿Estás seguro de limpiar toda la venta actual?</p>
+                        <p class="text-muted small mt-3 mb-0">Esta acción eliminará todos los productos agregados y no se puede deshacer</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-warning" id="btnConfirmarLimpiar">
+                        <i class="bi bi-arrow-clockwise me-1"></i>
+                        Sí, Limpiar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            // Función de inicialización principal
-            function inicializar() {
-                inicializarCajero();
-                obtenerNumeroFactura();
-                cargarClientes();
-                cargarProductos();
-                actualizarFechaHora();
 
-                // Limpiar intervalo previo si existe
-                if (window.cajeroInterval) {
-                    clearInterval(window.cajeroInterval);
-                }
-                window.cajeroInterval = setInterval(actualizarFechaHora, 1000);
-
-                // Inicializar modales
-                modalEditarProducto = new bootstrap.Modal(document.getElementById('modalEditarProducto'));
-                modalEliminarProducto = new bootstrap.Modal(document.getElementById('modalEliminarProducto'));
-
-                // Eventos de búsqueda
-                $('#busquedaCliente').off('input').on('input', filtrarClientes);
-                $('#busquedaProducto').off('input').on('input', filtrarProductos);
-
-                // Eventos de modales
-                $('#editCantidad').off('input').on('input', actualizarNuevoSubtotal);
-                $('#btnConfirmarEdicion').off('click').on('click', confirmarEdicion);
-                $('#btnConfirmarEliminacion').off('click').on('click', confirmarEliminacion);
-
-                // Eventos de botones principales
-                $('#btnAgregar').off('click').on('click', agregarProducto);
-                $('#btnPagar').off('click').on('click', validarPago);
-                $('#btnLimpiar').off('click').on('click', confirmarLimpiar);
-
-                // Eventos de selects
-                $('#cliente').off('change').on('change', cambioCliente);
-                $('#producto').off('change').on('change', cambioProducto);
-            }
-
-            // Ejecutar inicialización cuando el DOM esté listo
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', inicializar);
-            } else {
-                inicializar();
-            }
-
-            function inicializarCajero() {
-                const nombreEmpleado = localStorage.getItem('empleadoNombre') || 'Sin asignar';
-                const partes = nombreEmpleado.trim().split(' ');
-                const nombreCorto = partes.length >= 2 ? `${partes[0]} ${partes[partes.length - 2]}` : nombreEmpleado;
-                $('#cajeroNombre').text(nombreCorto);
-            }
-
-            function obtenerNumeroFactura() {
-                $.ajax({
-                    url: '/api/Facturas/nueva-factura',
-                    method: 'GET',
-                    success: function (numeroFactura) {
-                        numeroFacturaActual = numeroFactura;
-                        $('#facturaNumero').text(numeroFactura);
-                    },
-                    error: function (err) {
-                        console.error('Error obteniendo número de factura:', err);
-                        $('#facturaNumero').text('ERROR');
-                        alert('Error al obtener el número de factura. Intente recargar la página.');
-                    }
-                });
-            }
-
-            function actualizarFechaHora() {
-                const ahora = new Date();
-                $('#fechaActual').text(ahora.toLocaleDateString('es-SV'));
-                $('#horaActual').text(ahora.toLocaleTimeString('es-SV'));
-            }
-
-            function cargarClientes() {
-                $.ajax({
-                    url: '/api/Clientes/buscar?buscar=',
-                    method: 'GET',
-                    success: function (data) {
-                        const clientes = data.map(cliente => ({
-                            id: cliente.idCliente,
-                            nombre: cliente.nombre,
-                            email: cliente.email
-                        }));
-                        actualizarSelectClientes(clientes);
-                    },
-                    error: function (err) {
-                        console.error('Error cargando clientes:', err);
-                        alert('Error al cargar clientes. Intente nuevamente.');
-                    }
-                });
-            }
-
-            function cargarProductos() {
-                $.ajax({
-                    url: '/api/Inventario/buscar?buscar=',
-                    method: 'GET',
-                    success: function (data) {
-                        const productos = data.map(inv => ({
-                            id: inv.idProducto,
-                            nombre: inv.productoNombre,
-                            precio: parseFloat(inv.precio)
-                        }));
-                        actualizarSelectProductos(productos);
-                    },
-                    error: function (err) {
-                        console.error('Error cargando productos:', err);
-                        alert('Error al cargar productos. Intente nuevamente.');
-                    }
-                });
-            }
-
-            function filtrarClientes() {
-                clearTimeout(debounceCliente);
-                debounceCliente = setTimeout(() => {
-                    const busqueda = $('#busquedaCliente').val();
-                    $.ajax({
-                        url: `/api/Clientes/buscar?buscar=${encodeURIComponent(busqueda)}`,
-                        method: 'GET',
-                        success: function (data) {
-                            const clientes = data.map(cliente => ({
-                                id: cliente.idCliente,
-                                nombre: cliente.nombre,
-                                email: cliente.email
-                            }));
-                            actualizarSelectClientes(clientes);
-                        },
-                        error: function (err) {
-                            console.error('Error filtrando clientes:', err);
-                        }
-                    });
-                }, 300);
-            }
-
-            function filtrarProductos() {
-                clearTimeout(debounceProducto);
-                debounceProducto = setTimeout(() => {
-                    const busqueda = $('#busquedaProducto').val();
-                    $.ajax({
-                        url: `/api/Inventario/buscar?buscar=${encodeURIComponent(busqueda)}`,
-                        method: 'GET',
-                        success: function (data) {
-                            const productos = data.map(inv => ({
-                                id: inv.idProducto,
-                                nombre: inv.productoNombre,
-                                precio: parseFloat(inv.precio)
-                            }));
-                            actualizarSelectProductos(productos);
-                        },
-                        error: function (err) {
-                            console.error('Error filtrando productos:', err);
-                        }
-                    });
-                }, 300);
-            }
-
-            function actualizarSelectClientes(clientes) {
-                const select = $('#cliente');
-                select.empty().append('<option value="">Seleccione un cliente...</option>');
-                if (clientes.length === 0) {
-                    select.append('<option value="" disabled>No se encontraron resultados</option>');
-                } else {
-                    clientes.forEach(cliente => {
-                        select.append(`<option value="${cliente.id}" data-email="${cliente.email}">${cliente.nombre}</option>`);
-                    });
-                }
-            }
-
-            function actualizarSelectProductos(productos) {
-                const select = $('#producto');
-                select.empty().append('<option value="">Seleccione un producto...</option>');
-                if (productos.length === 0) {
-                    select.append('<option value="" disabled>No se encontraron resultados</option>');
-                } else {
-                    productos.forEach(producto => {
-                        select.append(`<option value="${producto.id}" data-precio="${producto.precio}">${producto.nombre}</option>`);
-                    });
-                }
-            }
-
-            function cambioCliente() {
-                const email = $('#cliente').find(':selected').data('email') || '';
-                $('#email').val(email);
-            }
-
-            function cambioProducto() {
-                const precio = $('#producto').find(':selected').data('precio') || 0;
-                $('#precio').val(precio > 0 ? `${precio.toFixed(2)}` : '');
-            }
-
-            function agregarProducto() {
-                const productoId = $('#producto').val();
-                const productoNombre = $('#producto option:selected').text();
-                const precio = parseFloat($('#producto option:selected').data('precio')) || 0;
-                const cantidad = parseInt($('#cantidad').val()) || 1;
-
-                if (!productoId) {
-                    alert('Debe seleccionar un producto');
-                    return;
-                }
-
-                if (cantidad <= 0) {
-                    alert('La cantidad debe ser mayor a 0');
-                    return;
-                }
-
-                const subtotal = precio * cantidad;
-
-                const indiceExistente = detallesVenta.findIndex(d => d.productoId === productoId);
-                if (indiceExistente >= 0) {
-                    detallesVenta[indiceExistente].cantidad += cantidad;
-                    detallesVenta[indiceExistente].subtotal = detallesVenta[indiceExistente].precio * detallesVenta[indiceExistente].cantidad;
-                } else {
-                    detallesVenta.push({
-                        productoId,
-                        productoNombre,
-                        precio,
-                        cantidad,
-                        subtotal
-                    });
-                }
-
-                actualizarTabla();
-                limpiarFormularioProducto();
-            };
-
-            function limpiarFormularioProducto() {
-                $('#producto').val('');
-                $('#precio').val('');
-                $('#cantidad').val(1);
-            }
-
-            function actualizarTabla() {
-                const tbody = $('#tablaDetalles tbody');
-                tbody.empty();
-
-                if (detallesVenta.length === 0) {
-                    tbody.html('<tr><td colspan="5" class="text-center text-muted">No hay productos agregados</td></tr>');
-                    $('#btnPagar').prop('disabled', true);
-                } else {
-                    detallesVenta.forEach((detalle, index) => {
-                        tbody.append(`
-                            <tr>
-                                <td>${detalle.productoNombre}</td>
-                                <td class="text-end">$${detalle.precio.toFixed(2)}</td>
-                                <td class="text-center">${detalle.cantidad}</td>
-                                <td class="text-end">$${detalle.subtotal.toFixed(2)}</td>
-                                <td class="text-center">
-                                    <div class="btn-group" role="group">
-                                        <button class="btn btn-outline-warning btn-sm" onclick="abrirModalEditar(${index})">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </button>
-                                        <button class="btn btn-outline-danger btn-sm" onclick="abrirModalEliminar(${index})">
-                                            <i class="bi bi-trash3"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        `);
-                    });
-                    $('#btnPagar').prop('disabled', false);
-                }
-
-                calcularTotales();
-            }
-
-            function abrirModalEditar(index) {
-                indexEditar = index;
-                const detalle = detallesVenta[index];
-
-                $('#editProductoNombre').text(detalle.productoNombre);
-                $('#editProductoPrecio').text(detalle.precio.toFixed(2));
-                $('#editProductoCantidadActual').text(detalle.cantidad);
-                $('#editCantidad').val(detalle.cantidad);
-
-                actualizarNuevoSubtotal();
-                modalEditarProducto.show();
-            }
-
-            function actualizarNuevoSubtotal() {
-                const cantidad = parseInt($('#editCantidad').val()) || 0;
-                const precio = parseFloat($('#editProductoPrecio').text()) || 0;
-                const nuevoSubtotal = cantidad * precio;
-                $('#editNuevoSubtotal').text(nuevoSubtotal.toFixed(2));
-            }
-
-            function confirmarEdicion() {
-                const nuevaCantidad = parseInt($('#editCantidad').val());
-
-                if (nuevaCantidad <= 0) {
-                    alert('La cantidad debe ser mayor a 0');
-                    return;
-                }
-
-                detallesVenta[indexEditar].cantidad = nuevaCantidad;
-                detallesVenta[indexEditar].subtotal = detallesVenta[indexEditar].precio * nuevaCantidad;
-
-                actualizarTabla();
-                modalEditarProducto.hide();
-            }
-
-            function abrirModalEliminar(index) {
-                indexEliminar = index;
-                const detalle = detallesVenta[index];
-
-                $('#delProductoNombre').text(detalle.productoNombre);
-                $('#delProductoCantidad').text(detalle.cantidad);
-                $('#delProductoSubtotal').text(detalle.subtotal.toFixed(2));
-
-                modalEliminarProducto.show();
-            }
-
-            function confirmarEliminacion() {
-                detallesVenta.splice(indexEliminar, 1);
-                actualizarTabla();
-                modalEliminarProducto.hide();
-            }
-
-            // Exponer funciones globalmente para los onclick
-            window.abrirModalEditar = abrirModalEditar;
-            window.abrirModalEliminar = abrirModalEliminar;
-
-            function calcularTotales() {
-                const subtotal = detallesVenta.reduce((sum, d) => sum + d.subtotal, 0);
-                const iva = subtotal * 0.13;
-                const total = subtotal + iva;
-
-                $('#subtotalFactura').text(subtotal.toFixed(2));
-                $('#ivaFactura').text(iva.toFixed(2));
-                $('#totalFactura').text(total.toFixed(2));
-            }
-
-            function validarPago() {
-                const clienteId = $('#cliente').val();
-                const tipoPago = $('#tipoPago').val();
-
-                if (!clienteId) {
-                    alert('Debe seleccionar un cliente');
-                    return;
-                }
-
-                if (!tipoPago) {
-                    alert('Debe seleccionar un tipo de pago');
-                    return;
-                }
-
-                if (detallesVenta.length === 0) {
-                    alert('Debe agregar al menos un producto');
-                    return;
-                }
-
-                if (confirm('¿Confirmar el pago de esta factura?')) {
-                    procesarPago();
-                }
-            }
-
-            function procesarPago() {
-                const factura = {
-                    idEmpleado: localStorage.getItem('empleadoId'),
-                    idCliente: $('#cliente').val(),
-                    tipoPago: $('#tipoPago').val(),
-                    subtotal: parseFloat($('#subtotalFactura').text()),
-                    iva: parseFloat($('#ivaFactura').text()),
-                    total: parseFloat($('#totalFactura').text()),
-                    detalles: detallesVenta
-                };
-
-                console.log('Factura a enviar:', factura);
-
-                // Aquí llamarías a tu API
-                // $.ajax({ url: '/api/Facturas', method: 'POST', data: JSON.stringify(factura), ... })
-
-                alert('✅ Pago procesado exitosamente!\nFactura Nº: ' + numeroFacturaActual);
-                limpiarTodo();
-            }
-
-            function confirmarLimpiar() {
-                if (confirm('¿Desea limpiar toda la venta actual?')) {
-                    limpiarTodo();
-                }
-            }
-
-            function limpiarTodo() {
-                detallesVenta = [];
-                $('#cliente').val('');
-                $('#email').val('');
-                $('#tipoPago').val('');
-                limpiarFormularioProducto();
-                actualizarTabla();
-                // Obtener nuevo número de factura
-                obtenerNumeroFactura();
-            }
-        })();
-    </script>
+    <script src="/js/cajero.js"></script>
 </body>
 </html>

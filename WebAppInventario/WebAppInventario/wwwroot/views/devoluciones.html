@@ -1,0 +1,861 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apartado de Devoluciones</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .table-scroll {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+            .table-scroll thead th {
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                background-color: #212529;
+                color: white;
+                border-bottom: 2px solid #dee2e6;
+            }
+
+        .badge-inventario {
+            font-size: 0.75em;
+        }
+
+        .producto-seleccionado {
+            background-color: #e3f2fd !important;
+            border-left: 4px solid #0d6efd;
+        }
+    </style>
+</head>
+<body>
+    <!-- Contenedor principal -->
+    <div class="container-fluid mt-4">
+        <!-- Tarjeta principal -->
+        <div class="card shadow">
+            <!-- Encabezado de la tarjeta -->
+            <div class="card-header bg-warning text-dark">
+                <h2 class="mb-0"><i class="bi bi-arrow-return-left"></i> Registro de Devoluciones</h2>
+            </div>
+
+            <!-- Cuerpo de la tarjeta -->
+            <div class="card-body">
+                <!-- Botones de acción y búsqueda en una fila -->
+                <div class="row mb-3 align-items-center">
+                    <!-- Botones de acción al lado izquierdo -->
+                    <div class="col-md-6">
+                        <button id="btnNuevaDevolucion" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Nueva Devolución
+                        </button>
+                        <button id="btnVerDetalleDevol" class="btn btn-info" disabled>
+                            <i class="bi bi-eye"></i> Ver Detalle
+                        </button>
+                    </div>
+
+                    <!-- Buscador al lado derecho -->
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text bg-warning text-dark">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" class="form-control" id="inputBuscarDevol" placeholder="Buscar por factura, producto o motivo...">
+                            <button class="btn btn-outline-secondary" type="button" id="btnLimpiarBusquedaDevol" title="Limpiar búsqueda">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de devoluciones con scroll responsive -->
+                <div class="table-responsive table-scroll">
+                    <table class="table table-striped table-hover" id="tablaDevoluciones">
+                        <thead class="table-dark">
+                            <tr>
+                                <th># Devolución</th>
+                                <th>Factura</th>
+                                <th>Producto</th>
+                                <th class="text-center">Cantidad</th>
+                                <th>Motivo</th>
+                                <th class="text-center">Inventario</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Los datos de devoluciones se cargan dinámicamente aquí -->
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-4">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    No hay devoluciones registradas
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL PARA NUEVA DEVOLUCIÓN ========== -->
+    <div class="modal fade" id="modalNuevaDevolucion" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <!-- Encabezado del modal -->
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title">
+                        <i class="bi bi-arrow-return-left"></i> Nueva Devolución
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="limpiarFormularioDevolucion()"></button>
+                </div>
+
+                <!-- Cuerpo del modal -->
+                <div class="modal-body">
+                    <!-- Alertas -->
+                    <div id="alertContainer"></div>
+
+                    <!-- Búsqueda de factura -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="bi bi-search"></i> Búsqueda de Factura</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3 align-items-end">
+                                <div class="col-md-8">
+                                    <label class="form-label fw-bold">Número de Factura:</label>
+                                    <div class="input-group">
+                                        <input type="text" id="buscarFactura" class="form-control"
+                                               placeholder="Ingrese número de factura">
+                                        <button class="btn btn-primary" type="button" onclick="buscarFactura()">
+                                            <i class="bi bi-search"></i> Buscar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="d-grid">
+                                        <button class="btn btn-outline-secondary" type="button" onclick="limpiarBusqueda()">
+                                            <i class="bi bi-arrow-clockwise"></i> Limpiar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información de la factura -->
+                    <div id="infoFactura" class="card mb-4 d-none">
+                        <div class="card-header bg-info text-white">
+                            <h6 class="mb-0"><i class="bi bi-file-text"></i> Información de la Factura</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <strong>Factura:</strong><br>
+                                    <span id="facturaNumeroDevol" class="fw-bold fs-5 text-primary">-</span>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Cliente:</strong><br>
+                                    <span id="clienteDevol" class="fw-bold">-</span>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Fecha:</strong><br>
+                                    <span id="fechaFactura" class="fw-bold">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Selección de producto -->
+                    <div id="seleccionProducto" class="card mb-4 d-none">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="mb-0"><i class="bi bi-cart-check"></i> Seleccionar Producto a Devolver</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th class="text-end">Precio</th>
+                                            <th class="text-center">Vendido</th>
+                                            <th class="text-center">Ya Devuelto</th>
+                                            <th class="text-center">Disponible</th>
+                                            <th class="text-center">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyProductosDevol">
+                                        <!-- Se llena dinámicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Producto seleccionado -->
+                    <div id="productoSeleccionado" class="card mb-4 d-none">
+                        <div class="card-header bg-success text-white">
+                            <h6 class="mb-0"><i class="bi bi-check-circle"></i> Producto Seleccionado</h6>
+                        </div>
+                        <div class="card-body producto-seleccionado">
+                            <div class="row align-items-center">
+                                <div class="col-md-5">
+                                    <strong>Producto:</strong><br>
+                                    <span id="productoNombre" class="fw-bold fs-5">-</span>
+                                </div>
+                                <div class="col-md-2">
+                                    <strong>Precio:</strong><br>
+                                    <span id="productoPrecio" class="fw-bold">-</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold">Cantidad a Devolver:</label>
+                                    <input type="number" id="cantidadDevolver" class="form-control"
+                                           min="1" value="1" onchange="validarCantidad()">
+                                    <small class="text-muted" id="maxCantidad">Máximo: 0</small>
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-outline-danger btn-sm mt-3" onclick="deseleccionarProducto()">
+                                        <i class="bi bi-x-circle"></i> Cambiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detalles de devolución -->
+                    <div id="formDevolucion" class="card d-none">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="bi bi-pencil-square"></i> Detalles de la Devolución</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Motivo de Devolución:</label>
+                                    <select id="motivoDevolucion" class="form-select" onchange="cambiarMotivo()">
+                                        <option value="">Seleccione motivo...</option>
+                                        <option value="Producto defectuoso">Producto defectuoso</option>
+                                        <option value="Producto dañado">Producto dañado</option>
+                                        <option value="Error en pedido">Error en pedido</option>
+                                        <option value="Cambio de opinión">Cambio de opinión</option>
+                                        <option value="No satisface necesidades">No satisface necesidades</option>
+                                        <option value="Otro">Otro</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Reintegrar a Inventario:</label>
+                                    <div class="form-check form-switch mt-2">
+                                        <input class="form-check-input" type="checkbox" id="reintegrarInventario" checked>
+                                        <label class="form-check-label fw-bold" for="reintegrarInventario">
+                                            <span id="estadoReintegro" class="text-success">Sí reintegrar</span>
+                                        </label>
+                                    </div>
+                                    <small class="form-text text-muted" id="textoReintegro">
+                                        El producto será devuelto al inventario y disponible para venta
+                                    </small>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">Descripción detallada:</label>
+                                    <textarea id="descripcionDevolucion" class="form-control"
+                                              rows="3" placeholder="Describa el motivo específico de la devolución..."></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Resumen -->
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div class="alert alert-info">
+                                        <h6 class="alert-heading">Resumen de Devolución:</h6>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <strong>Producto:</strong> <span id="resumenProducto">-</span>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <strong>Cantidad:</strong> <span id="resumenCantidad">0</span>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong>Valor:</strong> $<span id="resumenValor">0.00</span>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong>Inventario:</strong> <span id="resumenInventario" class="badge bg-success">Sí</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="limpiarFormularioDevolucion()">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                    <button type="button" class="btn btn-success" id="btnConfirmarDevolucion" onclick="confirmarDevolucion()" disabled>
+                        <i class="bi bi-check-circle"></i> Procesar Devolución
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL PARA VER DETALLE DE DEVOLUCIÓN ========== -->
+    <div class="modal fade" id="modalDetalleDevolucion" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <!-- Encabezado del modal -->
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title">
+                        <i class="bi bi-arrow-return-left"></i> Detalle de Devolución #<span id="numeroDevolucionDetalle"></span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Cuerpo del modal -->
+                <div class="modal-body">
+                    <!-- Información general de la devolución -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p><strong>Factura:</strong> <span id="detalleFactura" class="badge bg-primary"></span></p>
+                            <p><strong>Producto:</strong> <span id="detalleProducto" class="fw-bold"></span></p>
+                            <p><strong>Cantidad:</strong> <span id="detalleCantidad" class="badge bg-secondary"></span></p>
+                            <p><strong>Motivo:</strong> <span id="detalleMotivo"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Fecha Devolución:</strong> <span id="detalleFecha"></span></p>
+                            <p><strong>Estado:</strong> <span id="detalleEstado" class="badge bg-success"></span></p>
+                            <p><strong>Reintegro Inventario:</strong> <span id="detalleReintegro" class="badge bg-success"></span></p>
+                            <p><strong>Valor Devuelto:</strong> <span id="detalleValor" class="fw-bold text-primary"></span></p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Descripción adicional -->
+                    <div class="mb-3">
+                        <strong>Descripción:</strong>
+                        <p id="detalleDescripcion" class="text-muted mt-2"></p>
+                    </div>
+                </div>
+
+                <!-- Pie del modal -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL DE ERROR ========== -->
+    <div class="modal fade" id="modalErrorDevol" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle"></i> Error</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0" id="mensajeErrorDevol"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Variables globales
+        let facturaActual = null;
+        let productoSeleccionado = null;
+        let todasLasDevoluciones = [];
+        let devolucionSeleccionada = null;
+
+        // Inicializar al cargar la página
+        $(document).ready(function () {
+            cargarHistorialDevoluciones();
+
+            // Event listeners
+            $('#btnNuevaDevolucion').on('click', abrirModalDevolucion);
+            $('#btnVerDetalleDevol').on('click', verDetalleDevolucion);
+            $('#inputBuscarDevol').on('keyup', filtrarDevoluciones);
+            $('#btnLimpiarBusquedaDevol').on('click', limpiarBusquedaDevol);
+
+            // Validación en tiempo real
+            $('#motivoDevolucion, #descripcionDevolucion, #cantidadDevolver').on('input change', function () {
+                validarFormulario();
+                actualizarResumen();
+            });
+
+            $('#reintegrarInventario').on('change', function () {
+                actualizarEstadoReintegro();
+            });
+
+            // Permitir Enter en la búsqueda
+            $('#buscarFactura').on('keypress', function (e) {
+                if (e.which === 13) {
+                    buscarFactura();
+                }
+            });
+        });
+
+        // Abrir modal de nueva devolución
+        function abrirModalDevolucion() {
+            const modal = new bootstrap.Modal(document.getElementById('modalNuevaDevolucion'));
+            modal.show();
+        }
+
+        // Buscar factura
+        function buscarFactura() {
+            const numeroFactura = $('#buscarFactura').val().trim();
+
+            if (!numeroFactura) {
+                mostrarError('Ingrese un número de factura');
+                return;
+            }
+
+            // Simulación de búsqueda
+            simularBusquedaFactura(numeroFactura);
+        }
+
+        // Simulación de búsqueda de factura
+        function simularBusquedaFactura(numeroFactura) {
+            mostrarAlerta('Buscando factura...', 'info');
+
+            setTimeout(() => {
+                if (numeroFactura.toUpperCase() === 'F001-001') {
+                    facturaActual = {
+                        idFactura: 1,
+                        numeroFactura: 'F001-001',
+                        fecha: '2024-01-15',
+                        clienteNombre: 'Juan Pérez',
+                        detalles: [
+                            {
+                                idFacturaDetalle: 1,
+                                idProducto: 101,
+                                productoNombre: 'Laptop HP Pavilion',
+                                precio: 899.99,
+                                cantidadVendida: 1,
+                                cantidadDevuelta: 0
+                            },
+                            {
+                                idFacturaDetalle: 2,
+                                idProducto: 102,
+                                productoNombre: 'Mouse Inalámbrico',
+                                precio: 25.50,
+                                cantidadVendida: 3,
+                                cantidadDevuelta: 1
+                            }
+                        ]
+                    };
+
+                    mostrarInformacionFactura(facturaActual);
+                    mostrarProductosFactura(facturaActual.detalles);
+                    mostrarAlerta('Factura encontrada exitosamente', 'success');
+                } else {
+                    mostrarError('Factura no encontrada. Verifique el número.');
+                }
+            }, 1000);
+        }
+
+        // Mostrar información de la factura
+        function mostrarInformacionFactura(factura) {
+            $('#infoFactura').removeClass('d-none');
+            $('#facturaNumeroDevol').text(factura.numeroFactura);
+            $('#clienteDevol').text(factura.clienteNombre);
+            $('#fechaFactura').text(new Date(factura.fecha).toLocaleDateString('es-SV'));
+            $('#seleccionProducto').removeClass('d-none');
+        }
+
+        // Mostrar productos de la factura
+        function mostrarProductosFactura(detalles) {
+            const tbody = $('#tbodyProductosDevol');
+            tbody.empty();
+
+            detalles.forEach(detalle => {
+                const disponibleDevolver = detalle.cantidadVendida - detalle.cantidadDevuelta;
+                const puedeDevolver = disponibleDevolver > 0;
+
+                const tr = `
+                            <tr class="${puedeDevolver ? '' : 'table-secondary'}">
+                                <td>
+                                    <strong>${detalle.productoNombre}</strong>
+                                    ${!puedeDevolver ? '<br><small class="text-muted">No disponible para devolución</small>' : ''}
+                                </td>
+                                <td class="text-end">$${detalle.precio.toFixed(2)}</td>
+                                <td class="text-center">${detalle.cantidadVendida}</td>
+                                <td class="text-center">${detalle.cantidadDevuelta}</td>
+                                <td class="text-center fw-bold ${puedeDevolver ? 'text-primary' : 'text-muted'}">
+                                    ${disponibleDevolver}
+                                </td>
+                                <td class="text-center">
+                                    ${puedeDevolver ?
+                        `<button class="btn btn-sm btn-primary" onclick="seleccionarProducto(${detalle.idFacturaDetalle})">
+                                            <i class="bi bi-check-lg"></i> Seleccionar
+                                        </button>` :
+                        '<span class="text-muted">N/A</span>'
+                    }
+                                </td>
+                            </tr>
+                        `;
+                tbody.append(tr);
+            });
+        }
+
+        // Seleccionar producto
+        function seleccionarProducto(idFacturaDetalle) {
+            const detalle = facturaActual.detalles.find(d => d.idFacturaDetalle === idFacturaDetalle);
+
+            if (!detalle) return;
+
+            productoSeleccionado = {
+                idFacturaDetalle: detalle.idFacturaDetalle,
+                idProducto: detalle.idProducto,
+                productoNombre: detalle.productoNombre,
+                precio: detalle.precio,
+                maxCantidad: detalle.cantidadVendida - detalle.cantidadDevuelta
+            };
+
+            mostrarProductoSeleccionado();
+        }
+
+        // Mostrar producto seleccionado
+        function mostrarProductoSeleccionado() {
+            $('#productoSeleccionado').removeClass('d-none');
+            $('#formDevolucion').removeClass('d-none');
+
+            $('#productoNombre').text(productoSeleccionado.productoNombre);
+            $('#productoPrecio').text('$' + productoSeleccionado.precio.toFixed(2));
+            $('#cantidadDevolver').attr('max', productoSeleccionado.maxCantidad);
+            $('#maxCantidad').text('Máximo: ' + productoSeleccionado.maxCantidad);
+
+            actualizarResumen();
+        }
+
+        // Deseleccionar producto
+        function deseleccionarProducto() {
+            productoSeleccionado = null;
+            $('#productoSeleccionado').addClass('d-none');
+            $('#formDevolucion').addClass('d-none');
+            $('#btnConfirmarDevolucion').prop('disabled', true);
+        }
+
+        // Validar cantidad
+        function validarCantidad() {
+            const cantidad = parseInt($('#cantidadDevolver').val()) || 0;
+            const max = productoSeleccionado.maxCantidad;
+
+            if (cantidad > max) {
+                $('#cantidadDevolver').val(max);
+                mostrarAlerta(`No puede devolver más de ${max} unidades`, 'warning');
+            }
+
+            if (cantidad <= 0) {
+                $('#cantidadDevolver').val(1);
+            }
+
+            actualizarResumen();
+        }
+
+        // Cambiar motivo
+        function cambiarMotivo() {
+            const motivo = $('#motivoDevolucion').val();
+
+            // Si el producto está defectuoso o dañado, no se reintegra al inventario
+            if (motivo === 'Producto defectuoso' || motivo === 'Producto dañado') {
+                $('#reintegrarInventario').prop('checked', false);
+            } else {
+                $('#reintegrarInventario').prop('checked', true);
+            }
+
+            actualizarEstadoReintegro();
+            validarFormulario();
+        }
+
+        // Actualizar estado de reintegro
+        function actualizarEstadoReintegro() {
+            const reintegrar = $('#reintegrarInventario').is(':checked');
+            $('#estadoReintegro')
+                .toggleClass('text-success text-danger', reintegrar)
+                .text(reintegrar ? 'Sí reintegrar' : 'No reintegrar');
+            $('#textoReintegro').text(reintegrar ?
+                'El producto será devuelto al inventario y disponible para venta' :
+                'El producto NO será reintegrado al inventario');
+            actualizarResumen();
+        }
+
+        // Actualizar resumen
+        function actualizarResumen() {
+            if (!productoSeleccionado) return;
+
+            const cantidad = parseInt($('#cantidadDevolver').val()) || 1;
+            const valorTotal = cantidad * productoSeleccionado.precio;
+            const reintegrar = $('#reintegrarInventario').is(':checked');
+
+            $('#resumenProducto').text(productoSeleccionado.productoNombre);
+            $('#resumenCantidad').text(cantidad);
+            $('#resumenValor').text(valorTotal.toFixed(2));
+
+            const badgeInventario = reintegrar ?
+                '<span class="badge bg-success">Sí</span>' :
+                '<span class="badge bg-danger">No</span>';
+            $('#resumenInventario').html(badgeInventario);
+        }
+
+        // Validar formulario completo
+        function validarFormulario() {
+            const motivo = $('#motivoDevolucion').val();
+            const descripcion = $('#descripcionDevolucion').val().trim();
+            const cantidad = parseInt($('#cantidadDevolver').val()) || 0;
+
+            const formularioValido = productoSeleccionado &&
+                motivo &&
+                descripcion &&
+                cantidad > 0 &&
+                cantidad <= productoSeleccionado.maxCantidad;
+
+            $('#btnConfirmarDevolucion').prop('disabled', !formularioValido);
+        }
+
+        // Confirmar devolución
+        function confirmarDevolucion() {
+            const motivo = $('#motivoDevolucion').val();
+            const descripcion = $('#descripcionDevolucion').val().trim();
+            const cantidad = parseInt($('#cantidadDevolver').val()) || 1;
+            const reintegrarInventario = $('#reintegrarInventario').is(':checked');
+
+            const datosDevolucion = {
+                idFactura: facturaActual.idFactura,
+                idFacturaDetalle: productoSeleccionado.idFacturaDetalle,
+                idProducto: productoSeleccionado.idProducto,
+                cantidad: cantidad,
+                motivo: motivo,
+                descripcion: descripcion,
+                reintegrarInventario: reintegrarInventario,
+                productoNombre: productoSeleccionado.productoNombre,
+                precio: productoSeleccionado.precio,
+                numeroFactura: facturaActual.numeroFactura
+            };
+
+            const mensajeConfirmacion = reintegrarInventario ?
+                `¿Procesar devolución de ${cantidad} ${productoSeleccionado.productoNombre} por $${(cantidad * productoSeleccionado.precio).toFixed(2)}? El producto será reintegrado al inventario.` :
+                `¿Procesar devolución de ${cantidad} ${productoSeleccionado.productoNombre} por $${(cantidad * productoSeleccionado.precio).toFixed(2)}? El producto NO será reintegrado al inventario.`;
+
+            if (confirm(mensajeConfirmacion)) {
+                procesarDevolucion(datosDevolucion);
+            }
+        }
+
+        // Procesar devolución
+        function procesarDevolucion(datos) {
+            mostrarAlerta('Procesando devolución...', 'info');
+
+            setTimeout(() => {
+                // Simulación de éxito
+                mostrarAlerta('✅ Devolución procesada exitosamente', 'success');
+                setTimeout(() => {
+                    $('#modalNuevaDevolucion').modal('hide');
+                    cargarHistorialDevoluciones();
+                    limpiarFormularioDevolucion();
+                }, 1500);
+            }, 2000);
+        }
+
+        // Cargar historial de devoluciones
+        function cargarHistorialDevoluciones() {
+            // Simulación de datos
+            const devolucionesEjemplo = [
+                {
+                    idDevolucion: 1,
+                    numeroFactura: 'F001-001',
+                    productoNombre: 'Teclado Mecánico',
+                    cantidad: 1,
+                    motivo: 'Producto defectuoso - Teclas no funcionan',
+                    reintegrarInventario: false,
+                    fechaDevolucion: '2024-01-20',
+                    estado: 'Aprobada',
+                    valor: 75.00
+                },
+                {
+                    idDevolucion: 2,
+                    numeroFactura: 'F001-002',
+                    productoNombre: 'Monitor LED 24"',
+                    cantidad: 1,
+                    motivo: 'Error en pedido',
+                    reintegrarInventario: true,
+                    fechaDevolucion: '2024-01-18',
+                    estado: 'Aprobada',
+                    valor: 199.99
+                }
+            ];
+
+            todasLasDevoluciones = devolucionesEjemplo;
+            actualizarTablaDevoluciones(devolucionesEjemplo);
+        }
+
+        // Actualizar tabla de devoluciones
+        function actualizarTablaDevoluciones(devoluciones) {
+            const tbody = $('#tablaDevoluciones tbody');
+            tbody.empty();
+
+            if (devoluciones.length === 0) {
+                tbody.append(`
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-4">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    No hay devoluciones registradas
+                                </td>
+                            </tr>
+                        `);
+                return;
+            }
+
+            devoluciones.forEach(devol => {
+                const badgeEstado = devol.estado === 'Aprobada'
+                    ? '<span class="badge bg-success">Aprobada</span>'
+                    : '<span class="badge bg-warning text-dark">Pendiente</span>';
+
+                const badgeInventario = devol.reintegrarInventario
+                    ? '<span class="badge bg-success badge-inventario">Sí</span>'
+                    : '<span class="badge bg-danger badge-inventario">No</span>';
+
+                const tr = $(`
+                            <tr style="cursor: pointer;" onclick="seleccionarDevolucion(${devol.idDevolucion})">
+                                <td class="fw-bold">#${devol.idDevolucion.toString().padStart(3, '0')}</td>
+                                <td>
+                                    <span class="badge bg-primary">${devol.numeroFactura}</span>
+                                </td>
+                                <td>${devol.productoNombre}</td>
+                                <td class="text-center">
+                                    <span class="badge bg-secondary">${devol.cantidad}</span>
+                                </td>
+                                <td>
+                                    <small>${devol.motivo}</small>
+                                </td>
+                                <td class="text-center">${badgeInventario}</td>
+                                <td>${new Date(devol.fechaDevolucion).toLocaleDateString('es-SV')}</td>
+                                <td>${badgeEstado}</td>
+                            </tr>
+                        `);
+
+                tbody.append(tr);
+            });
+        }
+
+        // Seleccionar devolución
+        function seleccionarDevolucion(idDevolucion) {
+            devolucionSeleccionada = todasLasDevoluciones.find(d => d.idDevolucion === idDevolucion);
+            $('#btnVerDetalleDevol').prop('disabled', false);
+
+            // Remover selección previa
+            $('#tablaDevoluciones tbody tr').removeClass('table-primary');
+            $(`#tablaDevoluciones tbody tr:contains('#${idDevolucion.toString().padStart(3, '0')}')`).addClass('table-primary');
+        }
+
+        // Ver detalle de devolución
+        function verDetalleDevolucion() {
+            if (!devolucionSeleccionada) return;
+
+            $('#numeroDevolucionDetalle').text(devolucionSeleccionada.idDevolucion.toString().padStart(3, '0'));
+            $('#detalleFactura').text(devolucionSeleccionada.numeroFactura);
+            $('#detalleProducto').text(devolucionSeleccionada.productoNombre);
+            $('#detalleCantidad').text(devolucionSeleccionada.cantidad);
+            $('#detalleMotivo').text(devolucionSeleccionada.motivo);
+            $('#detalleFecha').text(new Date(devolucionSeleccionada.fechaDevolucion).toLocaleDateString('es-SV'));
+            $('#detalleEstado').text(devolucionSeleccionada.estado);
+            $('#detalleReintegro').text(devolucionSeleccionada.reintegrarInventario ? 'Sí' : 'No')
+                .removeClass('bg-success bg-danger')
+                .addClass(devolucionSeleccionada.reintegrarInventario ? 'bg-success' : 'bg-danger');
+            $('#detalleValor').text('$' + (devolucionSeleccionada.valor || 0).toFixed(2));
+            $('#detalleDescripcion').text(devolucionSeleccionada.motivo);
+
+            const modal = new bootstrap.Modal(document.getElementById('modalDetalleDevolucion'));
+            modal.show();
+        }
+
+        // Filtrar devoluciones
+        function filtrarDevoluciones() {
+            const busqueda = $('#inputBuscarDevol').val().toLowerCase();
+
+            if (!busqueda) {
+                actualizarTablaDevoluciones(todasLasDevoluciones);
+                return;
+            }
+
+            const filtradas = todasLasDevoluciones.filter(devol =>
+                devol.numeroFactura.toLowerCase().includes(busqueda) ||
+                devol.productoNombre.toLowerCase().includes(busqueda) ||
+                devol.motivo.toLowerCase().includes(busqueda)
+            );
+
+            actualizarTablaDevoluciones(filtradas);
+        }
+
+        // Limpiar búsqueda
+        function limpiarBusquedaDevol() {
+            $('#inputBuscarDevol').val('');
+            actualizarTablaDevoluciones(todasLasDevoluciones);
+        }
+
+        // Limpiar formulario
+        function limpiarFormularioDevolucion() {
+            $('#buscarFactura').val('');
+            $('#infoFactura').addClass('d-none');
+            $('#seleccionProducto').addClass('d-none');
+            $('#productoSeleccionado').addClass('d-none');
+            $('#formDevolucion').addClass('d-none');
+            $('#motivoDevolucion').val('');
+            $('#descripcionDevolucion').val('');
+            $('#reintegrarInventario').prop('checked', true);
+            productoSeleccionado = null;
+            facturaActual = null;
+            $('#btnConfirmarDevolucion').prop('disabled', true);
+            $('#alertContainer').empty();
+            actualizarEstadoReintegro();
+        }
+
+        // Limpiar búsqueda en modal
+        function limpiarBusqueda() {
+            $('#buscarFactura').val('');
+            limpiarFormularioDevolucion();
+        }
+
+        // Función auxiliar para mostrar alertas
+        function mostrarAlerta(mensaje, tipo) {
+            const alertClass = tipo === 'success' ? 'alert-success' :
+                tipo === 'warning' ? 'alert-warning' :
+                    tipo === 'info' ? 'alert-info' : 'alert-danger';
+
+            const icon = tipo === 'success' ? 'bi-check-circle' :
+                tipo === 'warning' ? 'bi-exclamation-triangle' :
+                    tipo === 'info' ? 'bi-info-circle' : 'bi-exclamation-circle';
+
+            const alerta = $(`
+                        <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                            <i class="bi ${icon} me-2"></i>
+                            ${mensaje}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    `);
+
+            $('#alertContainer').html(alerta);
+
+            if (tipo !== 'info') {
+                setTimeout(() => {
+                    alerta.alert('close');
+                }, 5000);
+            }
+        }
+
+        // Mostrar error
+        function mostrarError(mensaje) {
+            $('#mensajeErrorDevol').text(mensaje);
+            const modal = new bootstrap.Modal(document.getElementById('modalErrorDevol'));
+            modal.show();
+        }
+    </script>
+</body>
+</html>

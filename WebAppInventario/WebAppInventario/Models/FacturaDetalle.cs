@@ -11,7 +11,6 @@ namespace WebAppInventario.Models
         public int cantidad { get; set; }
         public decimal precio { get; set; }
         public decimal subtotal { get; set; }
-        public string estado { get; set; }
 
         public Factura? Facturas { get; set; }
         public Inventario? inventario { get; set; }  // Corregido
