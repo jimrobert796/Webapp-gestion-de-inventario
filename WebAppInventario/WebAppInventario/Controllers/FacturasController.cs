@@ -88,6 +88,27 @@ namespace WebAppInventario.Controllers
             return Ok(resultado);
         }
 
+        // En FacturasController
+        [HttpGet("buscar-para-devolucion")]
+        public IActionResult BuscarFacturaParaDevolucion([FromQuery] string numeroFactura)
+        {
+            var factura = _context.Facturas
+                .Include(f => f.Cliente)
+                .Where(f => f.numeroFactura == numeroFactura)
+                .Select(f => new {
+                    f.idFactura,
+                    f.numeroFactura,
+                    f.fecha,
+                    clienteNombre = f.Cliente.nombre
+                })
+                .FirstOrDefault();
+
+            if (factura == null)
+                return NotFound();
+
+            return Ok(factura);
+        }
+
 
         // GET: api/Facturas/5
         [HttpGet("{id}")]

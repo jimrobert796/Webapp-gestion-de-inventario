@@ -871,6 +871,503 @@
         }
       }
     },
+    "/api/Devoluciones": {
+      "get": {
+        "tags": [
+          "Devoluciones"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Devolucion"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Devolucion"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Devolucion"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Devoluciones"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Devolucion"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Devolucion"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Devolucion"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Devolucion"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Devolucion"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Devolucion"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Devoluciones/buscar-devoluciones": {
+      "get": {
+        "tags": [
+          "Devoluciones"
+        ],
+        "parameters": [
+          {
+            "name": "buscar",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": { }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Devoluciones/{id}": {
+      "get": {
+        "tags": [
+          "Devoluciones"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Devolucion"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Devolucion"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Devolucion"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Devoluciones"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Devolucion"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Devolucion"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Devolucion"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Devoluciones"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/DevolucionesDetalles": {
+      "get": {
+        "tags": [
+          "DevolucionesDetalles"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DevolucionDetalle"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DevolucionDetalle"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DevolucionDetalle"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "DevolucionesDetalles"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DevolucionDetalle"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DevolucionDetalle"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DevolucionDetalle"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DevolucionDetalle"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DevolucionDetalle"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DevolucionDetalle"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DevolucionesDetalles/{id}": {
+      "get": {
+        "tags": [
+          "DevolucionesDetalles"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DevolucionDetalle"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DevolucionDetalle"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DevolucionDetalle"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "DevolucionesDetalles"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DevolucionDetalle"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DevolucionDetalle"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DevolucionDetalle"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "DevolucionesDetalles"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/DevolucionesDetalles/por-factura/{idFactura}": {
+      "get": {
+        "tags": [
+          "DevolucionesDetalles"
+        ],
+        "parameters": [
+          {
+            "name": "idFactura",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": { }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DevolucionesDetalles/por-devolucion/{idDevolucion}": {
+      "get": {
+        "tags": [
+          "DevolucionesDetalles"
+        ],
+        "parameters": [
+          {
+            "name": "idDevolucion",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": { }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Empleados": {
       "get": {
         "tags": [
@@ -1290,6 +1787,27 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/Facturas/buscar-para-devolucion": {
+      "get": {
+        "tags": [
+          "Facturas"
+        ],
+        "parameters": [
+          {
+            "name": "numeroFactura",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -2676,6 +3194,100 @@
         },
         "additionalProperties": false
       },
+      "Devolucion": {
+        "type": "object",
+        "properties": {
+          "idDevolucion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idFactura": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idEmpleado": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fechaDevolucion": {
+            "type": "string",
+            "format": "date"
+          },
+          "horaDevolucion": {
+            "type": "string",
+            "format": "time"
+          },
+          "cantidad": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalDevolucion": {
+            "type": "number",
+            "format": "double"
+          },
+          "empleado": {
+            "$ref": "#/components/schemas/Empleado"
+          },
+          "factura": {
+            "$ref": "#/components/schemas/Factura"
+          },
+          "devolucionDetalle": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DevolucionDetalle"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DevolucionDetalle": {
+        "type": "object",
+        "properties": {
+          "idDevolucionDetalle": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idDevolucion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idFacturaDetalle": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cantidadDevuelta": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "motivo": {
+            "type": "string",
+            "nullable": true
+          },
+          "descripcion": {
+            "type": "string",
+            "nullable": true
+          },
+          "precioUnitario": {
+            "type": "number",
+            "format": "double"
+          },
+          "subtotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "reintegrarInventario": {
+            "type": "boolean"
+          },
+          "devolucion": {
+            "$ref": "#/components/schemas/Devolucion"
+          },
+          "facturaDetalle": {
+            "$ref": "#/components/schemas/FacturaDetalle"
+          }
+        },
+        "additionalProperties": false
+      },
       "Empleado": {
         "type": "object",
         "properties": {
@@ -2733,6 +3345,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Factura"
+            },
+            "nullable": true
+          },
+          "devolucion": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Devolucion"
             },
             "nullable": true
           },
@@ -2807,6 +3426,13 @@
             },
             "nullable": true
           },
+          "devolucion": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Devolucion"
+            },
+            "nullable": true
+          },
           "cliente": {
             "$ref": "#/components/schemas/Cliente"
           },
@@ -2848,6 +3474,13 @@
           },
           "inventario": {
             "$ref": "#/components/schemas/Inventario"
+          },
+          "devolucionDetalle": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DevolucionDetalle"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false

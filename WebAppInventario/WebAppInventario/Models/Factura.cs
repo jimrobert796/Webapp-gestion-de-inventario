@@ -20,6 +20,7 @@ namespace WebAppInventario.Models
 
         // Relaciones
         public ICollection<FacturaDetalle>? FacturaDetalles { get; set; }
+        public ICollection<Devolucion>? Devolucion { get; set; }
 
         public Cliente? Cliente { get; set; }
         public Empleado? Empleado { get; set; }
