@@ -94,6 +94,8 @@ main {
     padding: 20px;
     background-color: var(--bs-body-bg);
     min-height: 100vh;
+    /* ES PARA QUE NO APAREZCA SCROL LATERAL DE ABAJO*/
+    overflow-x: hidden;
 }
 
 /* ========== INFORMACIÓN DE USUARIO ========== */

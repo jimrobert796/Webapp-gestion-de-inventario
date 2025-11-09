@@ -109,6 +109,7 @@ namespace WebAppInventario.Controllers
                         dd.idDevolucion,
                         dd.idFacturaDetalle,
                         facturaId = dd.Devolucion.Factura.idFactura,
+                        clienteNombre = dd.Devolucion.Factura.Cliente.nombre,
                         empleadoNombre = dd.Devolucion.Empleado.nombre,
                         productoNombre = dd.FacturaDetalle.inventario.Producto.nombre,
                         dd.cantidadDevuelta,

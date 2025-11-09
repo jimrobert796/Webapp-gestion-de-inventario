@@ -99,7 +99,8 @@ namespace WebAppInventario.Controllers
                     f.idFactura,
                     f.numeroFactura,
                     f.fecha,
-                    clienteNombre = f.Cliente.nombre
+                    clienteNombre = f.Cliente.nombre,
+                    f.total
                 })
                 .FirstOrDefault();
 

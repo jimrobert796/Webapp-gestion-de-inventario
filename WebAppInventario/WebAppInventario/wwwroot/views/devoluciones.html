@@ -6,6 +6,7 @@
     <title>Sistema de Devoluciones</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
     <style>
         .table-scroll {
             max-height: 400px;
@@ -21,17 +22,11 @@
             }
 
         .producto-seleccionado {
-            background-color: #e3f2fd !important;
             border-left: 4px solid #0d6efd;
         }
 
         .row-seleccionada {
             background-color: #d1ecf1 !important;
-        }
-
-        .spinner-border-sm {
-            width: 1rem;
-            height: 1rem;
         }
     </style>
 </head>
@@ -56,7 +51,7 @@
                             <span class="input-group-text bg-warning text-dark">
                                 <i class="bi bi-search"></i>
                             </span>
-                            <input type="text" class="form-control" id="inputBuscar" placeholder="Buscar por factura, cliente o producto...">
+                            <input type="text" class="form-control" id="inputBuscar" placeholder="Buscar...">
                             <button class="btn btn-outline-secondary" type="button" id="btnLimpiarBusq">
                                 <i class="bi bi-x-lg"></i>
                             </button>
@@ -98,14 +93,14 @@
                     <h5 class="modal-title">
                         <i class="bi bi-arrow-return-left"></i> Nueva Devolución
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="cerrarModalNueva()"></button>
                 </div>
                 <div class="modal-body">
                     <div id="alertContainer"></div>
 
                     <!-- Búsqueda de Factura -->
                     <div class="card mb-4">
-                        <div class="card-header bg-light">
+                        <div class="card-header bg-dark">
                             <h6 class="mb-0"><i class="bi bi-search"></i> Buscar Factura</h6>
                         </div>
                         <div class="card-body">
@@ -113,7 +108,7 @@
                                 <div class="col-md-8">
                                     <label class="form-label fw-bold">Número de Factura:</label>
                                     <div class="input-group">
-                                        <input type="text" id="buscarFactura" class="form-control" placeholder="Ej: FACT-0001">
+                                        <input type="text" id="buscarFactura" class="form-control" placeholder="Ej: FAC000001">
                                         <button class="btn btn-primary" type="button" onclick="buscarFactura()">
                                             <i class="bi bi-search"></i> Buscar
                                         </button>
@@ -164,7 +159,7 @@
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
-                                    <thead class="table-light">
+                                    <thead class="table-dark">
                                         <tr>
                                             <th>Producto</th>
                                             <th class="text-end">Precio</th>
@@ -211,7 +206,7 @@
 
                     <!-- Detalles de Devolución -->
                     <div id="formDevolucion" class="card d-none">
-                        <div class="card-header bg-light">
+                        <div class="card-header bg-secondary">
                             <h6 class="mb-0"><i class="bi bi-pencil-square"></i> Detalles de la Devolución</h6>
                         </div>
                         <div class="card-body">
@@ -239,8 +234,8 @@
                                     <small class="text-muted" id="textoReintegro">El producto será devuelto al inventario</small>
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label fw-bold">Descripción:</label>
-                                    <textarea id="descripcionDevolucion" class="form-control" rows="3" placeholder="Descripción detallada..."></textarea>
+                                    <label class="form-label fw-bold">Descripción Detallada:</label>
+                                    <textarea id="descripcionDevolucion" class="form-control" rows="3" placeholder="Describa detalladamente el motivo de la devolución..."></textarea>
                                 </div>
                             </div>
 
@@ -257,7 +252,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="cerrarModalNueva()">
                         <i class="bi bi-x-circle"></i> Cancelar
                     </button>
                     <button type="button" class="btn btn-success" id="btnConfirmar" onclick="confirmarDevolucion()" disabled>
@@ -270,7 +265,7 @@
 
     <!-- MODAL: Detalle -->
     <div class="modal fade" id="modalDetalle" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-info text-white">
                     <h5 class="modal-title">
@@ -284,22 +279,23 @@
                             <p><strong>Factura:</strong> <span id="detalleFactura" class="badge bg-primary"></span></p>
                             <p><strong>Cliente:</strong> <span id="detalleCliente"></span></p>
                             <p><strong>Fecha:</strong> <span id="detalleFecha"></span></p>
-                            <p><strong>Total:</strong> <span id="detalleTotal" class="fw-bold text-primary"></span></p>
                         </div>
                         <div class="col-md-6">
                             <p><strong>Empleado:</strong> <span id="detalleEmpleado"></span></p>
                             <p><strong>Total Items:</strong> <span id="detalleCantidadTotal" class="badge bg-secondary"></span></p>
+                            <p><strong>Total:</strong> <span id="detalleTotal" class="fw-bold text-primary fs-5"></span></p>
                         </div>
                     </div>
                     <hr>
                     <h6>Productos Devueltos:</h6>
                     <div class="table-responsive">
-                        <table class="table table-sm table-bordered">
-                            <thead class="table-light">
+                        <table class="table table-sm table-bordered table-hover">
+                            <thead class="table-dark">
                                 <tr>
                                     <th>Producto</th>
                                     <th class="text-center">Cantidad</th>
                                     <th>Motivo</th>
+                                    <th>Descripción</th>
                                     <th class="text-center">Inventario</th>
                                     <th class="text-end">Subtotal</th>
                                 </tr>
@@ -326,7 +322,7 @@
                 <div class="modal-body text-center py-4">
                     <i class="bi bi-check-circle text-success" style="font-size: 4rem;"></i>
                     <h4 class="mt-3 text-success">¡Devolución Procesada!</h4>
-                    <p id="mensajeExito" class="mb-0"></p>
+                    <div id="mensajeExito" class="mt-3"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success" data-bs-dismiss="modal">Aceptar</button>
@@ -353,9 +349,9 @@
         </div>
     </div>
 
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Variables globales
+        // Variables globales (cambiadas a 'var' para evitar redeclaraciones al recargar)
         var facturaActual = null;
         var productoSeleccionado = null;
         var todasDevoluciones = [];
@@ -364,95 +360,83 @@
 
         // Inicializar
         $(document).ready(function () {
-            // Resetear variables globales para evitar conflictos al recargar
+            // Resetear variables para evitar conflictos al recargar
             facturaActual = null;
             productoSeleccionado = null;
             todasDevoluciones = [];
             devolucionSeleccionada = null;
 
-            // Inicializar modales
+            inicializarModales();
+            cargarDevoluciones();
+            configurarEventos();
+        });
+
+        function inicializarModales() {
             modalNueva = new bootstrap.Modal(document.getElementById('modalNueva'));
             modalDetalle = new bootstrap.Modal(document.getElementById('modalDetalle'));
             modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
             modalError = new bootstrap.Modal(document.getElementById('modalError'));
+        }
 
-            // Limpiar UI inicial
-            $('#infoFactura').addClass('d-none');
-            $('#seleccionProducto').addClass('d-none');
-            $('#productoSeleccionado').addClass('d-none');
-            $('#formDevolucion').addClass('d-none');
-            $('#btnVerDetalle').prop('disabled', true);
-            $('#alertContainer').empty();
-
-            // Cargar datos
-            cargarDevoluciones();
-
-            // Eventos (prevenir duplicados)
-            $('#btnNueva').off('click').on('click', () => modalNueva.show());
-            $('#btnVerDetalle').off('click').on('click', verDetalle);
-            $('#inputBuscar').off('keyup').on('keyup', filtrarDevoluciones);
-            $('#btnLimpiarBusq').off('click').on('click', () => { $('#inputBuscar').val(''); cargarDevoluciones(); });
-            $('#buscarFactura').off('keypress').on('keypress', (e) => { if (e.which === 13) buscarFactura(); });
-            $('#motivoDevolucion, #descripcionDevolucion, #cantidadDevolver').off('input change').on('input change', () => {
+        function configurarEventos() {
+            $('#btnNueva').click(() => modalNueva.show());
+            $('#btnVerDetalle').click(verDetalle);
+            $('#inputBuscar').on('keyup', filtrarDevoluciones);
+            $('#btnLimpiarBusq').click(() => { $('#inputBuscar').val(''); cargarDevoluciones(); });
+            $('#buscarFactura').on('keypress', (e) => { if (e.which === 13) buscarFactura(); });
+            $('#motivoDevolucion, #descripcionDevolucion, #cantidadDevolver').on('input change', () => {
                 validarFormulario();
                 actualizarResumen();
             });
-        });
+        }
 
-        // Cargar devoluciones (ahora usa el endpoint de búsqueda sin filtro para cargar todas)
         function cargarDevoluciones() {
-            console.log('Cargando devoluciones...');
             $.ajax({
-                url: '/api/Devoluciones/buscar-devoluciones',  // Sin ?buscar= para cargar todas
+                url: '/api/Devoluciones/buscar-devoluciones',
                 method: 'GET',
                 success: function (devoluciones) {
-                    console.log('Devoluciones cargadas:', devoluciones);
                     todasDevoluciones = devoluciones;
                     actualizarTabla(devoluciones);
                 },
                 error: function (err) {
-                    console.error('Error cargando devoluciones:', err);
+                    console.error('Error:', err);
                     mostrarError('Error al cargar devoluciones');
                 }
             });
         }
 
-
-        // Actualizar tabla (usando campos directos de la devolución para "Items" y "Total")
+        // TABLA DE VISTA AL INICIO
         function actualizarTabla(devoluciones) {
             const tbody = $('#tablaDevoluciones tbody');
             tbody.empty();
 
             if (devoluciones.length === 0) {
                 tbody.html(`
-                                <tr>
-                                    <td colspan="6" class="text-center text-muted py-4">
-                                        <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                                        No hay devoluciones registradas
-                                    </td>
-                                </tr>
-                            `);
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    No hay devoluciones registradas
+                                </td>
+                            </tr>
+                        `);
                 return;
             }
 
             devoluciones.forEach(dev => {
-                // Asumir que la API incluye cantidadTotal y totalDevolucion; si no, ajusta o calcula
-                const totalDevolucion = dev.totalDevolucion || 0;
                 const tr = $(`
-                                <tr style="cursor: pointer;" onclick="seleccionarDevolucion(${dev.idDevolucion})">
-                                    <td class="fw-bold">#${String(dev.idDevolucion).padStart(3, '0')}</td>
-                                    <td><span class="badge bg-primary">${dev.numeroFactura || 'N/A'}</span></td>
-                                    <td>${dev.clienteNombre || 'Cliente General'}</td>
-                                    <td class="text-center"><span class="badge bg-secondary">${dev.cantidad}</span></td>
-                                    <td>${new Date(dev.fechaDevolucion).toLocaleDateString('es-SV')}</td>
-                                    <td class="text-end fw-bold text-primary">$${(totalDevolucion).toFixed(2)}</td>
-                                </tr>
-                            `);
+                            <tr style="cursor: pointer;" onclick="seleccionarDevolucion(${dev.idDevolucion})">
+                                <td class="fw-bold">#${String(dev.idDevolucion).padStart(3, '0')}</td>
+                                <td><span class="badge bg-primary">${dev.numeroFactura || 'N/A'}</span></td>
+                                <td>${dev.nombre || 'Cliente General'}</td>
+                                <td class="text-center"><span class="badge bg-secondary">${dev.cantidad || 0}</span></td>
+                                <td>${new Date(dev.fechaDevolucion).toLocaleDateString('es-SV')}</td>
+                                <td class="text-end fw-bold text-primary">$${(dev.totalDevolucion || 0).toFixed(2)}</td>
+                            </tr>
+                        `);
                 tbody.append(tr);
             });
         }
 
-        // Buscar factura
         function buscarFactura() {
             const numeroFactura = $('#buscarFactura').val().trim();
             if (!numeroFactura) {
@@ -466,26 +450,19 @@
                 url: `/api/Facturas/buscar-para-devolucion?numeroFactura=${encodeURIComponent(numeroFactura)}`,
                 method: 'GET',
                 success: function (factura) {
-                    console.log('Factura encontrada:', factura);
-                    if (factura && factura.idFactura) {
-                        facturaActual = factura;
-                        mostrarInfoFactura(factura);
-                        cargarProductosFactura(factura.idFactura);
-                        mostrarAlerta('Factura encontrada', 'success');
-                    } else {
-                        mostrarAlerta('Factura no encontrada o datos incompletos', 'danger');
-                        facturaActual = null;
-                    }
+                    facturaActual = factura;
+                    mostrarInfoFactura(factura);
+                    cargarProductosFactura(factura.idFactura);
+                    mostrarAlerta('Factura encontrada', 'success');
                 },
                 error: function (err) {
-                    console.error('Error buscando factura:', err);
+                    console.error('Error:', err);
                     mostrarAlerta('Factura no encontrada', 'danger');
                     facturaActual = null;
                 }
             });
         }
 
-        // Mostrar info factura
         function mostrarInfoFactura(factura) {
             $('#infoFactura').removeClass('d-none');
             $('#facturaNumero').text(factura.numeroFactura);
@@ -494,34 +471,29 @@
             $('#totalFactura').text('$' + (factura.total || 0).toFixed(2));
         }
 
-        // Cargar productos
         function cargarProductosFactura(idFactura) {
             $.ajax({
                 url: `/api/FacturasDetalles/por-idFactura/${idFactura}`,
                 method: 'GET',
                 success: function (detalles) {
-                    console.log('Detalles de factura:', detalles);
                     $.ajax({
                         url: `/api/DevolucionesDetalles/por-factura/${idFactura}`,
                         method: 'GET',
                         success: function (devoluciones) {
-                            console.log('Devoluciones previas:', devoluciones);
                             mostrarProductos(detalles, devoluciones);
                         },
                         error: function () {
-                            console.log('Sin devoluciones previas');
                             mostrarProductos(detalles, []);
                         }
                     });
                 },
                 error: function (err) {
-                    console.error('Error cargando productos:', err);
+                    console.error('Error:', err);
                     mostrarError('Error al cargar productos');
                 }
             });
         }
 
-        // Mostrar productos
         function mostrarProductos(detalles, devoluciones) {
             $('#seleccionProducto').removeClass('d-none');
             const tbody = $('#tbodyProductos');
@@ -540,26 +512,26 @@
                 if (puedeDevolver) hayDisponibles = true;
 
                 const tr = `
-                                <tr class="${!puedeDevolver ? 'table-secondary' : ''}">
-                                    <td>
-                                        <strong>${detalle.productoNombre || 'Producto'}</strong>
-                                        ${!puedeDevolver ? '<br><small class="text-danger">Sin disponibilidad</small>' : ''}
-                                    </td>
-                                    <td class="text-end">$${(detalle.precio || 0).toFixed(2)}</td>
-                                    <td class="text-center"><span class="badge bg-primary">${detalle.cantidad || 0}</span></td>
-                                    <td class="text-center"><span class="badge bg-warning">${devuelto}</span></td>
-                                    <td class="text-center">
-                                        <span class="badge ${puedeDevolver ? 'bg-success' : 'bg-danger'}">${disponible}</span>
-                                    </td>
-                                    <td class="text-center">
-                                        ${puedeDevolver
+                            <tr class="${!puedeDevolver ? 'table-secondary' : ''}">
+                                <td>
+                                    <strong>${detalle.productoNombre || 'Producto'}</strong>
+                                    ${!puedeDevolver ? '<br><small class="text-danger">Sin disponibilidad</small>' : ''}
+                                </td>
+                                <td class="text-end">$${(detalle.precio || 0).toFixed(2)}</td>
+                                <td class="text-center"><span class="badge bg-primary">${detalle.cantidad || 0}</span></td>
+                                <td class="text-center"><span class="badge bg-warning">${devuelto}</span></td>
+                                <td class="text-center">
+                                    <span class="badge ${puedeDevolver ? 'bg-success' : 'bg-danger'}">${disponible}</span>
+                                </td>
+                                <td class="text-center">
+                                    ${puedeDevolver
                         ? `<button class="btn btn-sm btn-primary" onclick='seleccionarProducto(${JSON.stringify(detalle)}, ${disponible})'>
-                                                    <i class="bi bi-check-lg"></i> Seleccionar
-                                                </button>`
-                        : '<span class="text-muted">N/A</span>'}
-                                    </td>
-                                </tr>
-                            `;
+                                                <i class="bi bi-check-lg"></i> Seleccionar
+                                            </button>`
+                        : '<span class="text-muted">Ya devueltos</span>'}
+                                </td>
+                            </tr>
+                        `;
                 tbody.append(tr);
             });
 
@@ -568,7 +540,6 @@
             }
         }
 
-        // Seleccionar producto
         function seleccionarProducto(detalle, disponible) {
             productoSeleccionado = { ...detalle, maxCantidad: disponible };
 
@@ -583,7 +554,6 @@
             validarFormulario();
         }
 
-        // Deseleccionar
         function deseleccionarProducto() {
             productoSeleccionado = null;
             $('#productoSeleccionado').addClass('d-none');
@@ -591,7 +561,6 @@
             $('#btnConfirmar').prop('disabled', true);
         }
 
-        // Validar cantidad
         function validarCantidad() {
             const cantidad = parseInt($('#cantidadDevolver').val()) || 0;
             const max = productoSeleccionado?.maxCantidad || 0;
@@ -606,7 +575,6 @@
             validarFormulario();
         }
 
-        // Cambiar motivo
         function cambiarMotivo() {
             const motivo = $('#motivoDevolucion').val();
             if (motivo === 'Producto defectuoso' || motivo === 'Producto dañado') {
@@ -618,7 +586,6 @@
             validarFormulario();
         }
 
-        // Actualizar estado reintegro
         function actualizarEstadoReintegro() {
             const reintegrar = $('#reintegrarInventario').is(':checked');
             $('#estadoReintegro')
@@ -631,7 +598,6 @@
             actualizarResumen();
         }
 
-        // Actualizar resumen
         function actualizarResumen() {
             if (!productoSeleccionado) return;
 
@@ -648,7 +614,6 @@
                 .text(reintegrar ? 'Sí' : 'No');
         }
 
-        // Validar formulario
         function validarFormulario() {
             const motivo = $('#motivoDevolucion').val();
             const descripcion = $('#descripcionDevolucion').val().trim();
@@ -658,7 +623,6 @@
             $('#btnConfirmar').prop('disabled', !valido);
         }
 
-        // Confirmar devolución
         function confirmarDevolucion() {
             if (!productoSeleccionado || !facturaActual) {
                 mostrarError('Datos incompletos');
@@ -666,24 +630,23 @@
             }
 
             const motivoBase = $('#motivoDevolucion').val();
-            const descripcion = $('#descripcionDevolucion').val().trim();
+            const descripcion = $('#descripcionDevolucion').val().trim();  // Corregido: era 'descrip'
             const cantidad = parseInt($('#cantidadDevolver').val()) || 0;
             const reintegrar = $('#reintegrarInventario').is(':checked');
-            const motivoCompleto = motivoBase + (descripcion ? ': ' + descripcion : '');
             const subtotal = cantidad * productoSeleccionado.precio;
             const iva = subtotal * 0.13;
             const totalConIva = subtotal + iva;
 
-            if (!confirm(`¿Procesar devolución de ${cantidad} ${productoSeleccionado.productoNombre} por $${subtotal.toFixed(2)}?`)) {
+            if (!confirm(`¿Procesar devolución de ${cantidad} ${productoSeleccionado.productoNombre} por ${totalConIva.toFixed(2)} (incluye IVA)?`)) {
                 return;
             }
 
             $('#btnConfirmar').prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Procesando...');
 
-            // 1. Crear devolución
             const devolucionData = {
                 idFactura: facturaActual.idFactura,
                 idEmpleado: parseInt(localStorage.getItem('empleadoId')) || 1,
+                cantidad: cantidad,
                 fechaDevolucion: new Date().toISOString().split('T')[0],
                 horaDevolucion: new Date().toTimeString().split(' ')[0],
                 totalDevolucion: totalConIva
@@ -695,9 +658,6 @@
                 contentType: 'application/json',
                 data: JSON.stringify(devolucionData),
                 success: function (devolucionCreada) {
-                    console.log('Devolución creada:', devolucionCreada);
-
-                    // 2. Crear detalle de devolución
                     const detalleData = {
                         idDevolucion: devolucionCreada.idDevolucion,
                         idFacturaDetalle: productoSeleccionado.idFacturaDetalle,
@@ -705,7 +665,8 @@
                         cantidadDevuelta: cantidad,
                         precioUnitario: productoSeleccionado.precio,
                         subtotal: subtotal,
-                        motivo: motivoCompleto,
+                        motivo: motivoBase,
+                        descripcion: descripcion,  // Corregido
                         reintegrarInventario: reintegrar
                     };
 
@@ -715,56 +676,52 @@
                         contentType: 'application/json',
                         data: JSON.stringify(detalleData),
                         success: function (detalleCreado) {
-                            console.log('Detalle creado:', detalleCreado);
-
-                            // 3. Si debe reintegrar al inventario, actualizar stock
                             if (reintegrar) {
                                 actualizarInventario(productoSeleccionado.idInventario, cantidad, function () {
-                                    finalizarDevolucion(devolucionCreada.idDevolucion, subtotal, cantidad);
+                                    finalizarDevolucion(devolucionCreada.idDevolucion, totalConIva, cantidad);
                                 });
                             } else {
-                                finalizarDevolucion(devolucionCreada.idDevolucion, subtotal, cantidad);
+                                finalizarDevolucion(devolucionCreada.idDevolucion, totalConIva, cantidad);
                             }
                         },
                         error: function (err) {
-                            console.error('Error creando detalle:', err);
+                            console.error('Error:', err);
                             mostrarError('Error al procesar el detalle de la devolución');
                             $('#btnConfirmar').prop('disabled', false).html('<i class="bi bi-check-circle"></i> Procesar Devolución');
                         }
                     });
                 },
                 error: function (err) {
-                    console.error('Error creando devolución:', err);
+                    console.error('Error:', err);
                     mostrarError('Error al procesar la devolución');
                     $('#btnConfirmar').prop('disabled', false).html('<i class="bi bi-check-circle"></i> Procesar Devolución');
                 }
             });
         }
 
-        // Actualizar inventario (simplificada con el nuevo endpoint)
         function actualizarInventario(idInventario, cantidadDevuelta, onSuccess) {
             $.ajax({
                 url: `/api/Inventario/aumentar-stock/${idInventario}?cantidad=${cantidadDevuelta}`,
-                method: 'PUT',  // Asumiendo PUT; cambia a 'POST' si es necesario
-                success: function (response) {
-                    console.log(`Inventario actualizado: ${idInventario}, cantidad aumentada: ${cantidadDevuelta}`);
+                method: 'PUT',
+                success: function () {
                     if (onSuccess) onSuccess();
                 },
                 error: function (err) {
-                    console.error('Error actualizando inventario:', err);
+                    console.error('Error:', err);
                     mostrarAlerta('Devolución procesada pero hubo un error al actualizar el inventario', 'warning');
-                    if (onSuccess) onSuccess();  // Continúa el flujo aunque falle
+                    if (onSuccess) onSuccess();
                 }
             });
         }
 
-        // Finalizar devolución
         function finalizarDevolucion(idDevolucion, total, cantidadItems) {
             $('#mensajeExito').html(`
-                <strong>Devolución #${String(idDevolucion).padStart(3, '0')}</strong> procesada exitosamente.<br>
-                <strong>Cantidad:</strong> ${cantidadItems} items<br>
-                <strong>Total:</strong> $${total.toFixed(2)}
-            `);
+                        <div class="alert alert-success">
+                            <p class="mb-2"><strong>Devolución:</strong> #${String(idDevolucion).padStart(3, '0')}</p>
+                            <p class="mb-2"><strong>Cantidad:</strong> ${cantidadItems} items</p>
+                            <p class="mb-0"><strong>Total:</strong> ${total.toFixed(2)}</p>
+                        </div>
+                    `);
             modalExito.show();
 
             setTimeout(() => {
@@ -774,7 +731,6 @@
             }, 2000);
         }
 
-        // Seleccionar devolución
         function seleccionarDevolucion(idDevolucion) {
             devolucionSeleccionada = todasDevoluciones.find(d => d.idDevolucion === idDevolucion);
             $('#btnVerDetalle').prop('disabled', false);
@@ -787,33 +743,34 @@
             });
         }
 
-        // Ver detalle (carga detalles solo aquí para evitar sobrecarga)
         function verDetalle() {
             if (!devolucionSeleccionada) return;
 
-            // Mostrar spinner en el botón
             $('#btnVerDetalle').prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Cargando...');
 
-            // Cargar detalles de la devolución seleccionada
             $.ajax({
                 url: `/api/DevolucionesDetalles/por-devolucion/${devolucionSeleccionada.idDevolucion}`,
                 method: 'GET',
                 success: function (detalles) {
-                    console.log('Detalles de devolución:', detalles);
+                    // Cliente: primero de devolucionSeleccionada, si no del detalle
+                    const clienteNombre = (devolucionSeleccionada.clienteNombre ||
+                        detalles[0]?.clienteNombre ||
+                        'Cliente General').trim();
+                    // Empleado: puede ser "nombre" o "empleadoNombre"
+                    const empleadoNombre = (devolucionSeleccionada.nombre ||
+                        detalles[0]?.empleadoNombre ||
+                        'N/A').trim();
 
-                    // Poblar modal con datos básicos
                     $('#detalleNumero').text(String(devolucionSeleccionada.idDevolucion).padStart(3, '0'));
                     $('#detalleFactura').text(devolucionSeleccionada.numeroFactura || 'N/A');
-                    $('#detalleCliente').text(devolucionSeleccionada.clienteNombre || 'Cliente General');
+                    $('#detalleCliente').text(clienteNombre);
                     $('#detalleFecha').text(new Date(devolucionSeleccionada.fechaDevolucion).toLocaleDateString('es-SV') + ' ' + (devolucionSeleccionada.horaDevolucion || ''));
-                    $('#detalleTotal').text('$' + (devolucionSeleccionada.totalDevolucion || 0).toFixed(2));
-                    $('#detalleEmpleado').text(devolucionSeleccionada.empleadoNombre || 'N/A');
+                    $('#detalleTotal').text((devolucionSeleccionada.totalDevolucion || 0).toFixed(2));
+                    $('#detalleEmpleado').text(empleadoNombre);
 
-                    // Calcular cantidad total de items
                     const cantidadTotal = detalles.reduce((sum, d) => sum + (d.cantidadDevuelta || 0), 0);
                     $('#detalleCantidadTotal').text(cantidadTotal);
 
-                    // Poblar tabla de detalles
                     const tbody = $('#tbodyDetalles');
                     tbody.empty();
 
@@ -825,9 +782,10 @@
 
                             const tr = `
                                 <tr>
-                                    <td>${detalle.productoNombre || 'N/A'}</td>
+                                    <td><strong>${detalle.productoNombre || 'N/A'}</strong></td>
                                     <td class="text-center"><span class="badge bg-secondary">${detalle.cantidadDevuelta || 0}</span></td>
-                                    <td><small>${detalle.motivo || 'N/A'}</small></td>
+                                    <td><span class="badge bg-warning text-dark">${detalle.motivo}</span></td>
+                                    <td><small>${detalle.descripcion}</small></td>
                                     <td class="text-center">${badgeInventario}</td>
                                     <td class="text-end fw-bold">${(detalle.subtotal || 0).toFixed(2)}</td>
                                 </tr>
@@ -835,28 +793,23 @@
                             tbody.append(tr);
                         });
                     } else {
-                        tbody.html('<tr><td colspan="5" class="text-center text-muted">Sin detalles disponibles</td></tr>');
+                        tbody.html('<tr><td colspan="6" class="text-center text-muted">Sin detalles disponibles</td></tr>');
                     }
 
-                    // Mostrar modal
                     modalDetalle.show();
-
-                    // Restaurar botón
                     $('#btnVerDetalle').prop('disabled', false).html('<i class="bi bi-eye"></i> Ver Detalle');
                 },
                 error: function (err) {
-                    console.error('Error cargando detalles de devolución:', err);
+                    console.error('Error:', err);
                     mostrarError('Error al cargar detalles de la devolución');
                     $('#btnVerDetalle').prop('disabled', false).html('<i class="bi bi-eye"></i> Ver Detalle');
                 }
             });
         }
 
-        // Filtrar devoluciones (ahora usa el endpoint de búsqueda con ?buscar=)
         function filtrarDevoluciones() {
             const busqueda = $('#inputBuscar').val().trim();
 
-            // Si no hay búsqueda, cargar todas
             if (!busqueda) {
                 cargarDevoluciones();
                 return;
@@ -866,47 +819,37 @@
                 url: `/api/Devoluciones/buscar-devoluciones?buscar=${encodeURIComponent(busqueda)}`,
                 method: 'GET',
                 success: function (devolucionesFiltradas) {
-                    console.log('Devoluciones filtradas:', devolucionesFiltradas);
-                    const tbody = $('#tablaDevoluciones tbody');
-                    tbody.empty();
-
-                    if (devolucionesFiltradas.length === 0) {
-                        tbody.html(`
-                    <tr>
-                        <td colspan="6" class="text-center text-muted py-4">
-                            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                            No hay devoluciones registradas
-                        </td>
-                    </tr>
-                `);
-                        return;
-                    }
-
                     actualizarTabla(devolucionesFiltradas);
                 },
                 error: function () {
                     const tbody = $('#tablaDevoluciones tbody');
                     tbody.html(`
-                <tr>
-                    <td colspan="6" class="text-center text-danger py-4">
-                        <i class="bi bi-exclamation-triangle fs-1 d-block mb-2"></i>
-                        Error al buscar devoluciones
-                    </td>
-                </tr>
-            `);
+                            <tr>
+                                <td colspan="6" class="text-center py-4">
+                                    Error al buscar devoluciones
+                                </td>
+                            </tr>
+                        `);
                 }
             });
         }
 
+        function limpiarBusqueda() {
+            $('#buscarFactura').val('');
+            $('#infoFactura').addClass('d-none');
+            $('#seleccionProducto').addClass('d-none');
+            $('#productoSeleccionado').addClass('d-none');
+            $('#formDevolucion').addClass('d-none');
+            $('#alertContainer').empty();
+            facturaActual = null;
+            productoSeleccionado = null;
+            $('#btnConfirmar').prop('disabled', true);
+        }
 
-        // Limpiar búsqueda (ahora recarga todas)
-        $('#btnLimpiarBusq').off('click').on('click', () => {
-            $('#inputBuscar').val('');
-            cargarDevoluciones();  // Recarga todas en lugar de filtrar
-        });
+        function cerrarModalNueva() {
+            limpiarFormulario();
+        }
 
-
-        // Limpiar formulario completo
         function limpiarFormulario() {
             limpiarBusqueda();
             $('#motivoDevolucion').val('');
@@ -917,7 +860,6 @@
             $('#btnConfirmar').prop('disabled', true).html('<i class="bi bi-check-circle"></i> Procesar Devolución');
         }
 
-        // Mostrar alerta
         function mostrarAlerta(mensaje, tipo) {
             const alertClass = tipo === 'success' ? 'alert-success' :
                 tipo === 'warning' ? 'alert-warning' :
@@ -944,18 +886,23 @@
             }
         }
 
-        // Mostrar error
         function mostrarError(mensaje) {
             $('#mensajeError').text(mensaje);
             modalError.show();
         }
+
+        // Exponer funciones globalmente
+        window.seleccionarDevolucion = seleccionarDevolucion;
+        window.seleccionarProducto = seleccionarProducto;
+        window.deseleccionarProducto = deseleccionarProducto;
+        window.validarCantidad = validarCantidad;
+        window.cambiarMotivo = cambiarMotivo;
+        window.actualizarEstadoReintegro = actualizarEstadoReintegro;
+        window.confirmarDevolucion = confirmarDevolucion;
+        window.buscarFactura = buscarFactura;
+        window.limpiarBusqueda = limpiarBusqueda;
+        window.cerrarModalNueva = cerrarModalNueva;
     </script>
-
-
 
 </body>
 </html >
-
-
-
-
