@@ -5,13 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - Sistema de Inventario</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+    <!--Modificada por Wil-->>
+
+    <style>
+        :root {
+            --ferreteria-primary: #2C3E50;
+            --ferreteria-accent: #E67E22;
+            --ferreteria-light: #ECF0F1;
+        }
+
+        .bg-ferreteria {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E);
+        }
+
+        .btn-ferreteria {
+            background: linear-gradient(135deg, var(--ferreteria-accent), #D35400);
+            border: none;
+            padding: 12px;
+            font-weight: 600;
+            color: white;
+        }
+
+            .btn-ferreteria:hover {
+                background: linear-gradient(135deg, #D35400, var(--ferreteria-accent));
+                color: white;
+                transform: translateY(-2px);
+            }
+
+        .login-right {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 25%, #fecfef 50%, #f5576c 75%, #4facfe 100%);
+            position: relative;
+        }
+
+            .login-right::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: radial-gradient(circle at 10% 20%, rgba(230, 126, 34, 0.4) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(44, 62, 80, 0.4) 0%, transparent 40%), radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+                z-index: 0;
+            }
+    </style>
+
 </head>
 <body class="bg-light">
 
     <div class="container-fluid vh-100">
         <div class="row h-100">
             <!-- Lado izquierdo: Texto de Logo -->
-            <div class="col-md-6 d-flex justify-content-center align-items-center bg-primary text-white">
+            <div class="col-md-6 d-flex justify-content-center align-items-center bg-ferreteria text-white">
                 <div class="text-center">
                     <h1 class="display-4">LOGO</h1>
                     <p class="lead">(Placeholder)</p>
@@ -19,7 +64,7 @@
             </div>
 
             <!-- Lado derecho: Formulario de Login -->
-            <div class="col-md-6 d-flex justify-content-center align-items-center bg-light">
+            <div class="col-md-6 d-flex justify-content-center align-items-center bg-light login-right">
                 <div class="card shadow p-4" style="width: 380px;">
                     <h3 class="text-center mb-3">Iniciar Sesión</h3>
 
@@ -33,7 +78,7 @@
                         <input type="password" id="contraseña" class="form-control" placeholder="Ingrese su contraseña" required>
                     </div>
 
-                    <button class="btn btn-primary w-100" id="btnLogin">Ingresar</button>
+                    <button class="btn btn-ferreteria w-100" id="btnLogin">Ingresar</button>
 
                     <div id="mensaje" class="text-danger text-center mt-3"></div>
                 </div>
