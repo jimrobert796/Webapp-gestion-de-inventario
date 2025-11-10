@@ -311,6 +311,32 @@
         </div>
     </div>
 
+    <!-- MODAL: Confirmación -->
+    <div class="modal fade" id="modalConfirmacion" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title"><i class="bi bi-question-circle"></i> Confirmar Devolución</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-3">¿Está seguro de que desea procesar la siguiente devolución?</p>
+                    <div class="alert alert-info">
+                        <strong>Producto:</strong> <span id="confirmProducto">-</span><br>
+                        <strong>Cantidad:</strong> <span id="confirmCantidad">-</span><br>
+                        <strong>Total (incluye IVA):</strong> $<span id="confirmTotal">-</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" id="btnConfirmarFinal" onclick="procesarDevolucionFinal()">
+                        <i class="bi bi-check-circle"></i> Confirmar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL: Éxito -->
     <div class="modal fade" id="modalExito" tabindex="-1">
         <div class="modal-dialog">
@@ -356,7 +382,7 @@
         var productoSeleccionado = null;
         var todasDevoluciones = [];
         var devolucionSeleccionada = null;
-        var modalNueva, modalDetalle, modalExito, modalError;
+        var modalNueva, modalDetalle, modalExito, modalError, modalConfirmacion;
 
         // Inicializar
         $(document).ready(function () {
@@ -376,6 +402,7 @@
             modalDetalle = new bootstrap.Modal(document.getElementById('modalDetalle'));
             modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
             modalError = new bootstrap.Modal(document.getElementById('modalError'));
+            modalConfirmacion = new bootstrap.Modal(document.getElementById('modalConfirmacion'));  // ← AGREGAR
         }
 
         function configurarEventos() {
@@ -412,27 +439,27 @@
 
             if (devoluciones.length === 0) {
                 tbody.html(`
-                            <tr>
-                                <td colspan="6" class="text-center text-muted py-4">
-                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                                    No hay devoluciones registradas
-                                </td>
-                            </tr>
-                        `);
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-4">
+                                        <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                        No hay devoluciones registradas
+                                    </td>
+                                </tr>
+                            `);
                 return;
             }
 
             devoluciones.forEach(dev => {
                 const tr = $(`
-                            <tr style="cursor: pointer;" onclick="seleccionarDevolucion(${dev.idDevolucion})">
-                                <td class="fw-bold">#${String(dev.idDevolucion).padStart(3, '0')}</td>
-                                <td><span class="badge bg-primary">${dev.numeroFactura || 'N/A'}</span></td>
-                                <td>${dev.nombre || 'Cliente General'}</td>
-                                <td class="text-center"><span class="badge bg-secondary">${dev.cantidad || 0}</span></td>
-                                <td>${new Date(dev.fechaDevolucion).toLocaleDateString('es-SV')}</td>
-                                <td class="text-end fw-bold text-primary">$${(dev.totalDevolucion || 0).toFixed(2)}</td>
-                            </tr>
-                        `);
+                                <tr style="cursor: pointer;" onclick="seleccionarDevolucion(${dev.idDevolucion})">
+                                    <td class="fw-bold">#${String(dev.idDevolucion).padStart(3, '0')}</td>
+                                    <td><span class="badge bg-primary">${dev.numeroFactura || 'N/A'}</span></td>
+                                    <td>${dev.nombre || 'Cliente General'}</td>
+                                    <td class="text-center"><span class="badge bg-secondary">${dev.cantidad || 0}</span></td>
+                                    <td>${new Date(dev.fechaDevolucion).toLocaleDateString('es-SV')}</td>
+                                    <td class="text-end fw-bold text-primary">$${(dev.totalDevolucion || 0).toFixed(2)}</td>
+                                </tr>
+                            `);
                 tbody.append(tr);
             });
         }
@@ -512,26 +539,26 @@
                 if (puedeDevolver) hayDisponibles = true;
 
                 const tr = `
-                            <tr class="${!puedeDevolver ? 'table-secondary' : ''}">
-                                <td>
-                                    <strong>${detalle.productoNombre || 'Producto'}</strong>
-                                    ${!puedeDevolver ? '<br><small class="text-danger">Sin disponibilidad</small>' : ''}
-                                </td>
-                                <td class="text-end">$${(detalle.precio || 0).toFixed(2)}</td>
-                                <td class="text-center"><span class="badge bg-primary">${detalle.cantidad || 0}</span></td>
-                                <td class="text-center"><span class="badge bg-warning">${devuelto}</span></td>
-                                <td class="text-center">
-                                    <span class="badge ${puedeDevolver ? 'bg-success' : 'bg-danger'}">${disponible}</span>
-                                </td>
-                                <td class="text-center">
-                                    ${puedeDevolver
+                                <tr class="${!puedeDevolver ? 'table-secondary' : ''}">
+                                    <td>
+                                        <strong>${detalle.productoNombre || 'Producto'}</strong>
+                                        ${!puedeDevolver ? '<br><small class="text-danger">Sin disponibilidad</small>' : ''}
+                                    </td>
+                                    <td class="text-end">$${(detalle.precio || 0).toFixed(2)}</td>
+                                    <td class="text-center"><span class="badge bg-primary">${detalle.cantidad || 0}</span></td>
+                                    <td class="text-center"><span class="badge bg-warning">${devuelto}</span></td>
+                                    <td class="text-center">
+                                        <span class="badge ${puedeDevolver ? 'bg-success' : 'bg-danger'}">${disponible}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        ${puedeDevolver
                         ? `<button class="btn btn-sm btn-primary" onclick='seleccionarProducto(${JSON.stringify(detalle)}, ${disponible})'>
-                                                <i class="bi bi-check-lg"></i> Seleccionar
-                                            </button>`
+                                                    <i class="bi bi-check-lg"></i> Seleccionar
+                                                </button>`
                         : '<span class="text-muted">Ya devueltos</span>'}
-                                </td>
-                            </tr>
-                        `;
+                                    </td>
+                                </tr>
+                            `;
                 tbody.append(tr);
             });
 
@@ -622,7 +649,6 @@
             const valido = productoSeleccionado && motivo && descripcion && cantidad > 0;
             $('#btnConfirmar').prop('disabled', !valido);
         }
-
         function confirmarDevolucion() {
             if (!productoSeleccionado || !facturaActual) {
                 mostrarError('Datos incompletos');
@@ -630,16 +656,37 @@
             }
 
             const motivoBase = $('#motivoDevolucion').val();
-            const descripcion = $('#descripcionDevolucion').val().trim();  // Corregido: era 'descrip'
+            const descripcion = $('#descripcionDevolucion').val().trim();
             const cantidad = parseInt($('#cantidadDevolver').val()) || 0;
             const reintegrar = $('#reintegrarInventario').is(':checked');
             const subtotal = cantidad * productoSeleccionado.precio;
             const iva = subtotal * 0.13;
             const totalConIva = subtotal + iva;
 
-            if (!confirm(`¿Procesar devolución de ${cantidad} ${productoSeleccionado.productoNombre} por ${totalConIva.toFixed(2)} (incluye IVA)?`)) {
+            // CAMBIO: En lugar de confirm(), mostrar modal
+            $('#confirmProducto').text(productoSeleccionado.productoNombre);
+            $('#confirmCantidad').text(cantidad);
+            $('#confirmMotivo').text(motivoBase);
+            $('#confirmTotal').text(totalConIva.toFixed(2));
+
+            modalConfirmacion.show();
+        }
+        function procesarDevolucionFinal() {
+            if (!productoSeleccionado || !facturaActual) {
+                mostrarError('Datos incompletos');
                 return;
             }
+
+            // Cerrar modal de confirmación
+            modalConfirmacion.hide();
+
+            const motivoBase = $('#motivoDevolucion').val();
+            const descripcion = $('#descripcionDevolucion').val().trim();
+            const cantidad = parseInt($('#cantidadDevolver').val()) || 0;
+            const reintegrar = $('#reintegrarInventario').is(':checked');
+            const subtotal = cantidad * productoSeleccionado.precio;
+            const iva = subtotal * 0.13;
+            const totalConIva = subtotal + iva;
 
             $('#btnConfirmar').prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Procesando...');
 
@@ -666,7 +713,7 @@
                         precioUnitario: productoSeleccionado.precio,
                         subtotal: subtotal,
                         motivo: motivoBase,
-                        descripcion: descripcion,  // Corregido
+                        descripcion: descripcion,
                         reintegrarInventario: reintegrar
                     };
 
@@ -699,6 +746,7 @@
             });
         }
 
+
         function actualizarInventario(idInventario, cantidadDevuelta, onSuccess) {
             $.ajax({
                 url: `/api/Inventario/aumentar-stock/${idInventario}?cantidad=${cantidadDevuelta}`,
@@ -716,12 +764,12 @@
 
         function finalizarDevolucion(idDevolucion, total, cantidadItems) {
             $('#mensajeExito').html(`
-                        <div class="alert alert-success">
-                            <p class="mb-2"><strong>Devolución:</strong> #${String(idDevolucion).padStart(3, '0')}</p>
-                            <p class="mb-2"><strong>Cantidad:</strong> ${cantidadItems} items</p>
-                            <p class="mb-0"><strong>Total:</strong> ${total.toFixed(2)}</p>
-                        </div>
-                    `);
+                            <div class="alert alert-success">
+                                <p class="mb-2"><strong>Devolución:</strong> #${String(idDevolucion).padStart(3, '0')}</p>
+                                <p class="mb-2"><strong>Cantidad:</strong> ${cantidadItems} items</p>
+                                <p class="mb-0"><strong>Total:</strong> ${total.toFixed(2)}</p>
+                            </div>
+                        `);
             modalExito.show();
 
             setTimeout(() => {
@@ -781,15 +829,15 @@
                                 : '<span class="badge bg-danger">No</span>';
 
                             const tr = `
-                                <tr>
-                                    <td><strong>${detalle.productoNombre || 'N/A'}</strong></td>
-                                    <td class="text-center"><span class="badge bg-secondary">${detalle.cantidadDevuelta || 0}</span></td>
-                                    <td><span class="badge bg-warning text-dark">${detalle.motivo}</span></td>
-                                    <td><small>${detalle.descripcion}</small></td>
-                                    <td class="text-center">${badgeInventario}</td>
-                                    <td class="text-end fw-bold">${(detalle.subtotal || 0).toFixed(2)}</td>
-                                </tr>
-                            `;
+                                    <tr>
+                                        <td><strong>${detalle.productoNombre || 'N/A'}</strong></td>
+                                        <td class="text-center"><span class="badge bg-secondary">${detalle.cantidadDevuelta || 0}</span></td>
+                                        <td><span class="badge bg-warning text-dark">${detalle.motivo}</span></td>
+                                        <td><small>${detalle.descripcion}</small></td>
+                                        <td class="text-center">${badgeInventario}</td>
+                                        <td class="text-end fw-bold">${(detalle.subtotal || 0).toFixed(2)}</td>
+                                    </tr>
+                                `;
                             tbody.append(tr);
                         });
                     } else {
@@ -824,12 +872,12 @@
                 error: function () {
                     const tbody = $('#tablaDevoluciones tbody');
                     tbody.html(`
-                            <tr>
-                                <td colspan="6" class="text-center py-4">
-                                    Error al buscar devoluciones
-                                </td>
-                            </tr>
-                        `);
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">
+                                        Error al buscar devoluciones
+                                    </td>
+                                </tr>
+                            `);
                 }
             });
         }
@@ -870,12 +918,12 @@
                     tipo === 'info' ? 'bi-info-circle' : 'bi-exclamation-circle';
 
             const alerta = $(`
-                    <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
-                        <i class="bi ${icon} me-2"></i>
-                        ${mensaje}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                `);
+                        <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                            <i class="bi ${icon} me-2"></i>
+                            ${mensaje}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    `);
 
             $('#alertContainer').html(alerta);
 
@@ -899,6 +947,7 @@
         window.cambiarMotivo = cambiarMotivo;
         window.actualizarEstadoReintegro = actualizarEstadoReintegro;
         window.confirmarDevolucion = confirmarDevolucion;
+        window.procesarDevolucionFinal = procesarDevolucionFinal;  // ← AGREGAR
         window.buscarFactura = buscarFactura;
         window.limpiarBusqueda = limpiarBusqueda;
         window.cerrarModalNueva = cerrarModalNueva;
