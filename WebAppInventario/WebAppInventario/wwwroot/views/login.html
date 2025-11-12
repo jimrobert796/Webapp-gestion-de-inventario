@@ -6,7 +6,8 @@
     <title>Login - Sistema de Inventario</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 
-    <!--Modificada por Wil-->
+    <!-- Lottie Player para Lordicon -->
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 
     <style>
         :root {
@@ -25,6 +26,7 @@
             padding: 12px;
             font-weight: 600;
             color: white;
+            transition: all 0.3s ease;
         }
 
             .btn-ferreteria:hover {
@@ -48,39 +50,147 @@
                 background: radial-gradient(circle at 10% 20%, rgba(230, 126, 34, 0.4) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(44, 62, 80, 0.4) 0%, transparent 40%), radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
                 z-index: 0;
             }
-    </style>
 
+        /* Estilos para el Lordicon */
+        .logo-container {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+            .logo-container:hover {
+                transform: scale(1.05);
+            }
+
+        .logo-cargando {
+            animation: pulse 1.5s infinite;
+        }
+
+        .logo-error {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .logo-success {
+            animation: bounce 0.6s ease-out;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px);
+            }
+
+            75% {
+                transform: translateX(10px);
+            }
+        }
+
+        @keyframes bounce {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .login-title {
+            background: linear-gradient(135deg, var(--ferreteria-primary), var(--ferreteria-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body class="bg-light">
-
     <div class="container-fluid vh-100">
         <div class="row h-100">
-            <!-- Lado izquierdo: Texto de Logo -->
+            <!-- Lado izquierdo: Logo Animado con Lordicon -->
             <div class="col-md-6 d-flex justify-content-center align-items-center bg-ferreteria text-white">
                 <div class="text-center">
-                    <h1 class="display-4">LOGO</h1>
-                    <p class="lead">(Placeholder)</p>
+                    <!-- Lordicon Animado -->
+                    <div class="logo-container mb-4" id="logoLogin">
+                        <lottie-player id="lordiconAnimation"
+                                       src="/css/animations/system-regular-63-settings-cog-hover-cog-1.json"
+                                       background="transparent"
+                                       speed="1"
+                                       style="width: 150px; height: 150px;"
+                                       loop
+                                       autoplay>
+                        </lottie-player>
+                    </div>
+
+                    <h1 class="display-4 fw-bold">FERRETERÍA PRO</h1>
+                    <p class="lead">Sistema de Inventario y Ventas</p>
+                    <div class="mt-4">
+                        <small class="text-light opacity-75">
+                            <i class="bi bi-gear-fill"></i> Gestión completa de inventario<br>
+                            <i class="bi bi-cash-stack"></i> Punto de venta integrado<br>
+                            <i class="bi bi-graph-up"></i> Reportes en tiempo real
+                        </small>
+                    </div>
                 </div>
             </div>
 
             <!-- Lado derecho: Formulario de Login -->
             <div class="col-md-6 d-flex justify-content-center align-items-center bg-light login-right">
-                <div class="card shadow p-4" style="width: 380px;">
-                    <h3 class="text-center mb-3">Iniciar Sesión</h3>
-
-                    <div class="mb-3">
-                        <label for="credencial" class="form-label">Credencial</label>
-                        <input type="text" id="credencial" class="form-control" placeholder="Ingrese su credencial" required>
+                <div class="card shadow p-4" style="width: 380px; position: relative; z-index: 1;">
+                    <div class="text-center mb-4">
+                        <h3 class="login-title">Iniciar Sesión</h3>
+                        <p class="text-muted">Ingresa tus credenciales para acceder</p>
                     </div>
 
                     <div class="mb-3">
-                        <label for="contraseña" class="form-label">Contraseña</label>
-                        <input type="password" id="contraseña" class="form-control" placeholder="Ingrese su contraseña" required>
+                        <label for="credencial" class="form-label fw-semibold">
+                            <i class="bi bi-person-circle me-2"></i>Credencial
+                        </label>
+                        <input type="text" id="credencial" class="form-control"
+                               placeholder="Ingrese su credencial" required
+                               onfocus="animarLogo('focus')"
+                               onblur="animarLogo('normal')">
                     </div>
 
-                    <button class="btn btn-ferreteria w-100" id="btnLogin">Ingresar</button>
+                    <div class="mb-4">
+                        <label for="contraseña" class="form-label fw-semibold">
+                            <i class="bi bi-shield-lock me-2"></i>Contraseña
+                        </label>
+                        <input type="password" id="contraseña" class="form-control"
+                               placeholder="Ingrese su contraseña" required
+                               onfocus="animarLogo('focus')"
+                               onblur="animarLogo('normal')"
+                               onkeyup="detectarEscritura()">
+                    </div>
 
-                    <div id="mensaje" class="text-danger text-center mt-3"></div>
+                    <button class="btn btn-ferreteria w-100 py-2" id="btnLogin">
+                        <span id="btnText">Ingresar al Sistema</span>
+                        <div id="btnLoading" class="spinner-border spinner-border-sm ms-2 d-none" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                    </button>
+
+                    <div id="mensaje" class="alert alert-danger mt-3 d-none" role="alert"></div>
                 </div>
             </div>
         </div>
@@ -88,55 +198,186 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
     <script>
+        let lordiconPlayer;
+        let typingTimer;
+        const doneTypingInterval = 1000; // 1 segundo
+
         $(document).ready(() => {
-            $('#btnLogin').click(() => {
-                let credencial = $('#credencial').val().trim();
-                let contraseña = $('#contraseña').val().trim();
+            // Inicializar Lordicon después de que cargue la página
+            setTimeout(() => {
+                lordiconPlayer = document.getElementById('lordiconAnimation');
+                configurarLordicon();
+            }, 500);
 
-                if (!credencial || !contraseña) {
-                    $('#mensaje').text('Por favor, complete todos los campos.');
-                    return;
-                }
-
-                // Llamada al endpoint de login
-                $.ajax({
-                    url: '/api/Empleados/login',
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        credencial: credencial,
-                        contraseña: contraseña
-                    }),
-                    success: (data) => {
-                        // Login exitoso
-                        localStorage.setItem('empleadoId', data.idEmpleado);
-                        localStorage.setItem('empleadoRol', data.idRol);
-                        localStorage.setItem('empleadoNombre', data.nombre);
-                        localStorage.setItem('empleadoCredencial', data.credencial);
-                        localStorage.setItem('empleadoRolNombre', data.rol);
-
-                        // Redirigir
-                        window.location.href = '/views/index.html';
-                    },
-                    error: (xhr) => {
-                        if (xhr.status === 401) {
-                            $('#mensaje').text('Credenciales incorrectas. Intente nuevamente.');
-                        } else {
-                            $('#mensaje').text('Error al iniciar sesión. Intente nuevamente.');
-                        }
-                    }
-                });
-            });
+            $('#btnLogin').click(procesarLogin);
 
             // Login con Enter
             $('#contraseña').keypress((e) => {
                 if (e.which === 13) {
-                    $('#btnLogin').click();
+                    procesarLogin();
                 }
             });
         });
-    </script>
 
+        function configurarLordicon() {
+            if (lordiconPlayer) {
+                // Configurar eventos del Lordicon
+                lordiconPlayer.addEventListener('mouseenter', () => {
+                    lordiconPlayer.setSpeed(1.5);
+                });
+
+                lordiconPlayer.addEventListener('mouseleave', () => {
+                    lordiconPlayer.setSpeed(1);
+                });
+            }
+        }
+
+        function animarLogo(estado) {
+            if (!lordiconPlayer) return;
+
+            switch (estado) {
+                case 'focus':
+                    lordiconPlayer.setSpeed(1.8);
+                    document.getElementById('logoLogin').classList.add('logo-cargando');
+                    break;
+                case 'normal':
+                    lordiconPlayer.setSpeed(1);
+                    document.getElementById('logoLogin').classList.remove('logo-cargando');
+                    break;
+                case 'error':
+                    lordiconPlayer.setSpeed(0.5);
+                    document.getElementById('logoLogin').classList.add('logo-error');
+                    setTimeout(() => {
+                        document.getElementById('logoLogin').classList.remove('logo-error');
+                        lordiconPlayer.setSpeed(1);
+                    }, 500);
+                    break;
+                case 'success':
+                    lordiconPlayer.setSpeed(2);
+                    document.getElementById('logoLogin').classList.add('logo-success');
+                    setTimeout(() => {
+                        document.getElementById('logoLogin').classList.remove('logo-success');
+                    }, 600);
+                    break;
+                case 'loading':
+                    lordiconPlayer.setSpeed(0.8);
+                    document.getElementById('logoLogin').classList.add('logo-cargando');
+                    break;
+            }
+        }
+
+        function detectarEscritura() {
+            const contraseña = $('#contraseña').val();
+
+            if (contraseña.length > 0) {
+                animarLogo('focus');
+
+                // Limpiar timer anterior
+                clearTimeout(typingTimer);
+
+                // Iniciar nuevo timer
+                typingTimer = setTimeout(() => {
+                    animarLogo('normal');
+                }, doneTypingInterval);
+            } else {
+                animarLogo('normal');
+            }
+        }
+
+        function procesarLogin() {
+            let credencial = $('#credencial').val().trim();
+            let contraseña = $('#contraseña').val().trim();
+
+            if (!credencial || !contraseña) {
+                mostrarMensaje('Por favor, complete todos los campos.', 'error');
+                animarLogo('error');
+                return;
+            }
+
+            // Mostrar estado de carga
+            $('#btnText').text('Verificando...');
+            $('#btnLoading').removeClass('d-none');
+            $('#btnLogin').prop('disabled', true);
+            animarLogo('loading');
+
+            // Llamada al endpoint de login
+            $.ajax({
+                url: '/api/Empleados/login',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    credencial: credencial,
+                    contraseña: contraseña
+                }),
+                success: (data) => {
+                    // Login exitoso
+                    animarLogo('success');
+                    mostrarMensaje('¡Acceso concedido! Redirigiendo...', 'success');
+
+                    // Guardar datos en localStorage
+                    localStorage.setItem('empleadoId', data.idEmpleado);
+                    localStorage.setItem('empleadoRol', data.idRol);
+                    localStorage.setItem('empleadoNombre', data.nombre);
+                    localStorage.setItem('empleadoCredencial', data.credencial);
+                    localStorage.setItem('empleadoRolNombre', data.rol);
+
+                    // Redirigir después de un breve delay para ver la animación
+                    setTimeout(() => {
+                        window.location.href = '/views/index.html';
+                    }, 1000);
+                },
+                error: (xhr) => {
+                    // Restaurar estado del botón
+                    $('#btnText').text('Ingresar al Sistema');
+                    $('#btnLoading').addClass('d-none');
+                    $('#btnLogin').prop('disabled', false);
+
+                    if (xhr.status === 401) {
+                        mostrarMensaje('Credenciales incorrectas. Intente nuevamente.', 'error');
+                        animarLogo('error');
+                    } else {
+                        mostrarMensaje('Error al iniciar sesión. Intente nuevamente.', 'error');
+                        animarLogo('error');
+                    }
+                }
+            });
+        }
+
+        function mostrarMensaje(mensaje, tipo) {
+            const mensajeElement = $('#mensaje');
+            mensajeElement.removeClass('d-none alert-success alert-danger');
+
+            if (tipo === 'success') {
+                mensajeElement.addClass('alert-success');
+            } else {
+                mensajeElement.addClass('alert-danger');
+            }
+
+            mensajeElement.text(mensaje);
+
+            // Auto-ocultar mensajes de éxito
+            if (tipo === 'success') {
+                setTimeout(() => {
+                    mensajeElement.addClass('d-none');
+                }, 3000);
+            }
+        }
+
+        // Efecto adicional: Cambiar velocidad según longitud de contraseña
+        $('#contraseña').on('input', function () {
+            if (!lordiconPlayer) return;
+
+            const longitud = $(this).val().length;
+            if (longitud > 0 && longitud < 4) {
+                lordiconPlayer.setSpeed(0.7);
+            } else if (longitud >= 4 && longitud < 8) {
+                lordiconPlayer.setSpeed(1.2);
+            } else if (longitud >= 8) {
+                lordiconPlayer.setSpeed(1.8);
+            }
+        });
+    </script>
 </body>
 </html>
