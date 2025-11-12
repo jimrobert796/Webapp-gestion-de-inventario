@@ -13,7 +13,7 @@ namespace WebAppInventario.Models
         public bool estado { get; set; } = true; // true = activo, false = inactivo
         public DateTime ultimaActualizacion { get; set; }
 
-
+        public ICollection<Compra>? Compras { get; set; }
         public ICollection<Producto>? Productos { get; set; }
     }
 }

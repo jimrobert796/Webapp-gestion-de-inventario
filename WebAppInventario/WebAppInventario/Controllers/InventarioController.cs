@@ -141,12 +141,16 @@ namespace WebAppInventario.Controllers
 
             inventario.cantidad -= cantidad;
 
+            // Actualizar fecha de última modificación
+            inventario.ultimaActualizacion = DateTime.Now;
+
             await _context.SaveChangesAsync();
             return Ok(new
             {
                 mensaje = "Stock reducido correctamente.",
                 inventario.idInventario,
-                inventario.cantidad
+                inventario.cantidad,
+                inventario.ultimaActualizacion
             });
         }
 
@@ -163,6 +167,8 @@ namespace WebAppInventario.Controllers
                 return NotFound("No se encontró el producto en inventario.");
 
             inventario.cantidad += cantidad;
+            // Actualizar fecha de última modificación
+            inventario.ultimaActualizacion = DateTime.Now;
 
             await _context.SaveChangesAsync();
             return Ok(new

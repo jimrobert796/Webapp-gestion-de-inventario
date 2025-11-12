@@ -93,6 +93,38 @@ namespace WebAppInventario.Controllers
             return Ok(devoluciones);
         }
 
+        // GET: api/Devoluciones/buscar-por-fecha?fecha=2024-01-15
+        [HttpGet("buscar-por-fecha")]
+        public async Task<ActionResult<IEnumerable<object>>> BuscarDevolucionesPorFecha([FromQuery] BusquedaFechaDevoluciones parametros)
+        {
+            if (!parametros.fecha.HasValue)
+                return BadRequest("La fecha es requerida");
+
+            var consulta = _context.Devoluciones
+                .Include(d => d.Empleado)
+                .Include(d => d.Factura)
+                .Where(d => d.fechaDevolucion == parametros.fecha.Value);
+
+            var devoluciones = await consulta
+                .Select(d => new
+                {
+                    d.idDevolucion,
+                    d.idFactura,
+                    d.idEmpleado,
+                    d.Factura.numeroFactura,
+                    d.Empleado.nombre,
+                    d.cantidad,
+                    d.fechaDevolucion,
+                    d.horaDevolucion,
+                    d.totalDevolucion
+                })
+                .ToListAsync();
+
+            if (devoluciones.Count == 0)
+                return NotFound($"No se encontraron devoluciones para la fecha {parametros.fecha:yyyy-MM-dd}");
+
+            return Ok(devoluciones);
+        }
 
 
         // GET: api/Devoluciones/5

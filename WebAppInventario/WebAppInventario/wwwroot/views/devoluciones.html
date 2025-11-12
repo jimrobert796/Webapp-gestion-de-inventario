@@ -6,7 +6,6 @@
     <title>Sistema de Devoluciones</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
     <style>
         .table-scroll {
             max-height: 400px;
@@ -51,7 +50,11 @@
                             <span class="input-group-text bg-warning text-dark">
                                 <i class="bi bi-search"></i>
                             </span>
-                            <input type="text" class="form-control" id="inputBuscar" placeholder="Buscar...">
+
+                            <!-- AGREGAR ESTO: Input para fecha -->
+                            <input type="date" class="form-control" id="inputFecha" style="max-width: 140px;" max="<?php echo date('Y-m-d'); ?>">
+
+                            <input type="text" class="form-control" id="inputBuscar" placeholder="Factura o empleado">
                             <button class="btn btn-outline-secondary" type="button" id="btnLimpiarBusq">
                                 <i class="bi bi-x-lg"></i>
                             </button>
@@ -63,9 +66,8 @@
                     <table class="table table-striped table-hover" id="tablaDevoluciones">
                         <thead class="table-dark">
                             <tr>
-                                <th>#</th>
                                 <th>Factura</th>
-                                <th>Cliente</th>
+                                <th>Empleado</th>
                                 <th>Items</th>
                                 <th>Fecha</th>
                                 <th class="text-end">Total</th>
@@ -234,8 +236,8 @@
                                     <small class="text-muted" id="textoReintegro">El producto será devuelto al inventario</small>
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label fw-bold">Descripción Detallada:</label>
-                                    <textarea id="descripcionDevolucion" class="form-control" rows="3" placeholder="Describa detalladamente el motivo de la devolución..."></textarea>
+                                    <label class="form-label fw-bold">Descripción (Opcional):</label>
+                                    <textarea id="descripcionDevolucion" class="form-control" rows="3" placeholder="Describa opcionalmente el motivo de devlolucion."></textarea>
                                 </div>
                             </div>
 
@@ -375,7 +377,7 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  
     <script>
         // Variables globales (cambiadas a 'var' para evitar redeclaraciones al recargar)
         var facturaActual = null;
@@ -409,7 +411,16 @@
             $('#btnNueva').click(() => modalNueva.show());
             $('#btnVerDetalle').click(verDetalle);
             $('#inputBuscar').on('keyup', filtrarDevoluciones);
-            $('#btnLimpiarBusq').click(() => { $('#inputBuscar').val(''); cargarDevoluciones(); });
+
+            const hoy = new Date().toISOString().split('T')[0];
+            $('#inputFecha').attr('max', hoy);
+
+            $('#inputFecha').on('change', filtrarPorFecha);
+            $('#btnLimpiarBusq').click(() => {
+                $('#inputBuscar').val('');
+                $('#inputFecha').val('');
+                cargarDevoluciones()
+            });
             $('#buscarFactura').on('keypress', (e) => { if (e.which === 13) buscarFactura(); });
             $('#motivoDevolucion, #descripcionDevolucion, #cantidadDevolver').on('input change', () => {
                 validarFormulario();
@@ -432,6 +443,37 @@
             });
         }
 
+        function filtrarPorFecha() {
+            const fecha = $('#inputFecha').val();
+            const hoy = new Date().toISOString().split('T')[0];
+
+            // Validar que no sea fecha futura
+            if (fecha > hoy) {
+                mostrarError('No puede buscar devoluciones de fechas futuras');
+                $('#inputFecha').val(''); // Limpiar el campo
+                cargarDevoluciones();
+                return;
+            }
+
+            if (!fecha) {
+                cargarDevoluciones();
+                return;
+            }
+
+            $.ajax({
+                url: `/api/Devoluciones/buscar-por-fecha?fecha=${fecha}`,
+                method: 'GET',
+                success: function (devolucionesFiltradas) {
+                    actualizarTabla(devolucionesFiltradas);
+                },
+                error: function (err) {
+                    console.error('Error:', err);
+                    mostrarError('No existen devoluciones para el '+ fecha);
+                }
+            });
+        }
+
+
         // TABLA DE VISTA AL INICIO
         function actualizarTabla(devoluciones) {
             const tbody = $('#tablaDevoluciones tbody');
@@ -452,9 +494,8 @@
             devoluciones.forEach(dev => {
                 const tr = $(`
                                 <tr style="cursor: pointer;" onclick="seleccionarDevolucion(${dev.idDevolucion})">
-                                    <td class="fw-bold">#${String(dev.idDevolucion).padStart(3, '0')}</td>
                                     <td><span class="badge bg-primary">${dev.numeroFactura || 'N/A'}</span></td>
-                                    <td>${dev.nombre || 'Cliente General'}</td>
+                                    <td>${dev.nombre || 'Empleado'}</td>
                                     <td class="text-center"><span class="badge bg-secondary">${dev.cantidad || 0}</span></td>
                                     <td>${new Date(dev.fechaDevolucion).toLocaleDateString('es-SV')}</td>
                                     <td class="text-end fw-bold text-primary">$${(dev.totalDevolucion || 0).toFixed(2)}</td>
@@ -539,7 +580,7 @@
                 if (puedeDevolver) hayDisponibles = true;
 
                 const tr = `
-                                <tr class="${!puedeDevolver ? 'table-secondary' : ''}">
+                                <tr>
                                     <td>
                                         <strong>${detalle.productoNombre || 'Producto'}</strong>
                                         ${!puedeDevolver ? '<br><small class="text-danger">Sin disponibilidad</small>' : ''}
@@ -555,7 +596,7 @@
                         ? `<button class="btn btn-sm btn-primary" onclick='seleccionarProducto(${JSON.stringify(detalle)}, ${disponible})'>
                                                     <i class="bi bi-check-lg"></i> Seleccionar
                                                 </button>`
-                        : '<span class="text-muted">Ya devueltos</span>'}
+                    : '<span class= "text-danger">Ya devueltos</span>'}
                                     </td>
                                 </tr>
                             `;
@@ -646,7 +687,7 @@
             const descripcion = $('#descripcionDevolucion').val().trim();
             const cantidad = parseInt($('#cantidadDevolver').val()) || 0;
 
-            const valido = productoSeleccionado && motivo && descripcion && cantidad > 0;
+            const valido = productoSeleccionado && motivo && cantidad > 0;
             $('#btnConfirmar').prop('disabled', !valido);
         }
         function confirmarDevolucion() {
@@ -857,6 +898,13 @@
 
         function filtrarDevoluciones() {
             const busqueda = $('#inputBuscar').val().trim();
+            const fecha = $('#inputFecha').val(); // AGREGAR esta línea
+
+            // Si hay fecha seleccionada, priorizar filtro por fecha
+            if (fecha) {
+                filtrarPorFecha();
+                return;
+            }
 
             if (!busqueda) {
                 cargarDevoluciones();
@@ -872,12 +920,12 @@
                 error: function () {
                     const tbody = $('#tablaDevoluciones tbody');
                     tbody.html(`
-                                <tr>
-                                    <td colspan="6" class="text-center py-4">
-                                        Error al buscar devoluciones
-                                    </td>
-                                </tr>
-                            `);
+                <tr>
+                    <td colspan="6" class="text-center py-4">
+                        Error al buscar devoluciones
+                    </td>
+                </tr>
+            `);
                 }
             });
         }

@@ -23,6 +23,7 @@ namespace WebAppInventario.Models
         public ICollection<Factura>? Facturas { get; set; }
         public ICollection<Devolucion>? Devolucion { get; set; }
 
+
         // Propiedad de navegación hacia la categoría
         public Rol? Rol { get; set; }
 

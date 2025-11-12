@@ -63,6 +63,19 @@ namespace WebAppInventario.Models
                .WithMany(a => a.Compras)
                .HasForeignKey(i => i.idEmpleado);
 
+            modelBuilder.Entity<Compra>()
+               .HasOne(i => i.EmpleadoAnulacion)
+               .WithMany()
+               .HasForeignKey(i => i.idEmpleadoAnulacion);
+
+            modelBuilder.Entity<Compra>()
+               .HasOne(i => i.Proveedor)
+               .WithMany(a => a.Compras)
+               .HasForeignKey(i => i.idProveedor);
+
+            
+
+
             // Una compra puede tener detalles
             modelBuilder.Entity<CompraDetalle>()
                 .HasOne(f => f.Compra)

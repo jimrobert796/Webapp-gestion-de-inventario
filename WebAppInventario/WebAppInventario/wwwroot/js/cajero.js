@@ -483,7 +483,7 @@
                             // Disminuir inventario
                             disminuirInventario(detalle.productoId, detalle.cantidad, () => {
                                 if (detallesEnviados === totalDetalles) {
-                                    mostrarModalError('✅ Pago procesado exitosamente!\nFactura Nº: ' + numeroFacturaActual, true); // Usar modal para éxito también, o alert
+                                    mostrarModalError('Pago procesado exitosamente!\nFactura Nº: ' + numeroFacturaActual, true); // Usar modal para éxito también, o alert
                                     limpiarTodo();
                                 }
                             });
