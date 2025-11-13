@@ -1,7 +1,13 @@
 wwwroot\css\animations\system-regular-63-settings-cog-hover-cog-1.json
+wwwroot\css\img\android-chrome-192x192.png
+wwwroot\css\img\android-chrome-512x512.png
+wwwroot\css\img\apple-touch-icon.png
+wwwroot\css\img\favicon-16x16.png
+wwwroot\css\img\favicon-32x32.png
+wwwroot\css\img\favicon.ico
 wwwroot\css\img\logo 1-1.png
-wwwroot\css\img\logo 1.png
-wwwroot\css\img\logo 2.png
+wwwroot\css\img\logo 1-2.png
+wwwroot\css\img\site.webmanifest
 wwwroot\css\styles.css
 wwwroot\js\empleados.js
 wwwroot\views\cajero.html
@@ -13,8 +19,8 @@ wwwroot\views\facturas.html
 wwwroot\views\index.html
 wwwroot\views\inventario.html
 wwwroot\views\login.html
-wwwroot\views\productos.html
+wwwroot\views\perfil.html
 wwwroot\views\proveedores.html
 wwwroot\views\registroCompras.html
 wwwroot\views\test.html
-wwwroot\views\perfil.html
+wwwroot\views\productos.html

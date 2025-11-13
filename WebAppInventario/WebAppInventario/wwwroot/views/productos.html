@@ -2,31 +2,281 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Productos</title>
+    <title>Productos - Ferretería PRO</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Estilos personalizados para scroll interno en la tabla -->
     <style>
-        .table-scroll {
-            max-height: 300px; /* Altura máxima de la tabla (ajusta según necesites) */
-            overflow-y: auto; /* Scroll vertical interno */
-        }
-                /* Encabezados fijos */
-        .table-scroll thead th {
-            position: sticky;
-            top: 0;
- 
-            z-index: 100;
-            border-bottom: 2px solid #dee2e6;
+        :root {
+            --ferreteria-primary: #2C3E50;
+            --ferreteria-accent: #E67E22;
+            --ferreteria-light: #ECF0F1;
         }
 
-        /* Asegurar que las celdas tengan buen contraste */
-        .table-scroll thead th {
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        h1, h2, h3, h4, h5, h6,
+        .card-header,
+        .modal-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        /* ========== PERSONALIZACIÓN DE BOTONES ========== */
+        .btn {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            padding: 10px 20px;
+        }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            }
+
+            .btn:active {
+                transform: translateY(0);
+                box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            }
+
+        /* Botón Primario - Nuevo Producto */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-primary:hover {
+                background: linear-gradient(135deg, #34495E, var(--ferreteria-primary));
+                box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
+            }
+
+        /* Botón Warning - Editar */
+        .btn-warning {
+            background: linear-gradient(135deg, #E67E22, #D35400);
             color: white;
-            padding: 12px 8px;
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-warning:hover {
+                background: linear-gradient(135deg, #D35400, #E67E22);
+                color: white;
+                box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
+            }
+
+        /* Botón Danger - Eliminar */
+        .btn-danger {
+            background: linear-gradient(135deg, #E74C3C, #C0392B);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-danger:hover {
+                background: linear-gradient(135deg, #C0392B, #E74C3C);
+                box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+            }
+
+        /* Botón Success - Guardar/Éxito */
+        .btn-success {
+            background: linear-gradient(135deg, #27AE60, #229954);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-success:hover {
+                background: linear-gradient(135deg, #229954, #27AE60);
+                box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+            }
+
+        /* Botón Secondary - Cancelar */
+        .btn-secondary {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-secondary:hover {
+                background: linear-gradient(135deg, #7f8c8d, #95a5a6);
+                box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+            }
+
+        /* Botón Outline - Buscar/Limpiar */
+        .btn-outline-secondary {
+            border: 2px solid #6c757d;
+            color: #6c757d;
+            background: transparent;
+            font-weight: 500;
+        }
+
+            .btn-outline-secondary:hover {
+                background: #6c757d;
+                color: white;
+                border-color: #6c757d;
+            }
+
+        /* Efecto de ripple en los botones */
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+
+        /* Iconos dentro de botones */
+        .btn i {
+            margin-right: 5px;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover i {
+            transform: scale(1.1);
+        }
+
+        /* Estados deshabilitados */
+        .btn:disabled {
+            opacity: 0.6;
+            transform: none !important;
+            box-shadow: none !important;
+            cursor: not-allowed;
+        }
+
+            .btn:disabled:hover {
+                transform: none !important;
+                box-shadow: none !important;
+            }
+
+        /* ========== ESTILOS PARA LA TABLA ========== */
+        .table-scroll {
+            max-height: 400px;
+            overflow-y: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+            .table-scroll thead th {
+                position: sticky;
+                top: 0;
+                background: var(--ferreteria-primary);
+                color: white;
+                z-index: 100;
+                border-bottom: 2px solid #dee2e6;
+                padding: 12px 8px;
+                font-family: 'Montserrat', sans-serif;
+                font-weight: 600;
+            }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(44, 62, 80, 0.05);
+            transform: scale(1.01);
+            transition: all 0.2s ease;
+        }
+
+        .table-primary {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.1), rgba(52, 73, 94, 0.05)) !important;
+            border-left: 4px solid var(--ferreteria-primary);
+        }
+
+        /* ========== ESTILOS PARA TARJETAS Y MODALES ========== */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+            .card:hover {
+                box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+            }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 15px 20px;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
+        }
+
+        .border.rounded {
+            border: 2px solid #e9ecef !important;
+            transition: all 0.3s ease;
+        }
+
+            .border.rounded:hover {
+                border-color: var(--ferreteria-primary) !important;
+                box-shadow: 0 2px 8px rgba(44, 62, 80, 0.1);
+            }
+
+        /* ========== ESTILOS PARA FORMULARIOS ========== */
+        .form-control, .form-select {
+            border-radius: 6px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: var(--ferreteria-primary);
+                box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.25);
+            }
+
+        .form-label {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            color: var(--ferreteria-primary);
+            margin-bottom: 8px;
+        }
+
+        .input-group-text {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E);
+            border: none;
+            color: white;
+            font-weight: 500;
+        }
+
+        /* ========== BADGES Y ETIQUETAS ========== */
+        .badge {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            border-radius: 6px;
         }
     </style>
 </head>
@@ -37,7 +287,7 @@
         <div class="card shadow">
             <!-- Encabezado de la tarjeta -->
             <div class="card-header bg-primary text-white">
-                <h2 class="mb-0">Gestión de Productos</h2>
+                <h2 class="mb-0"><i class="bi bi-box-seam me-2"></i>Gestión de Productos</h2>
             </div>
 
             <!-- Cuerpo de la tarjeta -->
@@ -46,15 +296,21 @@
                 <div class="row mb-3 align-items-center">
                     <!-- Botones CRUD al lado izquierdo -->
                     <div class="col-md-6">
-                        <button id="btnNuevo" class="btn btn-primary">Nuevo Producto</button>
-                        <button id="btnEditar" class="btn btn-warning" disabled>Editar</button>
-                        <button id="btnEliminar" class="btn btn-danger" disabled>Eliminar</button>
+                        <button id="btnNuevo" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Nuevo Producto
+                        </button>
+                        <button id="btnEditar" class="btn btn-warning" disabled>
+                            <i class="bi bi-pencil-square"></i> Editar
+                        </button>
+                        <button id="btnEliminar" class="btn btn-danger" disabled>
+                            <i class="bi bi-trash"></i> Eliminar
+                        </button>
                     </div>
 
                     <!-- Buscador al lado derecho -->
                     <div class="col-md-6">
                         <div class="input-group">
-                            <span class="input-group-text bg-primary text-white">
+                            <span class="input-group-text">
                                 <i class="bi bi-search"></i>
                             </span>
                             <input type="text" class="form-control" id="inputBuscar" placeholder="Buscar por nombre o código...">
@@ -91,7 +347,6 @@
     <!-- ========== MODAL PARA AGREGAR/EDITAR PRODUCTO ========== -->
     <div class="modal fade" id="modalProducto" tabindex="-1">
         <div class="modal-dialog modal-xl">
-            <!-- Cambié a modal-xl para que quepa todo -->
             <div class="modal-content">
                 <!-- Encabezado del modal -->
                 <div class="modal-header bg-primary text-white">
@@ -106,7 +361,8 @@
                     <form id="formProducto">
                         <!-- Campos ocultos -->
                         <input type="hidden" id="idProducto">
-                        <input type="hidden" id="idInventario">  <!-- Agregado para inventario -->
+                        <input type="hidden" id="idInventario">
+
                         <!-- Sección Producto -->
                         <div class="border rounded p-3 mb-4">
                             <h6 class="text-primary mb-3">
@@ -176,7 +432,6 @@
 
                         <!-- Sección Inventario (solo visible en modo Nuevo) -->
                         <div class="border rounded p-3 d-none" id="seccionInventario">
-                            <!-- Oculta por defecto -->
                             <h6 class="text-success mb-3">
                                 <i class="bi bi-clipboard-data"></i> Información del Inventario
                             </h6>
@@ -229,22 +484,22 @@
         </div>
     </div>
 
-
     <!-- ========== MODAL DE CONFIRMACIÓN DE ELIMINACIÓN ========== -->
     <div class="modal fade" id="modalEliminar" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Confirmar Eliminación</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Mensaje de confirmación con nombre del producto -->
                     <p class="mb-0">¿Desea eliminar el producto <strong id="nombreProductoEliminar"></strong>?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                    <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">Sí, Eliminar</button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">
+                        <i class="bi bi-trash"></i> Sí, Eliminar
+                    </button>
                 </div>
             </div>
         </div>
@@ -255,15 +510,16 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">Éxito</h5>
+                    <h5 class="modal-title"><i class="bi bi-check-circle me-2"></i>Éxito</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Mensaje dinámico de éxito (se cambia desde JavaScript) -->
                     <p class="mb-0" id="mensajeExito"></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Aceptar</button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">
+                        <i class="bi bi-check-lg"></i> Aceptar
+                    </button>
                 </div>
             </div>
         </div>
@@ -274,43 +530,46 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Error</h5>
+                    <h5 class="modal-title"><i class="bi bi-x-circle me-2"></i>Error</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Mensaje dinámico de error (se cambia desde JavaScript) -->
                     <p class="mb-0" id="mensajeError"></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg"></i> Cerrar
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
     <!-- ========== JAVASCRIPT PRINCIPAL ========== -->
     <script>
         (function () {
             // ========== VARIABLES GLOBALES ==========
-            let productosFiltrados = [];     // Array para almacenar productos filtrados desde la API
-            let proveedores = [];              // Array para proveedores
-            let categorias = [];               // Array para categorías
-            let filaSeleccionada = null;       // Índice de la fila seleccionada en la tabla
-            let modoEdicion = false;           // Bandera para saber si estamos editando o agregando
-            let modalProducto;                 // Instancia del modal de producto
-            let debounceTimer;                 // Timer para debounce en búsqueda
+            let productosFiltrados = [];
+            let proveedores = [];
+            let categorias = [];
+            let filaSeleccionada = null;
+            let modoEdicion = false;
+            let modalProducto;
+            let debounceTimer;
 
             // ========== FUNCIÓN PARA BUSCAR PRODUCTOS DESDE LA API ==========
             function buscarProductos(textoBusqueda = '') {
-                // Limpiar timer anterior para debounce
                 clearTimeout(debounceTimer);
-                // Esperar 300ms antes de hacer la llamada (evita llamadas excesivas)
                 debounceTimer = setTimeout(() => {
                     $.ajax({
-                        url: `/api/Productos/buscar?buscar=${encodeURIComponent(textoBusqueda)}`,  // Endpoint de búsqueda
+                        url: `/api/Productos/buscar?buscar=${encodeURIComponent(textoBusqueda)}`,
                         method: "GET",
                         success: function (data) {
-                            // Mapear los datos recibidos al formato que usamos (ajustado a la estructura real)
                             productosFiltrados = data.map(prod => ({
                                 idProducto: prod.idProducto,
                                 idProveedor: prod.idProveedor || 0,
@@ -321,71 +580,63 @@
                                 fechaProd: prod.fechaProd,
                                 fechaVenc: prod.fechaVenc,
                                 estado: prod.estado,
-                                proveedorNombre: prod.proveedor ? prod.proveedor.trim() : '',  // Cambiado de proveedorNombre a proveedor
-                                categoriaNombre: prod.categoria ? prod.categoria.trim() : ''   // Cambiado de categoriaNombre a categoria
+                                proveedorNombre: prod.proveedor ? prod.proveedor.trim() : '',
+                                categoriaNombre: prod.categoria ? prod.categoria.trim() : ''
                             }));
-                            renderTabla(); // Actualizar la tabla con los datos filtrados
-                            // Resetear selección al buscar
+                            renderTabla();
                             filaSeleccionada = null;
                             $("#btnEditar, #btnEliminar").prop("disabled", true);
                         },
                         error: function (err) {
                             console.error("Error buscando productos:", err);
-                            // Mostrar modal de error
                             $("#mensajeError").text("Error al buscar productos. Intente nuevamente.");
                             let modalError = new bootstrap.Modal(document.getElementById('modalError'));
                             modalError.show();
                         }
                     });
-                }, 300);  // Debounce de 300ms
+                }, 300);
             }
 
             // ========== FUNCIÓN PARA RENDERIZAR LA TABLA ==========
             function renderTabla() {
                 let tbody = $("#tablaProductos tbody");
-                tbody.empty(); // Limpiar el contenido actual de la tabla
+                tbody.empty();
 
-                // Si no hay productos, mostrar mensaje
                 if (productosFiltrados.length === 0) {
                     let mensaje = "No se encontraron productos con ese criterio de búsqueda";
                     tbody.append(`
-                                            <tr>
-                                                <td colspan="6" class="text-center text-muted">
-                                                    ${mensaje}
-                                                </td>
-                                            </tr>
-                                        `);
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-4">
+                                        <i class="bi bi-search display-4 d-block mb-2"></i>
+                                        ${mensaje}
+                                    </td>
+                                </tr>
+                            `);
                     return;
                 }
 
-                // Recorrer el array de productos y crear filas
+                // Agrega descriciones y fechas formateadas
                 productosFiltrados.forEach((prod, i) => {
                     tbody.append(`
-                                            <tr data-index="${i}">
-                                                <td>${prod.nombre}</td>
-                                                <td>${prod.codigo}</td>
-                                                <td>${prod.proveedorNombre}</td>
-                                                <td>${prod.categoriaNombre}</td>
-                                                <td>${prod.descripcion}</td>
-                                                <td>${prod.fechaProd ? new Date(prod.fechaProd).toLocaleDateString() : ''}</td>
-                                                <td>${prod.fechaVenc ? new Date(prod.fechaVenc).toLocaleDateString() : ''}</td>
-                                            </tr>
-                                        `);
+                                <tr data-index="${i}">
+                                    <td>${prod.nombre}</td>
+                                    <td><span class="badge bg-primary">${prod.codigo}</span></td>
+                                    <td>${prod.proveedorNombre}</td>
+                                    <td>${prod.categoriaNombre}</td>
+                                    <td>${prod.descripcion || '<span class="text-muted">Sin descripción</span>'}</td>
+                                    <td>${prod.fechaProd ? new Date(prod.fechaProd).toLocaleDateString() : '<span class="text-muted">N/A</span>'}</td>
+                                    <td>${prod.fechaVenc ? new Date(prod.fechaVenc).toLocaleDateString() : '<span class="text-muted">N/A</span>'}</td>
+                                </tr>
+                            `);
                 });
 
-                // Agregar evento click a cada fila de la tabla
                 $("#tablaProductos tbody tr").click(function () {
-                    // No hacer nada si es la fila de "no hay productos"
                     if ($(this).find('td').length === 1) return;
 
-                    // Remover la clase de selección de todas las filas
                     $("#tablaProductos tbody tr").removeClass("table-primary");
-                    // Agregar clase de selección a la fila clickeada
                     $(this).addClass("table-primary");
-                    // Guardar el índice de la fila seleccionada
                     filaSeleccionada = $(this).data("index");
 
-                    // Habilitar los botones de Editar y Eliminar
                     $("#btnEditar, #btnEliminar").prop("disabled", false);
                 });
             }
@@ -430,30 +681,28 @@
                 });
             }
 
-            // ========== FUNCIÓN PARA CARGAR PRODUCTOS DESDE LA API (PARA INICIALIZACIÓN) ==========
+            // ========== FUNCIÓN PARA CARGAR PRODUCTOS DESDE LA API ==========
             function cargarProductos() {
-                buscarProductos('');  // Inicializar búsqueda vacía (mostrar todos)
+                buscarProductos('');
             }
-
-            
 
             // ========== FUNCIÓN PARA LIMPIAR EL FORMULARIO ==========
             function limpiarFormulario() {
-                $("#formProducto")[0].reset();  // Reset del formulario HTML
-                $("#idProducto").val("");       // Limpiar el ID oculto
-                $("#idInventario").val("");     // Limpiar el ID de inventario
+                $("#formProducto")[0].reset();
+                $("#idProducto").val("");
+                $("#idInventario").val("");
             }
 
             // ========== FUNCIÓN PARA ABRIR MODAL EN MODO "NUEVO" ==========
             function abrirModalNuevo() {
-                modoEdicion = false;  // Indicar que estamos agregando
-                limpiarFormulario();  // Limpiar el formulario
-                // Obtener nuevo código desde la API
+                modoEdicion = false;
+                limpiarFormulario();
+
                 $.ajax({
                     url: "/api/Productos/nuevo-Codigo",
                     method: "GET",
                     success: function (data) {
-                        $("#codigo").val(data);  // data es directamente el string del código, ej. "PRD000009"
+                        $("#codigo").val(data);
                     },
                     error: function (err) {
                         console.error("Error obteniendo nuevo código:", err);
@@ -462,27 +711,26 @@
                         modalError.show();
                     }
                 });
-                // Mostrar sección de inventario y hacer campos requeridos
+
                 $("#seccionInventario").removeClass("d-none");
                 $("#precio, #costo, #cantidad, #ubicacion").prop("required", true);
-                // Configurar el título y botón para "Nuevo"
-                $("#modalTitulo").text("Nuevo Producto");
-                $("#btnGuardar").text("Guardar").removeClass("btn-warning").addClass("btn-primary");
-                modalProducto.show();  // Mostrar el modal
+                $("#modalTitulo").html('<i class="bi bi-plus-circle"></i> Nuevo Producto');
+                $("#btnGuardar").html('<i class="bi bi-check-circle"></i> Guardar').removeClass("btn-warning").addClass("btn-primary");
+                modalProducto.show();
             }
 
             // ========== FUNCIÓN PARA ABRIR MODAL EN MODO "EDITAR" ==========
             function abrirModalEditar() {
-                // Validar que hay una fila seleccionada
                 if (filaSeleccionada === null) {
-                    alert("Seleccione un producto para editar");
+                    $("#mensajeError").text("Seleccione un producto para editar");
+                    let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                    modalError.show();
                     return;
                 }
 
-                modoEdicion = true;  // Indicar que estamos editando
-                let prod = productosFiltrados[filaSeleccionada];  // Obtener datos del producto filtrado
+                modoEdicion = true;
+                let prod = productosFiltrados[filaSeleccionada];
 
-                // Llenar el formulario con los datos del producto
                 $("#idProducto").val(prod.idProducto);
                 $("#idProveedor").val(prod.idProveedor);
                 $("#idCategoria").val(prod.idCategoria);
@@ -492,27 +740,23 @@
                 $("#fechaProd").val(prod.fechaProd);
                 $("#fechaVenc").val(prod.fechaVenc);
 
-                // Ocultar sección de inventario y quitar required
                 $("#seccionInventario").addClass("d-none");
                 $("#precio, #costo, #cantidad, #ubicacion").prop("required", false);
 
-                // Configurar el título y botón para "Editar"
-                $("#modalTitulo").text("Editar Producto");
-                $("#btnGuardar").text("Guardar Cambios").removeClass("btn-primary").addClass("btn-warning");
-                modalProducto.show();  // Mostrar el modal
+                $("#modalTitulo").html('<i class="bi bi-pencil-square"></i> Editar Producto');
+                $("#btnGuardar").html('<i class="bi bi-check-circle"></i> Guardar Cambios').removeClass("btn-primary").addClass("btn-warning");
+                modalProducto.show();
             }
 
-            // ========== FUNCIÓN PARA GUARDAR PRODUCTO (AGREGAR O EDITAR) ==========
+            // ========== FUNCIÓN PARA GUARDAR PRODUCTO ==========
             function guardarProducto() {
-                // Validar que el formulario esté completo
                 if (!$("#formProducto")[0].checkValidity()) {
                     $("#formProducto")[0].reportValidity();
                     return;
                 }
 
-                // Recopilar datos del formulario
                 let datosProducto = {
-                    idProducto: 0,  // Se ajusta en modo edición
+                    idProducto: 0,
                     idProveedor: Number($("#idProveedor").val()),
                     idCategoria: Number($("#idCategoria").val()),
                     codigo: $("#codigo").val(),
@@ -523,7 +767,6 @@
                     fechaVenc: $("#fechaVenc").val() || null
                 };
 
-                // ===== MODO EDICIÓN (PUT) =====
                 if (modoEdicion) {
                     datosProducto.idProducto = Number($("#idProducto").val());
                     $.ajax({
@@ -532,29 +775,23 @@
                         contentType: "application/json",
                         data: JSON.stringify(datosProducto),
                         success: function () {
-                            modalProducto.hide();  // Ocultar modal del formulario
-                            // Mostrar modal de éxito
+                            modalProducto.hide();
                             $("#mensajeExito").text("El producto fue actualizado exitosamente.");
                             let modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
                             modalExito.show();
-                            // Recargar datos y resetear selección
-                            buscarProductos($("#inputBuscar").val());  // Recargar con la búsqueda actual
+                            buscarProductos($("#inputBuscar").val());
                             filaSeleccionada = null;
                             $("#btnEditar, #btnEliminar").prop("disabled", true);
                         },
                         error: function (err) {
                             console.error(err);
-                            modalProducto.hide();  // Ocultar modal del formulario
-                            // Mostrar modal de error
+                            modalProducto.hide();
                             $("#mensajeError").text("No se pudo actualizar el producto. Por favor, intente nuevamente.");
                             let modalError = new bootstrap.Modal(document.getElementById('modalError'));
                             modalError.show();
-                        } 
+                        }
                     });
-                }
-                // ===== MODO AGREGAR (POST) =====
-                else {
-                    // Crear producto primero
+                } else {
                     $.ajax({
                         url: "/api/Productos",
                         method: "POST",
@@ -562,7 +799,6 @@
                         data: JSON.stringify(datosProducto),
                         success: function (productoCreado) {
                             let idProductoNuevo = productoCreado.idProducto;
-                            // Recopilar datos de inventario
                             let datosInventario = {
                                 idInventario: 0,
                                 idProducto: idProductoNuevo,
@@ -572,25 +808,21 @@
                                 ubicacion: $("#ubicacion").val(),
                                 ultimaActualizacion: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, -1),
                             };
-                            // Crear inventario
                             $.ajax({
                                 url: "/api/Inventario",
                                 method: "POST",
                                 contentType: "application/json",
                                 data: JSON.stringify(datosInventario),
                                 success: function () {
-                                    modalProducto.hide();  // Ocultar modal del formulario
-                                    // Mostrar modal de éxito
+                                    modalProducto.hide();
                                     $("#mensajeExito").text("El producto y su inventario fueron agregados exitosamente.");
                                     let modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
                                     modalExito.show();
-                                    // Recargar datos
-                                    buscarProductos($("#inputBuscar").val());  // Recargar con la búsqueda actual
+                                    buscarProductos($("#inputBuscar").val());
                                 },
                                 error: function (err) {
                                     console.error(err);
-                                    modalProducto.hide();  // Ocultar modal del formulario
-                                    // Mostrar modal de error
+                                    modalProducto.hide();
                                     $("#mensajeError").text("Producto creado, pero error al agregar inventario. Verifique manualmente.");
                                     let modalError = new bootstrap.Modal(document.getElementById('modalError'));
                                     modalError.show();
@@ -599,8 +831,7 @@
                         },
                         error: function (err) {
                             console.error(err);
-                            modalProducto.hide();  // Ocultar modal del formulario
-                            // Mostrar modal de error
+                            modalProducto.hide();
                             $("#mensajeError").text("No se pudo agregar el producto. Por favor, intente nuevamente.");
                             let modalError = new bootstrap.Modal(document.getElementById('modalError'));
                             modalError.show();
@@ -611,15 +842,14 @@
 
             // ========== FUNCIÓN PARA MOSTRAR MODAL DE CONFIRMACIÓN DE ELIMINACIÓN ==========
             function eliminarProducto() {
-                // Validar que hay una fila seleccionada
                 if (filaSeleccionada === null) {
-                    alert("Seleccione un producto para eliminar");
+                    $("#mensajeError").text("Seleccione un producto para eliminar");
+                    let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                    modalError.show();
                     return;
                 }
 
                 let prod = productosFiltrados[filaSeleccionada];
-
-                // Mostrar el nombre del producto en el modal de confirmación
                 $("#nombreProductoEliminar").text(prod.nombre);
                 let modalEliminar = new bootstrap.Modal(document.getElementById('modalEliminar'));
                 modalEliminar.show();
@@ -630,27 +860,23 @@
                 let prod = productosFiltrados[filaSeleccionada];
                 let modalEliminar = bootstrap.Modal.getInstance(document.getElementById('modalEliminar'));
 
-                // Soft Delete: actualizar estado del producto a false
                 $.ajax({
                     url: `/api/Productos/${prod.idProducto}`,
-                    method: "DELETE",  // Usar DELLETE para soft delete
+                    method: "DELETE",
                     contentType: "application/json",
                     data: JSON.stringify({ estado: false }),
                     success: function () {
-                        modalEliminar.hide();  // Ocultar modal de confirmación
-                        // Mostrar modal de éxito
+                        modalEliminar.hide();
                         $("#mensajeExito").text("El producto fue eliminado exitosamente.");
                         let modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
                         modalExito.show();
-                        // Recargar datos y resetear selección
-                        buscarProductos($("#inputBuscar").val());  // Recargar con la búsqueda actual
+                        buscarProductos($("#inputBuscar").val());
                         filaSeleccionada = null;
                         $("#btnEditar, #btnEliminar").prop("disabled", true);
                     },
                     error: function (err) {
                         console.error(err);
-                        modalEliminar.hide();  // Ocultar modal de confirmación
-                        // Mostrar modal de error
+                        modalEliminar.hide();
                         $("#mensajeError").text("No se pudo eliminar el producto. Por favor, intente nuevamente.");
                         let modalError = new bootstrap.Modal(document.getElementById('modalError'));
                         modalError.show();
@@ -660,37 +886,30 @@
 
             // ========== INICIALIZACIÓN CUANDO EL DOCUMENTO ESTÁ LISTO ==========
             $(document).ready(function () {
-                // Crear instancia del modal de producto
                 modalProducto = new bootstrap.Modal(document.getElementById('modalProducto'));
 
-                // Cargar datos iniciales
                 cargarProveedores();
                 cargarCategorias();
                 cargarProductos();
 
-                // ===== ASIGNAR EVENTOS A LOS BOTONES =====
-                $("#btnNuevo").click(abrirModalNuevo);                    // Botón "Nuevo Producto"
-                $("#btnEditar").click(abrirModalEditar);                  // Botón "Editar"
-                $("#btnEliminar").click(eliminarProducto);                // Botón "Eliminar"
-                $("#btnGuardar").click(guardarProducto);                  // Botón "Guardar" en el modal
-                $("#btnConfirmarEliminar").click(confirmarEliminacion);    // Botón "Sí, Eliminar"
+                $("#btnNuevo").click(abrirModalNuevo);
+                $("#btnEditar").click(abrirModalEditar);
+                $("#btnEliminar").click(eliminarProducto);
+                $("#btnGuardar").click(guardarProducto);
+                $("#btnConfirmarEliminar").click(confirmarEliminacion);
 
-                // ===== LIMPIAR FORMULARIO AL CERRAR EL MODAL =====
                 $('#modalProducto').on('hidden.bs.modal', function () {
                     limpiarFormulario();
                 });
 
-                // ===== BÚSQUEDA EN TIEMPO REAL CON DEBOUNCE =====
                 $("#inputBuscar").on("input", function () {
                     let textoBusqueda = $(this).val();
                     buscarProductos(textoBusqueda);
                 });
 
-                // ===== LIMPIAR BÚSQUEDA =====
                 $("#btnLimpiarBusqueda").click(function () {
                     $("#inputBuscar").val("");
-                    buscarProductos("");  // Limpiar búsqueda
-                    // Resetear selección
+                    buscarProductos("");
                     filaSeleccionada = null;
                     $("#btnEditar, #btnEliminar").prop("disabled", true);
                 });

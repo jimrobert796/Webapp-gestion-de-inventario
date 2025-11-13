@@ -1,11 +1,32 @@
-﻿/* ========== ESTILOS GENERALES ========== */
+﻿/* ========== IMPORTACIÓN DE TIPOGRAFÍAS ========== */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+/* ========== APLICACIÓN DE TIPOGRAFÍAS SOLO EN EL SISTEMA (NO LOGIN) ========== */
 body {
     min-height: 100vh;
     margin: 0;
     overflow: hidden;
     background-color: var(--bs-body-bg);
+    font-family: 'Inter', sans-serif; /* NUEVO */
 }
 
+/* Tipografía para encabezados del sistema */
+h1, h2, h3, h4, h5, h6,
+.navbar-brand,
+.card-header,
+.sidebar h1, .sidebar h2, .sidebar h3, .sidebar h4, .sidebar h5, .sidebar h6 {
+    font-family: 'Montserrat', sans-serif; /* NUEVO */
+    font-weight: 600;
+}
+
+/* Tipografía para botones del sistema */
+.btn:not(.btn-ferreteria), /* Excluye botones del login */
+.sidebar .btn,
+.sidebar button {
+    font-family: 'Inter', sans-serif; /* NUEVO */
+}
+
+/* ========== TODO EL RESTO DE TU CSS GLOBAL SE MANTIENE IGUAL ========== */
 html {
     height: 100%;
 }
