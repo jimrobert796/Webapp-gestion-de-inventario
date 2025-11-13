@@ -206,16 +206,17 @@ namespace WebAppInventario.Controllers
                     {
                         // ✅ Restar y asegurar que no quede negativo
                         inventario.cantidad = Math.Max(inventario.cantidad - detalle.cantidad, 0);
-                        Console.WriteLine(detalle.cantidad);
+                        inventario.costo = detalle.costoAnterior;
+                        inventario.precio = detalle.precioAnterior;
                         inventario.ultimaActualizacion = DateTime.Now;
 
-                        // 🔥 Forzar el seguimiento
+                        //Forzar el seguimiento
                         _context.Entry(inventario).State = EntityState.Modified;
                     }
                 }
 
-                // 🟠 Marcar compra como anulada
-                compra.estado = "anulado";
+                //Marcar compra como anulada
+                compra.estado = "Anulado";
                 compra.motivoAnulacion = string.IsNullOrWhiteSpace(anulacionData.motivo)
                     ? "Anulación automática"
                     : anulacionData.motivo;
@@ -224,11 +225,11 @@ namespace WebAppInventario.Controllers
 
                 _context.Entry(compra).State = EntityState.Modified;
 
-                // 💾 Guardar cambios antes de commit
+                //Guardar cambios antes de commit
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
-                // 🧠 Devolver también el nombre del empleado de anulación
+                //Devolver también el nombre del empleado de anulación
                 var empleado = await _context.Empleados
                     .FirstOrDefaultAsync(e => e.idEmpleado == compra.idEmpleadoAnulacion);
 

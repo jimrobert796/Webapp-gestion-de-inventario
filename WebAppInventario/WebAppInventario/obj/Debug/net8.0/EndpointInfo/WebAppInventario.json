@@ -3538,6 +3538,14 @@
             "type": "number",
             "format": "double"
           },
+          "costoAnterior": {
+            "type": "number",
+            "format": "double"
+          },
+          "precioAnterior": {
+            "type": "number",
+            "format": "double"
+          },
           "inventario": {
             "$ref": "#/components/schemas/Inventario"
           },

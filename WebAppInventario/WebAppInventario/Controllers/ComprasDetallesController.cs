@@ -42,6 +42,8 @@ namespace WebAppInventario.Controllers
             cd.precio,
             cd.costo,
             cd.subtotal,
+            cd.precioAnterior,
+            cd.costoAnterior,
             productoNombre = cd.Inventario.Producto != null 
                 ? cd.Inventario.Producto.nombre 
                 : "Sin producto",
@@ -85,6 +87,8 @@ namespace WebAppInventario.Controllers
                     cd.precio,
                     cd.costo,
                     cd.subtotal,
+                    cd.precioAnterior,
+                    cd.costoAnterior,
                     productoNombre = cd.Inventario.Producto != null ? cd.Inventario.Producto.nombre : "Sin producto",
                     proveedorNombre = cd.Inventario.Producto.Proveedor.nombre,
                     empleadoNombre = cd.Compra.Empleado.nombre
@@ -117,6 +121,8 @@ namespace WebAppInventario.Controllers
             cd.cantidad,
             cd.precio,
             cd.subtotal,
+            cd.precioAnterior,
+            cd.costoAnterior,
             productoNombre = cd.Inventario.Producto != null ? cd.Inventario.Producto.nombre : "Sin producto",
             proveedorNombre = cd.Inventario.Producto != null && cd.Inventario.Producto.Proveedor != null
                              ? cd.Inventario.Producto.Proveedor.nombre
