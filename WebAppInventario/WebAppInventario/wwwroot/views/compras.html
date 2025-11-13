@@ -445,6 +445,7 @@
 
    
     <script>
+    (function () {
         // Variables globales
         let detallesCompra = [];
         let numeroCompraActual = '';
@@ -1012,8 +1013,11 @@
             const tipoPago = $('#tipoPagoCompra').val();
 
             const subtotal = detallesCompra.reduce((sum, d) => sum + d.subtotal, 0);
+            console.log('Subtotal calculado:', subtotal); // ← CORREGIDO
             const iva = subtotal * 0.13;
             const total = subtotal + iva;
+
+            console.log('Totales - Subtotal:', subtotal, 'IVA:', iva, 'Total:', total); // ← PARA DEBUG
 
             // Crear objeto de compra
             const compra = {
@@ -1170,6 +1174,7 @@
             }
             modalErrorCompra.show();
         }
+    })();
     </script>
 </body>
 </html>
