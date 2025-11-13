@@ -74,11 +74,11 @@
         }
 
             .logo-container:hover {
-                transform: scale(1.05);
+                transform: scale(1);
             }
 
         .logo-cargando {
-            animation: pulse 1.5s infinite;
+            animation: pulse 0.8s infinite;
         }
 
         .logo-error {
@@ -86,7 +86,7 @@
         }
 
         .logo-success {
-            animation: bounce 0.6s ease-out;
+            animation: bounce 1s ease-out;
         }
 
         @keyframes pulse {
@@ -241,11 +241,11 @@
             if (lordiconPlayer) {
                 // Configurar eventos del Lordicon
                 lordiconPlayer.addEventListener('mouseenter', () => {
-                    lordiconPlayer.setSpeed(1.5);
+                    lordiconPlayer.setSpeed(1);
                 });
 
                 lordiconPlayer.addEventListener('mouseleave', () => {
-                    lordiconPlayer.setSpeed(1);
+                    lordiconPlayer.setSpeed(0.2);
                 });
             }
         }
@@ -255,11 +255,11 @@
 
             switch (estado) {
                 case 'focus':
-                    lordiconPlayer.setSpeed(1.8);
+                    lordiconPlayer.setSpeed(1);
                     document.getElementById('logoLogin').classList.add('logo-cargando');
                     break;
                 case 'normal':
-                    lordiconPlayer.setSpeed(1);
+                    lordiconPlayer.setSpeed(0.2);
                     document.getElementById('logoLogin').classList.remove('logo-cargando');
                     break;
                 case 'error':
@@ -268,10 +268,10 @@
                     setTimeout(() => {
                         document.getElementById('logoLogin').classList.remove('logo-error');
                         lordiconPlayer.setSpeed(1);
-                    }, 500);
+                    }, 800);
                     break;
                 case 'success':
-                    lordiconPlayer.setSpeed(2);
+                    lordiconPlayer.setSpeed(1.5);
                     document.getElementById('logoLogin').classList.add('logo-success');
                     setTimeout(() => {
                         document.getElementById('logoLogin').classList.remove('logo-success');
@@ -342,7 +342,7 @@
                     // Redirigir después de un breve delay para ver la animación
                     setTimeout(() => {
                         window.location.href = '/views/index.html';
-                    }, 1000);
+                    }, 500);
                 },
                 error: (xhr) => {
                     // Restaurar estado del botón
@@ -387,13 +387,14 @@
 
             const longitud = $(this).val().length;
             if (longitud > 0 && longitud < 4) {
-                lordiconPlayer.setSpeed(0.7);
+                lordiconPlayer.setSpeed(1.5);
             } else if (longitud >= 4 && longitud < 8) {
-                lordiconPlayer.setSpeed(1.2);
-            } else if (longitud >= 8) {
                 lordiconPlayer.setSpeed(1.8);
+            } else if (longitud >= 8) {
+                lordiconPlayer.setSpeed(2);
             }
         });
     </script>
 </body>
+
 </html>
