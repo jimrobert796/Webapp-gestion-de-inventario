@@ -116,9 +116,6 @@ namespace WebAppInventario.Controllers
                 })
                 .ToListAsync();
 
-            if (productos.Count == 0)
-                return NotFound("No se encontraron productos con stock disponible.");
-
             return Ok(productos);
         }
 

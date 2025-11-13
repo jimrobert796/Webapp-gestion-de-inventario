@@ -3531,6 +3531,10 @@
             "type": "number",
             "format": "double"
           },
+          "subtotal": {
+            "type": "number",
+            "format": "double"
+          },
           "iva": {
             "type": "number",
             "format": "double"

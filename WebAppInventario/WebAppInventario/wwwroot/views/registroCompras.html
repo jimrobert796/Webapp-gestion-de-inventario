@@ -397,6 +397,7 @@
                 $('#detalleMetodoPago').text(compraSeleccionada.metodoPago);
                 $('#detalleEmpleado').text(compraSeleccionada.nombreEmpleado || 'N/A');
                 $('#detalleTotal').text(parseFloat(compraSeleccionada.total).toFixed(2));
+                $('#detalleSubtotal').text(parseFloat(compraSeleccionada.subtotal).toFixed(2));
                 $('#detalleIva').text(parseFloat(compraSeleccionada.iva).toFixed(2));
 
                 // 🔥 Controlar visibilidad de sección anulación
@@ -434,7 +435,6 @@
                         tbody.empty();
 
                         detalles.forEach(detalle => {
-                            $('#detalleSubtotal').text(parseFloat(detalle.subtotal).toFixed(2));
                             tbody.append(`
                                         <tr>
                                             <td>${detalle.productoNombre || 'Producto no encontrado'}</td>

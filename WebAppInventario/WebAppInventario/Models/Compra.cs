@@ -14,6 +14,7 @@ namespace WebAppInventario.Models
         public string metodoPago { get; set; }
         public int cantidad { get; set; }
         public decimal total { get; set; }
+        public decimal subtotal { get; set; }
         public decimal iva { get; set; }
         public string estado { get; set; }
         public string? motivoAnulacion { get; set; }

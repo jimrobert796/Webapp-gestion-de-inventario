@@ -1,12 +1,4 @@
 ﻿(function () {
-    // Inicialización de tooltips
-    (() => {
-        'use strict';
-        const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.forEach(tooltipTriggerEl => {
-            new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-    })();
 
     // Variables globales
     let detallesVenta = [];
@@ -38,6 +30,12 @@
         modalConfirmacionCompra = new bootstrap.Modal(document.getElementById('modalConfirmacionCompra'));
         modalError = new bootstrap.Modal(document.getElementById('modalError'));
 
+
+        // CAMBIO: Usar el evento submit del formulario en lugar del click del botón
+        $('#formAgregarProducto').off('submit').on('submit', function (e) {
+            e.preventDefault(); // Prevenir envío normal del form
+            agregarProducto();
+        });
         // Eventos de búsqueda
         $('#busquedaCliente').off('input').on('input', filtrarClientes);
         $('#busquedaProducto').off('input').on('input', filtrarProductos);
@@ -215,6 +213,15 @@
     }
 
     function agregarProducto() {
+        // Verificar si el formulario pasa las validaciones HTML
+        const formulario = document.getElementById('formAgregarProducto');
+
+        if (!formulario.checkValidity()) {
+            // Si no pasa las validaciones, mostrar los mensajes nativos
+            formulario.reportValidity();
+            return; // No agregar el producto
+        }
+
         const productoId = $('#producto').val();
         const productoNombre = $('#producto option:selected').text();
         const precio = parseFloat($('#producto option:selected').data('precio')) || 0;
@@ -265,6 +272,10 @@
         $('#producto').val('');
         $('#precio').val('');
         $('#cantidad').val(1);
+
+        // Limpiar estados de validación
+        $('#formAgregarProducto').removeClass('was-validated');
+        $('.form-control, .form-select').removeClass('is-valid is-invalid');
     }
 
     function actualizarTabla() {
