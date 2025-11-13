@@ -324,8 +324,8 @@ namespace WebAppInventario.Controllers
 
 
 
-        // GET: api/Compras/siguiente-numero
-        [HttpGet("siguiente-numero")]
+        // GET: api/Compras/nueva-compra
+        [HttpGet("nueva-compra")]
         public async Task<ActionResult<string>> GetSiguienteNumeroCompra()
         {
             // Obtener el último número de compra existente (formato COM000001)

@@ -6,11 +6,20 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        /* Estilos similares al cajero, pero ajustados */
+        /* Layout para ocupar toda la pantalla sin scroll */
         html, body {
             height: 100%;
             margin: 0;
             overflow: hidden;
+        }
+
+        totales-box span {
+            color: #e0e0e0; /* gris claro legible */
+        }
+
+        .totales-box h6,
+        .totales-box div {
+            color: #e0e0e0;
         }
 
         .container-fluid {
@@ -22,10 +31,10 @@
         .header-info {
             flex-shrink: 0;
             background: var(--bs-primary-bg-subtle);
-            padding: 0.1rem 0.2rem;
+            padding: 0.2rem 0.4rem;
             border-radius: 0.2rem;
-            margin-bottom: 0.1rem;
-            font-size: 0.6rem;
+            margin-bottom: 0.3rem;
+            font-size: 0.7rem;
         }
 
         .contenido-principal {
@@ -46,40 +55,39 @@
 
         .card-header {
             flex-shrink: 0;
-            padding: 0.1rem 0.2rem;
+            padding: 0.2rem 0.4rem;
         }
 
             .card-header h6 {
-                font-size: 0.7rem;
+                font-size: 0.75rem;
             }
 
         .card-body {
             flex: 1;
-            padding: 0.2rem !important;
+            padding: 0.4rem !important;
             overflow-y: auto;
         }
 
         .table-container {
-            max-height: 120px;
+            max-height: 180px;
             overflow-y: auto;
         }
 
         .form-label {
             margin-bottom: 0.05rem;
-            font-size: 0.6rem;
+            font-size: 0.7rem;
             font-weight: 600;
         }
 
         .mb-compact {
-            margin-bottom: 0.1rem !important;
+            margin-bottom: 0.2rem !important;
         }
 
         .totales-box {
-            background: var(--bs-light);
-            padding: 0.2rem;
+            padding: 0.4rem;
             border-radius: 0.2rem;
-            margin-top: 0.1rem;
-            font-size: 0.6rem;
+            margin-top: 0.2rem;
+            font-size: 0.7rem;
         }
 
             .totales-box .row {
@@ -87,20 +95,49 @@
             }
 
             .totales-box h6 {
-                font-size: 0.8rem;
+                font-size: 0.85rem;
             }
 
         hr.compact {
-            margin: 0.1rem 0;
+            margin: 0.2rem 0;
         }
 
         .table-sm {
-            font-size: 0.6rem;
+            font-size: 0.65rem;
         }
 
         .btn-sm {
-            padding: 0.1rem 0.2rem;
-            font-size: 0.6rem;
+            padding: 0.15rem 0.3rem;
+            font-size: 0.65rem;
+        }
+
+        /* Estilos para los modales */
+        .modal-producto-info {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+            .modal-producto-info .producto-nombre {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: var(--bs-primary);
+            }
+
+            .modal-producto-info .producto-detalle {
+                font-size: 0.9rem;
+                color: var(--bs-secondary);
+            }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .row-contenido {
+                flex-direction: column;
+            }
+
+            .col-md-5, .col-md-7 {
+                height: 50%;
+            }
         }
     </style>
 </head>
@@ -110,7 +147,7 @@
         <div class="header-info">
             <div class="row text-center">
                 <div class="col-3"><strong>Comprador:</strong> <span id="compradorNombre">Cargando...</span></div>
-                <div class="col-3"><strong>Orden:</strong> <span id="ordenNumero">--</span></div>
+                <div class="col-3"><strong>Compra:</strong> <span id="compraNumero">--</span></div>
                 <div class="col-3"><strong>Fecha:</strong> <span id="fechaActual">--</span></div>
                 <div class="col-3"><strong>Hora:</strong> <span id="horaActual">--</span></div>
             </div>
@@ -126,70 +163,74 @@
                             <h6 class="mb-0"><i class="bi bi-cart-plus"></i> Nueva Compra</h6>
                         </div>
                         <div class="card-body">
-                            <!-- Búsqueda de Proveedor -->
-                            <div class="mb-compact">
-                                <label for="busquedaProveedor" class="form-label">Buscar Proveedor</label>
-                                <input type="text" id="busquedaProveedor" class="form-control form-control-sm" placeholder="Escribe nombre de proveedor...">
-                            </div>
+                            <!-- FORM PARA VALIDACIONES -->
+                            <form id="formAgregarProducto">
+                                <!-- Búsqueda de Proveedor -->
+                                <div class="mb-compact">
+                                    <label for="busquedaProveedor" class="form-label">Buscar Proveedor</label>
+                                    <input type="text" id="busquedaProveedor" class="form-control form-control-sm" placeholder="Escribe nombre de proveedor...">
+                                </div>
 
-                            <!-- Proveedor -->
-                            <div class="mb-compact">
-                                <label for="proveedor" class="form-label">Proveedor</label>
-                                <select id="proveedor" class="form-select form-select-sm">
-                                    <option value="">Seleccione un proveedor...</option>
-                                </select>
-                            </div>
+                                <!-- Proveedor -->
+                                <div class="mb-compact">
+                                    <label for="proveedor" class="form-label">Proveedor</label>
+                                    <select id="proveedor" class="form-select form-select-sm" required>
+                                        <option value="">Seleccione un proveedor...</option>
+                                    </select>
+                                </div>
+
+                                <hr class="compact">
+
+                                <!-- Búsqueda de Producto -->
+                                <div class="mb-compact">
+                                    <label for="busquedaProductoCompra" class="form-label">Buscar Producto</label>
+                                    <input type="text" id="busquedaProductoCompra" class="form-control form-control-sm" placeholder="Escribe nombre de producto...">
+                                </div>
+
+                                <!-- Producto -->
+                                <div class="mb-compact">
+                                    <label for="productoCompra" class="form-label">Producto</label>
+                                    <select id="productoCompra" class="form-select form-select-sm" required>
+                                        <option value="">Seleccione un producto...</option>
+                                    </select>
+                                </div>
+
+                                <!-- Precio, Costo y Cantidad en filas -->
+                                <div class="row g-1 mb-compact">
+                                    <div class="col-4">
+                                        <label for="precioCompra" class="form-label">Precio Venta</label>
+                                        <input required type="number" id="precioCompra" class="form-control form-control-sm" step="0.01" min="0.01" placeholder="0.00">
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="costoCompra" class="form-label">Costo Compra</label>
+                                        <input required type="number" id="costoCompra" class="form-control form-control-sm" step="0.01" min="0.01" placeholder="0.00">
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="cantidadCompra" class="form-label">Cantidad</label>
+                                        <input required type="number" id="cantidadCompra" class="form-control form-control-sm" value="1" min="1">
+                                    </div>
+                                </div>
+
+                                <!-- Botón Agregar - AHORA ES TYPE SUBMIT -->
+                                <button type="submit" id="btnAgregarCompra" class="btn btn-primary btn-sm w-100 mb-1">
+                                    <i class="bi bi-plus-circle"></i> Agregar Producto
+                                </button>
+                            </form>
+                            <!-- FIN DEL FORM -->
 
                             <hr class="compact">
 
-                            <!-- Búsqueda de Producto -->
-                            <div class="mb-compact">
-                                <label for="busquedaProductoCompra" class="form-label">Buscar Producto</label>
-                                <input type="text" id="busquedaProductoCompra" class="form-control form-control-sm" placeholder="Escribe nombre de producto...">
-                            </div>
-
-                            <!-- Producto -->
-                            <div class="mb-compact">
-                                <label for="productoCompra" class="form-label">Producto</label>
-                                <select id="productoCompra" class="form-select form-select-sm">
-                                    <option value="">Seleccione un producto...</option>
-                                </select>
-                            </div>
-
-                            <!-- Precio, Costo y Cantidad en filas -->
-                            <div class="row g-1 mb-compact">
-                                <div class="col-4">
-                                    <label for="precioCompra" class="form-label">Precio Venta</label>
-                                    <input type="number" id="precioCompra" class="form-control form-control-sm" step="0.01" min="0" placeholder="0.00">
-                                </div>
-                                <div class="col-4">
-                                    <label for="costoCompra" class="form-label">Costo Compra</label>
-                                    <input type="number" id="costoCompra" class="form-control form-control-sm" step="0.01" min="0" placeholder="0.00">
-                                </div>
-                                <div class="col-4">
-                                    <label for="cantidadCompra" class="form-label">Cantidad</label>
-                                    <input type="number" id="cantidadCompra" class="form-control form-control-sm" value="1" min="1">
-                                </div>
-                            </div>
-
-                            <!-- Botón Agregar -->
-                            <button id="btnAgregarCompra" class="btn btn-primary btn-sm w-100 mb-1">
-                                <i class="bi bi-plus-circle"></i> Agregar Producto
-                            </button>
-
-                            <hr class="compact">
-
-                            <!-- Tipo de Pago -->
+                            <!-- Tipo de Pago (fuera del form anterior) -->
                             <div class="mb-compact">
                                 <label for="tipoPagoCompra" class="form-label">Tipo de Pago</label>
-                                <select id="tipoPagoCompra" class="form-select form-select-sm">
+                                <select id="tipoPagoCompra" class="form-select form-select-sm" required>
                                     <option value="">Seleccione...</option>
                                     <option value="efectivo">Efectivo</option>
                                     <option value="transferencia">Transferencia</option>
                                 </select>
                             </div>
 
-                            <!-- Botones -->
+                            <!-- Botones (fuera del form anterior) -->
                             <div class="row g-1">
                                 <div class="col-7">
                                     <button id="btnComprar" class="btn btn-success btn-sm w-100" disabled>
@@ -255,6 +296,132 @@
         </div>
     </div>
 
+    <!-- Modal de Edición de Producto en Compra -->
+    <div class="modal fade" id="modalEditarCompra" tabindex="-1" aria-labelledby="modalEditarCompraLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="modalEditarCompraLabel">
+                        <i class="bi bi-pencil-square me-2"></i>
+                        Editar Producto en Compra
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-producto-info">
+                        <div class="producto-nombre" id="editProductoCompraNombre">Nombre del Producto</div>
+                        <div class="producto-detalle mt-2">
+                            <i class="bi bi-tag me-1"></i>
+                            Precio de venta: <strong>$<span id="editProductoCompraPrecio">0.00</span></strong>
+                        </div>
+                        <div class="producto-detalle">
+                            <i class="bi bi-currency-dollar me-1"></i>
+                            Costo de compra: <strong>$<span id="editProductoCompraCosto">0.00</span></strong>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editCantidadCompra" class="form-label fw-bold">Nueva Cantidad</label>
+                        <input type="number" class="form-control form-control-lg text-center" id="editCantidadCompra" min="1" value="1">
+                        <small class="text-muted">La cantidad debe ser mayor a 0</small>
+                    </div>
+
+                    <div class="alert alert-info mb-0">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Nuevo subtotal: <strong>$<span id="editNuevoSubtotalCompra">0.00</span></strong>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-warning" id="btnConfirmarEdicionCompra">
+                        <i class="bi bi-check-circle me-1"></i>
+                        Guardar Cambios
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Eliminación de Producto en Compra -->
+    <div class="modal fade" id="modalEliminarCompra" tabindex="-1" aria-labelledby="modalEliminarCompraLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="modalEliminarCompraLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Confirmar Eliminación
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center py-3">
+                        <i class="bi bi-trash3 text-danger" style="font-size: 3rem;"></i>
+                        <p class="mt-3 mb-2 fs-5">¿Estás seguro de eliminar este producto de la compra?</p>
+
+                        <div class="modal-producto-info mt-3">
+                            <div class="producto-nombre" id="delProductoCompraNombre">Nombre del Producto</div>
+                            <div class="producto-detalle mt-2">
+                                <i class="bi bi-box me-1"></i>
+                                Cantidad: <strong><span id="delProductoCompraCantidad">0</span></strong>
+                            </div>
+                            <div class="producto-detalle">
+                                <i class="bi bi-currency-dollar me-1"></i>
+                                Subtotal: <strong>$<span id="delProductoCompraSubtotal">0.00</span></strong>
+                            </div>
+                        </div>
+
+                        <p class="text-muted small mt-3 mb-0">Esta acción no se puede deshacer</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmarEliminacionCompra">
+                        <i class="bi bi-trash3 me-1"></i>
+                        Sí, Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación de Limpieza de Compra -->
+    <div class="modal fade" id="modalConfirmarLimpiarCompra" tabindex="-1" aria-labelledby="modalConfirmarLimpiarCompraLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="modalConfirmarLimpiarCompraLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Confirmar Limpieza
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center py-3">
+                        <i class="bi bi-arrow-clockwise text-warning" style="font-size: 3rem;"></i>
+                        <p class="mt-3 mb-2 fs-5">¿Estás seguro de limpiar toda la compra actual?</p>
+                        <p class="text-muted small mt-3 mb-0">Esta acción eliminará todos los productos agregados y no se puede deshacer</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-warning" id="btnConfirmarLimpiarCompra">
+                        <i class="bi bi-arrow-clockwise me-1"></i>
+                        Sí, Limpiar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal de Error -->
     <div class="modal fade" id="modalErrorCompra" tabindex="-1" aria-labelledby="modalErrorCompraLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -276,94 +443,282 @@
         </div>
     </div>
 
-
+   
     <script>
-        (function () {
-            // Inicialización de tooltips
-            (() => {
-                'use strict';
-                const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.forEach(tooltipTriggerEl => {
-                    new bootstrap.Tooltip(tooltipTriggerEl);
-                });
-            })();
+        // Variables globales
+        let detallesCompra = [];
+        let numeroCompraActual = '';
+        let debounceProveedor, debounceProductoCompra;
+        let productoEditandoCompra = null;
+        let productoEliminandoCompra = null;
+        let proveedorSeleccionado = null; // Nueva variable para controlar el proveedor
 
-            // Variables globales
-            let detallesCompra = [];
-            let numeroOrdenActual = '';
-            let debounceProveedor, debounceProductoCompra;
+        // Inicializar modales
+        let modalErrorCompra;
+        let modalEditarCompra;
+        let modalEliminarCompra;
+        let modalConfirmarLimpiarCompra;
 
-            // Inicializar modales
-            let modalErrorCompra;
+        // Función de inicialización principal
+        function inicializarCompra() {
+            inicializarComprador();
+            obtenerNumeroCompra();
+            cargarProveedores();
+            cargarProductosCompra();
+            actualizarFechaHoraCompra();
+            inicializarModales();
+            configurarEventListeners();
 
-            // Función de inicialización principal
-            function inicializarCompra() {
-                inicializarComprador();
-                obtenerNumeroOrden();
-                cargarProveedores();
-                cargarProductosCompra();
-                actualizarFechaHoraCompra();
+            // Limpiar intervalo previo si existe
+            if (window.compraInterval) {
+                clearInterval(window.compraInterval);
+            }
+            window.compraInterval = setInterval(actualizarFechaHoraCompra, 1000);
+        }
+        
+        // Función para inicializar modales
+        function inicializarModales() {
+            modalErrorCompra = new bootstrap.Modal(document.getElementById('modalErrorCompra'));
+            modalEditarCompra = new bootstrap.Modal(document.getElementById('modalEditarCompra'));
+            modalEliminarCompra = new bootstrap.Modal(document.getElementById('modalEliminarCompra'));
+            modalConfirmarLimpiarCompra = new bootstrap.Modal(document.getElementById('modalConfirmarLimpiarCompra'));
+        }
 
-                // Limpiar intervalo previo si existe
-                if (window.compraInterval) {
-                    clearInterval(window.compraInterval);
+        // Función para configurar event listeners
+        function configurarEventListeners() {
+            // Eventos de búsqueda
+            $('#busquedaProveedor').off('input').on('input', filtrarProveedores);
+            $('#busquedaProductoCompra').off('input').on('input', filtrarProductosCompra);
+
+            // CAMBIO: Usar el evento submit del formulario en lugar del click del botón
+            $('#formAgregarProducto').off('submit').on('submit', function (e) {
+                e.preventDefault(); // Prevenir envío normal del form
+                agregarProductoCompra();
+            });
+
+            // Los demás eventos se mantienen igual
+            $('#btnComprar').off('click').on('click', validarCompra);
+            $('#btnLimpiarCompra').off('click').on('click', mostrarConfirmacionLimpiarCompra);
+            $('#productoCompra').off('change').on('change', cambioProductoCompra);
+            $('#proveedor').off('change').on('change', cambioProveedor);
+            $('#btnConfirmarEdicionCompra').off('click').on('click', confirmarEdicionCompra);
+            $('#btnConfirmarEliminacionCompra').off('click').on('click', confirmarEliminacionCompra);
+            $('#btnConfirmarLimpiarCompra').off('click').on('click', confirmarLimpiarCompra);
+            $('#editCantidadCompra').off('input').on('input', actualizarSubtotalEdicionCompra);
+        }
+
+        // Ejecutar inicialización cuando el DOM esté listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', inicializarCompra);
+        } else {
+            inicializarCompra();
+        }
+
+        function inicializarComprador() {
+            const nombreEmpleado = localStorage.getItem('empleadoNombre') || 'Sin asignar';
+            const partes = nombreEmpleado.trim().split(' ');
+            const nombreCorto = partes.length >= 2 ? `${partes[0]} ${partes[partes.length - 2]}` : nombreEmpleado;
+            $('#compradorNombre').text(nombreCorto);
+        }
+
+        function obtenerNumeroCompra() {
+            $.ajax({
+                url: '/api/Compras/nueva-compra',
+                method: 'GET',
+                success: function (numeroCompra) {
+                    numeroCompraActual = numeroCompra;
+                    $('#compraNumero').text(numeroCompra);
+                },
+                error: function (err) {
+                    console.error('Error obteniendo número de compra:', err);
+                    mostrarModalErrorCompra('Error al obtener el número de compra. Intente recargar la página.');
                 }
-                window.compraInterval = setInterval(actualizarFechaHoraCompra, 1000);
+            });
+        }
 
-                // Inicializar modales
-                modalErrorCompra = new bootstrap.Modal(document.getElementById('modalErrorCompra'));
+        function actualizarFechaHoraCompra() {
+            const ahora = new Date();
+            $('#fechaActual').text(ahora.toLocaleDateString('es-SV'));
+            $('#horaActual').text(ahora.toLocaleTimeString('es-SV'));
+        }
 
-                // Eventos de búsqueda
-                $('#busquedaProveedor').off('input').on('input', filtrarProveedores);
-                $('#busquedaProductoCompra').off('input').on('input', filtrarProductosCompra);
+        function cargarProveedores() {
+            $.ajax({
+                url: '/api/Proveedores/buscar?buscar=',
+                method: 'GET',
+                success: function (data) {
+                    const proveedores = data.map(prov => ({
+                        id: prov.idProveedor,
+                        nombre: prov.nombre
+                    }));
+                    actualizarSelectProveedores(proveedores);
+                },
+                error: function (err) {
+                    console.error('Error cargando proveedores:', err);
+                    mostrarModalErrorCompra('Error al cargar proveedores. Intente nuevamente.');
+                }
+            });
+        }
 
-                // Eventos de botones principales
-                $('#btnAgregarCompra').off('click').on('click', agregarProductoCompra);
-                $('#btnComprar').off('click').on('click', validarCompra);
-                $('#btnLimpiarCompra').off('click').on('click', confirmarLimpiarCompra);
+        function cargarProductosCompra() {
+            // No cargar productos al inicio, solo cuando se seleccione proveedor
+            const productoSelect = $('#productoCompra');
+            productoSelect.empty().append('<option value="">Seleccione un producto...</option>')
+                .append('<option value="" disabled>Seleccione un proveedor primero</option>');
+        }
 
-                // Evento cuando selecciona producto - autocompletar precio
-                $('#productoCompra').off('change').on('change', cambioProductoCompra);
+        // Función para manejar el cambio de proveedor
+        function cambioProveedor() {
+            const proveedorId = $('#proveedor').val();
+            const busquedaContainer = $('#busquedaProductoContainer');
+            const busquedaInput = $('#busquedaProductoCompra');
+            const productoSelect = $('#productoCompra');
+
+            // Si ya hay productos en la compra y se intenta cambiar de proveedor
+            if (detallesCompra.length > 0 && proveedorId && proveedorId != proveedorSeleccionado) {
+                mostrarConfirmacionCambioProveedor(proveedorId);
+                return;
             }
 
-            // Ejecutar inicialización cuando el DOM esté listo
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', inicializarCompra);
+            if (proveedorId) {
+                // Habilitar búsqueda y mostrar container
+                busquedaContainer.show();
+                busquedaInput.prop('disabled', false);
+
+                // Guardar el proveedor seleccionado
+                proveedorSeleccionado = proveedorId;
+
+                // Cargar productos del proveedor seleccionado
+                cargarProductosPorProveedor(proveedorId, '');
+
+                // Limpiar formulario de producto
+                productoSelect.val('');
+                $('#precioCompra').val('');
+                $('#costoCompra').val('');
             } else {
-                inicializarCompra();
-            }
+                // Deshabilitar búsqueda y ocultar container
+                busquedaContainer.hide();
+                busquedaInput.prop('disabled', true);
+                busquedaInput.val('');
 
-            function inicializarComprador() {
-                const nombreEmpleado = localStorage.getItem('empleadoNombre') || 'Sin asignar';
-                const partes = nombreEmpleado.trim().split(' ');
-                const nombreCorto = partes.length >= 2 ? `${partes[0]} ${partes[partes.length - 2]}` : nombreEmpleado;
-                $('#compradorNombre').text(nombreCorto);
-            }
+                // Limpiar proveedor seleccionado
+                proveedorSeleccionado = null;
 
-            function obtenerNumeroOrden() {
+                // Limpiar productos
+                productoSelect.empty().append('<option value="">Seleccione un producto...</option>')
+                    .append('<option value="" disabled>Seleccione un proveedor primero</option>');
+                $('#precioCompra').val('');
+                $('#costoCompra').val('');
+            }
+        }
+
+        // Función para mostrar confirmación de cambio de proveedor
+        function mostrarConfirmacionCambioProveedor(nuevoProveedorId) {
+            const nuevoProveedorNombre = $('#proveedor option:selected').text();
+
+            // Crear modal de confirmación dinámico
+            const modalHTML = `
+        <div class="modal fade" id="modalCambioProveedor" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-dark">
+                        <h5 class="modal-title">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            Cambiar Proveedor
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center py-3">
+                            <i class="bi bi-arrow-left-right text-warning" style="font-size: 3rem;"></i>
+                            <p class="mt-3 mb-2 fs-5">¿Cambiar de proveedor?</p>
+                            <p class="text-muted">
+                                Ya tienes productos agregados de otro proveedor. 
+                                Si cambias a <strong>${nuevoProveedorNombre}</strong>, 
+                                se limpiarán todos los productos actuales.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle me-1"></i>
+                            Cancelar
+                        </button>
+                        <button type="button" class="btn btn-warning" id="btnConfirmarCambioProveedor">
+                            <i class="bi bi-check-circle me-1"></i>
+                            Sí, Cambiar Proveedor
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+            // Remover modal anterior si existe
+            $('#modalCambioProveedor').remove();
+
+            // Agregar nuevo modal
+            $('body').append(modalHTML);
+
+            // Mostrar modal y configurar evento
+            const modalCambioProveedor = new bootstrap.Modal(document.getElementById('modalCambioProveedor'));
+            modalCambioProveedor.show();
+
+            // Configurar evento del botón de confirmación
+            $('#btnConfirmarCambioProveedor').off('click').on('click', function () {
+                // Limpiar productos actuales
+                detallesCompra = [];
+                actualizarTablaCompra();
+
+                // Actualizar proveedor seleccionado
+                proveedorSeleccionado = nuevoProveedorId;
+
+                // Habilitar búsqueda
+                $('#busquedaProductoContainer').show();
+                $('#busquedaProductoCompra').prop('disabled', false);
+
+                // Cargar productos del nuevo proveedor
+                cargarProductosPorProveedor(nuevoProveedorId, '');
+
+                // Cerrar modal
+                modalCambioProveedor.hide();
+            });
+
+            // Restaurar el select al proveedor anterior cuando se cancela
+            $('#modalCambioProveedor').on('hidden.bs.modal', function () {
+                $('#proveedor').val(proveedorSeleccionado);
+            });
+        }
+
+        // Función para cargar productos por proveedor
+        function cargarProductosPorProveedor(idProveedor, buscar = '') {
+            $.ajax({
+                url: `/api/Inventario/compra-proveedor?idProveedor=${idProveedor}&buscar=${encodeURIComponent(buscar)}`,
+                method: 'GET',
+                success: function (data) {
+                    const productos = data.map(prod => ({
+                        id: prod.idInventario,
+                        nombre: prod.productoNombre,
+                        precioVenta: parseFloat(prod.precio),
+                        precioActual: parseFloat(prod.precio), // Guardar precio actual
+                        costoActual: parseFloat(prod.costo) // Guardar costo actual
+                    }));
+                    actualizarSelectProductosCompra(productos);
+                    console.log(productos);
+                },
+                error: function (err) {
+                    console.error('Error cargando productos del proveedor:', err);
+                    mostrarModalErrorCompra('Error al cargar productos del proveedor');
+                }
+            });
+        }
+
+        function filtrarProveedores() {
+            clearTimeout(debounceProveedor);
+            debounceProveedor = setTimeout(() => {
+                const busqueda = $('#busquedaProveedor').val();
                 $.ajax({
-                    url: '/api/Compras/nueva-orden',
-                    method: 'GET',
-                    success: function (numeroOrden) {
-                        numeroOrdenActual = numeroOrden;
-                        $('#ordenNumero').text(numeroOrden);
-                    },
-                    error: function (err) {
-                        console.error('Error obteniendo número de orden:', err);
-                        mostrarModalErrorCompra('Error al obtener el número de orden. Intente recargar la página.');
-                    }
-                });
-            }
-
-            function actualizarFechaHoraCompra() {
-                const ahora = new Date();
-                $('#fechaActual').text(ahora.toLocaleDateString('es-SV'));
-                $('#horaActual').text(ahora.toLocaleTimeString('es-SV'));
-            }
-
-            function cargarProveedores() {
-                $.ajax({
-                    url: '/api/Proveedores/buscar?buscar=',
+                    url: `/api/Proveedores/buscar?buscar=${encodeURIComponent(busqueda)}`,
                     method: 'GET',
                     success: function (data) {
                         const proveedores = data.map(prov => ({
@@ -373,373 +728,448 @@
                         actualizarSelectProveedores(proveedores);
                     },
                     error: function (err) {
-                        console.error('Error cargando proveedores:', err);
-                        mostrarModalErrorCompra('Error al cargar proveedores. Intente nuevamente.');
+                        console.error('Error filtrando proveedores:', err);
                     }
+                });
+            }, 300);
+        }
+
+        // Función para filtrar productos (cuando se escribe en la búsqueda)
+        function filtrarProductosCompra() {
+            const proveedorId = $('#proveedor').val();
+            const busqueda = $('#busquedaProductoCompra').val();
+
+            if (!proveedorId) return;
+
+            clearTimeout(debounceProductoCompra);
+            debounceProductoCompra = setTimeout(() => {
+                cargarProductosPorProveedor(proveedorId, busqueda);
+            }, 300);
+        }
+
+        function actualizarSelectProveedores(proveedores) {
+            const select = $('#proveedor');
+            select.empty().append('<option value="">Seleccione un proveedor...</option>');
+            if (proveedores.length === 0) {
+                select.append('<option value="" disabled>No se encontraron resultados</option>');
+            } else {
+                proveedores.forEach(prov => {
+                    select.append(`<option value="${prov.id}">${prov.nombre}</option>`);
+                });
+            }
+        }
+
+        function actualizarSelectProductosCompra(productos) {
+            const select = $('#productoCompra');
+            select.empty().append('<option value="">Seleccione un producto...</option>');
+            if (productos.length === 0) {
+                select.append('<option value="" disabled>No se encontraron resultados</option>');
+            } else {
+                productos.forEach(prod => {
+                    select.append(`<option value="${prod.id}" 
+                data-precio="${prod.precioVenta}"
+                data-precio-actual="${prod.precioActual}"
+                data-costo-actual="${prod.costoActual}">${prod.nombre}</option>`);
+                });
+            }
+        }
+
+        function cambioProductoCompra() {
+            const precioVenta = $('#productoCompra').find(':selected').data('precio') || 0;
+            const costoActual = $('#productoCompra').find(':selected').data('costo-actual') || 0;
+
+            $('#precioCompra').val(precioVenta > 0 ? precioVenta.toFixed(2) : '');
+            // Opcional: mostrar el costo actual como sugerencia
+            if (costoActual > 0) {
+                $('#costoCompra').attr('placeholder', `Costo actual: $${costoActual.toFixed(2)}`);
+            }
+        }
+
+        function agregarProductoCompra() {
+            // Verificar si el formulario pasa las validaciones HTML
+            const formulario = document.getElementById('formAgregarProducto');
+
+            if (!formulario.checkValidity()) {
+                // Si no pasa las validaciones, mostrar los mensajes nativos
+                formulario.reportValidity();
+                return; // No agregar el producto
+            }
+
+            // Solo continuar si las validaciones HTML pasaron
+            const productoId = $('#productoCompra').val();
+            const productoNombre = $('#productoCompra option:selected').text();
+            const precioVenta = parseFloat($('#precioCompra').val()) || 0;
+            const costo = parseFloat($('#costoCompra').val()) || 0;
+            const cantidad = parseInt($('#cantidadCompra').val()) || 1;
+
+            // Obtener precios y costos actuales del producto
+            const precioActual = parseFloat($('#productoCompra').find(':selected').data('precio-actual')) || 0;
+            const costoActual = parseFloat($('#productoCompra').find(':selected').data('costo-actual')) || 0;
+
+            // Validaciones adicionales (por si acaso)
+            if (!productoId) {
+                mostrarModalErrorCompra('Debe seleccionar un producto');
+                return;
+            }
+
+            if (costo <= 0) {
+                mostrarModalErrorCompra('El costo debe ser mayor a 0');
+                return;
+            }
+
+            if (cantidad <= 0) {
+                mostrarModalErrorCompra('La cantidad debe ser mayor a 0');
+                return;
+            }
+
+            const subtotal = costo * cantidad;
+
+            // Verificar si el producto ya existe en la compra
+            const indiceExistente = detallesCompra.findIndex(d => d.productoId === productoId);
+            if (indiceExistente >= 0) {
+                // Si existe, actualizar cantidad y subtotal
+                detallesCompra[indiceExistente].cantidad += cantidad;
+                detallesCompra[indiceExistente].subtotal = detallesCompra[indiceExistente].costo * detallesCompra[indiceExistente].cantidad;
+            } else {
+                // Si no existe, agregar nuevo con precios y costos anteriores
+                detallesCompra.push({
+                    productoId,
+                    productoNombre,
+                    precioVenta,
+                    costo,
+                    cantidad,
+                    subtotal,
+                    precioAnterior: precioActual, // Guardar precio anterior
+                    costoAnterior: costoActual    // Guardar costo anterior
                 });
             }
 
-            function cargarProductosCompra() {
-                $.ajax({
-                    url: '/api/Inventario/buscar-cajero?buscar=',
-                    method: 'GET',
-                    success: function (data) {
-                        const productos = data.map(inv => ({
-                            id: inv.idInventario,
-                            nombre: inv.productoNombre,
-                            precioVenta: parseFloat(inv.precio)
-                        }));
-                        actualizarSelectProductosCompra(productos);
-                    },
-                    error: function (err) {
-                        console.error('Error cargando productos:', err);
-                        mostrarModalErrorCompra('Error al cargar productos. Intente nuevamente.');
-                    }
+            actualizarTablaCompra();
+            limpiarFormularioProductoCompra();
+        }
+
+        function limpiarFormularioProductoCompra() {
+            $('#productoCompra').val('');
+            $('#precioCompra').val('');
+            $('#costoCompra').val('');
+            $('#cantidadCompra').val(1);
+            $('#costoCompra').attr('placeholder', '0.00');
+
+            // Limpiar estados de validación
+            $('#formAgregarProducto').removeClass('was-validated');
+            $('.form-control, .form-select').removeClass('is-valid is-invalid');
+        }
+
+        function actualizarTablaCompra() {
+            const tbody = $('#tablaDetallesCompra tbody');
+            tbody.empty();
+
+            if (detallesCompra.length === 0) {
+                tbody.html('<tr><td colspan="6" class="text-center text-muted py-2">No hay productos agregados</td></tr>');
+                $('#btnComprar').prop('disabled', true);
+            } else {
+                detallesCompra.forEach((detalle, index) => {
+                    tbody.append(`
+                <tr>
+                    <td>${detalle.productoNombre}</td>
+                    <td class="text-end">$${detalle.precioVenta.toFixed(2)}</td>
+                    <td class="text-end">$${detalle.costo.toFixed(2)}</td>
+                    <td class="text-center">${detalle.cantidad}</td>
+                    <td class="text-end">$${detalle.subtotal.toFixed(2)}</td>
+                    <td class="text-center">
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-outline-warning btn-sm editar-producto-compra" data-index="${index}">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm eliminar-producto-compra" data-index="${index}">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `);
+                });
+                $('#btnComprar').prop('disabled', false);
+
+                // Agregar event listeners a los botones de editar y eliminar
+                $('.editar-producto-compra').off('click').on('click', function () {
+                    const index = parseInt($(this).data('index'));
+                    mostrarModalEdicionCompra(index);
+                });
+
+                $('.eliminar-producto-compra').off('click').on('click', function () {
+                    const index = parseInt($(this).data('index'));
+                    mostrarModalEliminacionCompra(index);
                 });
             }
 
-            function filtrarProveedores() {
-                clearTimeout(debounceProveedor);
-                debounceProveedor = setTimeout(() => {
-                    const busqueda = $('#busquedaProveedor').val();
-                    $.ajax({
-                        url: `/api/Proveedores/buscar?buscar=${encodeURIComponent(busqueda)}`,
-                        method: 'GET',
-                        success: function (data) {
-                            const proveedores = data.map(prov => ({
-                                id: prov.idProveedor,
-                                nombre: prov.nombre
-                            }));
-                            actualizarSelectProveedores(proveedores);
-                        },
-                        error: function (err) {
-                            console.error('Error filtrando proveedores:', err);
-                        }
-                    });
-                }, 300);
+            calcularTotalesCompra();
+        }
+
+        function mostrarModalEdicionCompra(index) {
+            productoEditandoCompra = index;
+            const producto = detallesCompra[index];
+
+            $('#editProductoCompraNombre').text(producto.productoNombre);
+            $('#editProductoCompraPrecio').text(producto.precioVenta.toFixed(2));
+            $('#editProductoCompraCosto').text(producto.costo.toFixed(2));
+            $('#editCantidadCompra').val(producto.cantidad);
+            $('#editCantidadCompra').min = 1;
+
+            actualizarSubtotalEdicionCompra();
+            modalEditarCompra.show();
+        }
+
+        function actualizarSubtotalEdicionCompra() {
+            const cantidad = parseInt($('#editCantidadCompra').val()) || 0;
+            const costo = parseFloat($('#editProductoCompraCosto').text());
+            const nuevoSubtotal = cantidad * costo;
+
+            $('#editNuevoSubtotalCompra').text(nuevoSubtotal.toFixed(2));
+        }
+
+        function confirmarEdicionCompra() {
+            if (productoEditandoCompra === null) return;
+
+            const nuevaCantidad = parseInt($('#editCantidadCompra').val());
+
+            if (isNaN(nuevaCantidad) || nuevaCantidad < 1) {
+                mostrarModalErrorCompra('La cantidad debe ser mayor a 0');
+                return;
             }
 
-            function filtrarProductosCompra() {
-                clearTimeout(debounceProductoCompra);
-                debounceProductoCompra = setTimeout(() => {
-                    const busqueda = $('#busquedaProductoCompra').val();
-                    $.ajax({
-                        url: `/api/Inventario/buscar-cajero?buscar=${encodeURIComponent(busqueda)}`,
-                        method: 'GET',
-                        success: function (data) {
-                            const productos = data.map(inv => ({
-                                id: inv.idInventario,
-                                nombre: inv.productoNombre,
-                                precioVenta: parseFloat(inv.precio)
-                            }));
-                            actualizarSelectProductosCompra(productos);
-                        },
-                        error: function (err) {
-                            console.error('Error filtrando productos:', err);
-                        }
-                    });
-                }, 300);
+            // Actualizar cantidad y subtotal
+            detallesCompra[productoEditandoCompra].cantidad = nuevaCantidad;
+            detallesCompra[productoEditandoCompra].subtotal = nuevaCantidad * detallesCompra[productoEditandoCompra].costo;
+
+            // Actualizar la tabla y los totales
+            actualizarTablaCompra();
+
+            // Cerrar modal
+            modalEditarCompra.hide();
+            productoEditandoCompra = null;
+        }
+
+        function mostrarModalEliminacionCompra(index) {
+            productoEliminandoCompra = index;
+            const producto = detallesCompra[index];
+
+            $('#delProductoCompraNombre').text(producto.productoNombre);
+            $('#delProductoCompraCantidad').text(producto.cantidad);
+            $('#delProductoCompraSubtotal').text(producto.subtotal.toFixed(2));
+
+            modalEliminarCompra.show();
+        }
+
+        function confirmarEliminacionCompra() {
+            if (productoEliminandoCompra === null) return;
+
+            // Eliminar producto del detalle
+            detallesCompra.splice(productoEliminandoCompra, 1);
+
+            // Actualizar la tabla y los totales
+            actualizarTablaCompra();
+
+            // Cerrar modal
+            modalEliminarCompra.hide();
+            productoEliminandoCompra = null;
+        }
+
+        function calcularTotalesCompra() {
+            const subtotal = detallesCompra.reduce((sum, d) => sum + d.subtotal, 0);
+            const iva = subtotal * 0.13;
+            const total = subtotal + iva;
+
+            $('#subtotalCompra').text(subtotal.toFixed(2));
+            $('#ivaCompra').text(iva.toFixed(2));
+            $('#totalCompra').text(total.toFixed(2));
+        }
+
+        function validarCompra() {
+            const proveedorId = $('#proveedor').val();
+            const tipoPago = $('#tipoPagoCompra').val();
+
+            if (!proveedorId) {
+                mostrarModalErrorCompra('Debe seleccionar un proveedor');
+                return;
             }
 
-            function actualizarSelectProveedores(proveedores) {
-                const select = $('#proveedor');
-                select.empty().append('<option value="">Seleccione un proveedor...</option>');
-                if (proveedores.length === 0) {
-                    select.append('<option value="" disabled>No se encontraron resultados</option>');
-                } else {
-                    proveedores.forEach(prov => {
-                        select.append(`<option value="${prov.id}">${prov.nombre}</option>`);
-                    });
-                }
+            if (!tipoPago) {
+                mostrarModalErrorCompra('Debe seleccionar un tipo de pago');
+                return;
             }
 
-            function actualizarSelectProductosCompra(productos) {
-                const select = $('#productoCompra');
-                select.empty().append('<option value="">Seleccione un producto...</option>');
-                if (productos.length === 0) {
-                    select.append('<option value="" disabled>No se encontraron resultados</option>');
-                } else {
-                    productos.forEach(prod => {
-                        select.append(`<option value="${prod.id}" data-precio="${prod.precioVenta}">${prod.nombre}</option>`);
-                    });
-                }
+            if (detallesCompra.length === 0) {
+                mostrarModalErrorCompra('Debe agregar al menos un producto');
+                return;
             }
 
-            function cambioProductoCompra() {
-                const precioVenta = $('#productoCompra').find(':selected').data('precio') || 0;
-                $('#precioCompra').val(precioVenta > 0 ? precioVenta.toFixed(2) : '');
-            }
+            procesarCompra();
+        }
 
-            function agregarProductoCompra() {
-                const productoId = $('#productoCompra').val();
-                const productoNombre = $('#productoCompra option:selected').text();
-                const precioVenta = parseFloat($('#precioCompra').val()) || 0;
-                const costo = parseFloat($('#costoCompra').val()) || 0;
-                const cantidad = parseInt($('#cantidadCompra').val()) || 1;
+        function procesarCompra() {
+            const proveedorId = $('#proveedor').val();
+            const tipoPago = $('#tipoPagoCompra').val();
 
-                // Validaciones
-                if (!productoId) {
-                    mostrarModalErrorCompra('Debe seleccionar un producto');
-                    return;
-                }
+            const subtotal = detallesCompra.reduce((sum, d) => sum + d.subtotal, 0);
+            const iva = subtotal * 0.13;
+            const total = subtotal + iva;
 
-                if (costo <= 0) {
-                    mostrarModalErrorCompra('El costo debe ser mayor a 0');
-                    return;
-                }
+            // Crear objeto de compra
+            const compra = {
+                idCompra: 0,
+                idEmpleado: parseInt(localStorage.getItem('empleadoId')) || 0,
+                idProveedor: parseInt(proveedorId),
+                numeroCompra: numeroCompraActual.trim(),
+                fechaCompra: `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`,
+                horaCompra: new Date().toTimeString().split(' ')[0],
+                metodoPago: tipoPago.charAt(0).toUpperCase() + tipoPago.slice(1),
+                cantidad: detallesCompra.reduce((sum, d) => sum + d.cantidad, 0), // Suma total de cantidades
+                total: total,
+                iva: iva,
+                estado: "Activo",
+                motivoAnulacion: null,
+                fechaAnulacion: null,
+                idEmpleadoAnulacion: null
+            };
 
-                if (cantidad <= 0) {
-                    mostrarModalErrorCompra('La cantidad debe ser mayor a 0');
-                    return;
-                }
+            // Enviar compra primero
+            $.ajax({
+                url: '/api/Compras',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(compra),
+                success: function (responseCompra) {
+                    const idCompraCreada = responseCompra.idCompra;
+                    console.log('Compra creada con ID:', idCompraCreada);
 
-                const subtotal = costo * cantidad;
+                    // Enviar cada detalle individualmente
+                    let detallesEnviados = 0;
+                    const totalDetalles = detallesCompra.length;
 
-                // Verificar si el producto ya existe en la compra
-                const indiceExistente = detallesCompra.findIndex(d => d.productoId === productoId);
-                if (indiceExistente >= 0) {
-                    // Si existe, actualizar cantidad y subtotal
-                    detallesCompra[indiceExistente].cantidad += cantidad;
-                    detallesCompra[indiceExistente].subtotal = detallesCompra[indiceExistente].costo * detallesCompra[indiceExistente].cantidad;
-                } else {
-                    // Si no existe, agregar nuevo
-                    detallesCompra.push({
-                        productoId,
-                        productoNombre,
-                        precioVenta,
-                        costo,
-                        cantidad,
-                        subtotal
-                    });
-                }
-
-                actualizarTablaCompra();
-                limpiarFormularioProductoCompra();
-            }
-
-            function limpiarFormularioProductoCompra() {
-                $('#productoCompra').val('');
-                $('#precioCompra').val('');
-                $('#costoCompra').val('');
-                $('#cantidadCompra').val(1);
-            }
-
-            function actualizarTablaCompra() {
-                const tbody = $('#tablaDetallesCompra tbody');
-                tbody.empty();
-
-                if (detallesCompra.length === 0) {
-                    tbody.html('<tr><td colspan="6" class="text-center text-muted py-2">No hay productos agregados</td></tr>');
-                    $('#btnComprar').prop('disabled', true);
-                } else {
                     detallesCompra.forEach((detalle, index) => {
-                        tbody.append(`
-                    <tr>
-                        <td>${detalle.productoNombre}</td>
-                        <td class="text-end">$${detalle.precioVenta.toFixed(2)}</td>
-                        <td class="text-end">$${detalle.costo.toFixed(2)}</td>
-                        <td class="text-center">${detalle.cantidad}</td>
-                        <td class="text-end">$${detalle.subtotal.toFixed(2)}</td>
-                        <td class="text-center">
-                            <div class="btn-group" role="group">
-                                <button class="btn btn-outline-warning btn-sm" onclick="abrirModalEditarCompra(${index})">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-                                <button class="btn btn-outline-danger btn-sm" onclick="abrirModalEliminarCompra(${index})">
-                                    <i class="bi bi-trash3"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `);
-                    });
-                    $('#btnComprar').prop('disabled', false);
-                }
+                        const detalleCompra = {
+                            idCompraDetalle: 0,
+                            idCompra: idCompraCreada,
+                            idInventario: parseInt(detalle.productoId),
+                            cantidad: detalle.cantidad,
+                            precio: detalle.precioVenta,        // Nuevo precio
+                            costo: detalle.costo,               // Nuevo costo
+                            subtotal: detalle.subtotal,
+                            costoAnterior: detalle.costoAnterior, // Costo anterior
+                            precioAnterior: detalle.precioAnterior // Precio anterior
+                        };
 
-                calcularTotalesCompra();
-            }
-
-            // Funciones para editar/eliminar (simplificadas)
-            window.abrirModalEditarCompra = function (index) {
-                const detalle = detallesCompra[index];
-                const nuevaCantidad = prompt(`Editar cantidad para ${detalle.productoNombre}:`, detalle.cantidad);
-
-                if (nuevaCantidad && !isNaN(nuevaCantidad) && parseInt(nuevaCantidad) > 0) {
-                    detallesCompra[index].cantidad = parseInt(nuevaCantidad);
-                    detallesCompra[index].subtotal = detallesCompra[index].costo * detallesCompra[index].cantidad;
-                    actualizarTablaCompra();
-                }
-            };
-
-            window.abrirModalEliminarCompra = function (index) {
-                if (confirm(`¿Eliminar ${detallesCompra[index].productoNombre} de la compra?`)) {
-                    detallesCompra.splice(index, 1);
-                    actualizarTablaCompra();
-                }
-            };
-
-            function calcularTotalesCompra() {
-                const subtotal = detallesCompra.reduce((sum, d) => sum + d.subtotal, 0);
-                const iva = subtotal * 0.13;
-                const total = subtotal + iva;
-
-                $('#subtotalCompra').text(subtotal.toFixed(2));
-                $('#ivaCompra').text(iva.toFixed(2));
-                $('#totalCompra').text(total.toFixed(2));
-            }
-
-            function validarCompra() {
-                const proveedorId = $('#proveedor').val();
-                const tipoPago = $('#tipoPagoCompra').val();
-
-                if (!proveedorId) {
-                    mostrarModalErrorCompra('Debe seleccionar un proveedor');
-                    return;
-                }
-
-                if (!tipoPago) {
-                    mostrarModalErrorCompra('Debe seleccionar un tipo de pago');
-                    return;
-                }
-
-                if (detallesCompra.length === 0) {
-                    mostrarModalErrorCompra('Debe agregar al menos un producto');
-                    return;
-                }
-
-                procesarCompra();
-            }
-
-            function procesarCompra() {
-                const proveedorId = $('#proveedor').val();
-                const tipoPago = $('#tipoPagoCompra').val();
-
-                const subtotal = detallesCompra.reduce((sum, d) => sum + d.subtotal, 0);
-                const iva = subtotal * 0.13;
-                const total = subtotal + iva;
-
-                // Crear objeto de compra
-                const compra = {
-                    idCompra: 0,
-                    idEmpleado: parseInt(localStorage.getItem('empleadoId')) || 0,
-                    idProveedor: parseInt(proveedorId),
-                    numeroOrden: numeroOrdenActual.trim(),
-                    subtotal: subtotal,
-                    total: total,
-                    iva: iva,
-                    metodoPago: tipoPago.charAt(0).toUpperCase() + tipoPago.slice(1),
-                    fecha: new Date().toISOString().split('T')[0],
-                    hora: new Date().toTimeString().split(' ')[0]
-                };
-
-                // Enviar compra primero
-                $.ajax({
-                    url: '/api/Compras',
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(compra),
-                    success: function (responseCompra) {
-                        const idCompraCreada = responseCompra.idCompra;
-                        console.log('Compra creada con ID:', idCompraCreada);
-
-                        // Enviar cada detalle individualmente
-                        let detallesEnviados = 0;
-                        const totalDetalles = detallesCompra.length;
-
-                        detallesCompra.forEach((detalle, index) => {
-                            const detalleCompra = {
-                                idCompraDetalle: 0,
-                                idCompra: idCompraCreada,
-                                idInventario: parseInt(detalle.productoId), // ID de inventario
-                                cantidad: detalle.cantidad,
-                                precioCompra: detalle.costo,
-                                precioVenta: detalle.precioVenta,
-                                subtotal: detalle.subtotal
-                            };
-
-                            $.ajax({
-                                url: '/api/ComprasDetalles',
-                                method: 'POST',
-                                contentType: 'application/json',
-                                data: JSON.stringify(detalleCompra),
-                                success: function () {
-                                    detallesEnviados++;
-                                    console.log(`Detalle ${detallesEnviados}/${totalDetalles} enviado`);
-
-                                    // AUMENTAR INVENTARIO - Esto es lo que necesitas
-                                    aumentarInventario(detalle.productoId, detalle.cantidad, detalle.precioVenta, () => {
+                        $.ajax({
+                            url: '/api/ComprasDetalles',
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify(detalleCompra),
+                            success: function () {
+                                detallesEnviados++;
+                                console.log(`Detalle ${detallesEnviados}/${totalDetalles} enviado`);
+                                // ACTUALIZAR INVENTARIO (stock, precio y costo)
+                                actualizarInventarioCompra(
+                                    detalle.productoId,
+                                    detalle.cantidad,
+                                    detalle.precioVenta,
+                                    detalle.costo,
+                                    () => {
                                         if (detallesEnviados === totalDetalles) {
-                                            mostrarModalErrorCompra('✅ Compra registrada exitosamente!\nOrden Nº: ' + numeroOrdenActual, true);
+                                            mostrarModalErrorCompra('✅ Compra registrada exitosamente!\nCompra Nº: ' + numeroCompraActual, true);
                                             limpiarTodoCompra();
                                         }
-                                    });
-                                },
-                                error: function (err) {
-                                    console.error(`Error enviando detalle ${index + 1}:`, err);
-                                    mostrarModalErrorCompra(`Error al procesar detalle del producto: ${detalle.productoNombre}`);
-                                }
-                            });
+                                    }
+                                );
+                            },
+                            error: function (err) {
+                                console.error(`Error enviando detalle ${index + 1}:`, err);
+                                mostrarModalErrorCompra(`Error al procesar detalle del producto: ${detalle.productoNombre}`);
+                            }
                         });
-                    },
-                    error: function (err) {
-                        console.error('Error creando compra:', err);
-                        mostrarModalErrorCompra('Error al procesar la compra. Intente nuevamente.');
-                    }
-                });
+                    });
+                },
+                error: function (err) {
+                    console.error('Error creando compra:', err);
+                    mostrarModalErrorCompra('Error al procesar la compra. Intente nuevamente.');
+                }
+            });
+        }
+
+        function actualizarInventarioCompra(idInventario, cantidadComprada, nuevoPrecioVenta, nuevoCosto, callback) {
+            // Construir URL con parámetros opcionales
+            let url = `/api/Inventario/aumentar-stock/${idInventario}?cantidad=${cantidadComprada}`;
+
+            // Solo agregar precio si es mayor a 0
+            if (nuevoPrecioVenta > 0) {
+                url += `&nuevoPrecio=${nuevoPrecioVenta}`;
             }
 
-            function aumentarInventario(idInventario, cantidadComprada, nuevoPrecioVenta, callback) {
-                $.ajax({
-                    url: `/api/Inventario/aumentar-stock/${idInventario}`,
-                    method: 'PUT',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        cantidad: cantidadComprada,
-                        nuevoPrecio: nuevoPrecioVenta
-                    }),
-                    success: function (response) {
-                        if (response.mensaje === 'Stock aumentado correctamente.') {
-                            console.log(`Inventario aumentado para ID ${idInventario} en ${cantidadComprada}. Nueva cantidad: ${response.cantidad}`);
-                            if (callback) callback();
-                        } else {
-                            mostrarModalErrorCompra(`Error al aumentar stock: ${response.mensaje}`);
-                        }
-                    },
-                    error: function (err) {
-                        console.error(`Error aumentando inventario para ID ${idInventario}:`, err);
+            // Solo agregar costo si es mayor a 0
+            if (nuevoCosto > 0) {
+                url += `&nuevoCosto=${nuevoCosto}`;
+            }
+
+            console.log(`Actualizando inventario: ${url}`);
+
+            $.ajax({
+                url: url,
+                method: 'PUT',
+                success: function (response) {
+                    console.log(`Inventario actualizado para ID ${idInventario}:`, response);
+                    if (callback) callback();
+                },
+                error: function (err) {
+                    console.error(`Error actualizando inventario para ID ${idInventario}:`, err);
+                    // Mostrar error pero continuar con el callback para no bloquear el proceso
+                    if (err.responseJSON && err.responseJSON.mensaje) {
+                        mostrarModalErrorCompra(`Error al actualizar inventario: ${err.responseJSON.mensaje}`);
+                    } else {
                         mostrarModalErrorCompra(`Error al actualizar inventario para el producto con ID ${idInventario}`);
                     }
-                });
-            }
-
-            function confirmarLimpiarCompra() {
-                if (confirm('¿Desea limpiar toda la compra actual?')) {
-                    limpiarTodoCompra();
+                    if (callback) callback(); // Continuar de todos modos
                 }
+            });
+        }
+
+        function mostrarConfirmacionLimpiarCompra() {
+            if (detallesCompra.length === 0) {
+                mostrarModalErrorCompra('No hay productos para limpiar');
+                return;
             }
 
-            function limpiarTodoCompra() {
-                detallesCompra = [];
-                $('#proveedor').val('');
-                $('#tipoPagoCompra').val('');
-                limpiarFormularioProductoCompra();
-                actualizarTablaCompra();
-                // Obtener nuevo número de orden
-                obtenerNumeroOrden();
-            }
+            modalConfirmarLimpiarCompra.show();
+        }
 
-            function mostrarModalErrorCompra(mensaje, esExito = false) {
-                $('#errorMensajeCompra').text(mensaje);
-                if (esExito) {
-                    $('#modalErrorCompraLabel').html('<i class="bi bi-check-circle-fill me-2"></i>Éxito');
-                    $('#modalErrorCompra .modal-header').removeClass('bg-danger').addClass('bg-success');
-                } else {
-                    $('#modalErrorCompraLabel').html('<i class="bi bi-exclamation-triangle-fill me-2"></i>Error');
-                    $('#modalErrorCompra .modal-header').removeClass('bg-success').addClass('bg-danger');
-                }
-                modalErrorCompra.show();
+        function confirmarLimpiarCompra() {
+            limpiarTodoCompra();
+            modalConfirmarLimpiarCompra.hide();
+        }
+
+        function limpiarTodoCompra() {
+            detallesCompra = [];
+            proveedorSeleccionado = null;
+            $('#proveedor').val('');
+            $('#tipoPagoCompra').val('');
+            $('#busquedaProductoContainer').hide();
+            $('#busquedaProductoCompra').prop('disabled', true).val('');
+            limpiarFormularioProductoCompra();
+            actualizarTablaCompra();
+            // Obtener nuevo número de compra
+            obtenerNumeroCompra();
+        }
+
+        function mostrarModalErrorCompra(mensaje, esExito = false) {
+            $('#errorMensajeCompra').text(mensaje);
+            if (esExito) {
+                $('#modalErrorCompraLabel').html('<i class="bi bi-check-circle-fill me-2"></i>Éxito');
+                $('#modalErrorCompra .modal-header').removeClass('bg-danger').addClass('bg-success');
+            } else {
+                $('#modalErrorCompraLabel').html('<i class="bi bi-exclamation-triangle-fill me-2"></i>Error');
+                $('#modalErrorCompra .modal-header').removeClass('bg-success').addClass('bg-danger');
             }
-        })();
+            modalErrorCompra.show();
+        }
     </script>
 </body>
 </html>

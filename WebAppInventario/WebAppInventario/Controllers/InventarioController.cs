@@ -124,6 +124,52 @@ namespace WebAppInventario.Controllers
 
 
 
+        // GET: api/Inventario/compra-proveedor
+        [HttpGet("compra-proveedor")]
+        public async Task<ActionResult<IEnumerable<object>>> BuscarProductosPorProveedor(
+            [FromQuery] int idProveedor,
+            [FromQuery] string? buscar)
+        {
+            var consulta = _context.Inventario
+                .Include(i => i.Producto)
+                    .ThenInclude(p => p.Categoria)
+                .Include(i => i.Producto)
+                .Where(i =>
+                    i.Producto != null &&
+                    i.Producto.estado &&
+                    i.Producto.idProveedor == idProveedor &&
+                    i.cantidad > 0)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(buscar))
+            {
+                string texto = buscar.ToLower();
+                consulta = consulta.Where(i =>
+                    (i.Producto.nombre != null && i.Producto.nombre.ToLower().Contains(texto)) ||
+                    (i.Producto.codigo != null && i.Producto.codigo.ToLower().Contains(texto))
+                );
+            }
+
+            var productos = await consulta
+                .Select(i => new
+                {
+                    i.idInventario,
+                    productoNombre = i.Producto.nombre,
+                    productoCodigo = i.Producto.codigo,
+                    i.precio,
+                    i.costo,
+                    i.cantidad,
+                    categoria = i.Producto.Categoria.nombre,
+                    proveedor = i.Producto.Proveedor.nombre
+                })
+                .ToListAsync();
+
+            return Ok(productos);
+        }
+
+
+
+
 
         // PUT: api/Inventario/reducir-stock/5?cantidad=3
         [HttpPut("reducir-stock/{id}")]
@@ -155,9 +201,15 @@ namespace WebAppInventario.Controllers
         }
 
 
-        // PUT: api/Inventario/aumentar-stock/5?nuevaCantidad=10
+
+
+
+        // PUT: api/Inventario/aumentar-stock/5?cantidad=10&nuevoPrecio=15.50&nuevoCosto=12.00
         [HttpPut("aumentar-stock/{id}")]
-        public async Task<IActionResult> AumentarStock(int id, [FromQuery] int cantidad)
+        public async Task<IActionResult> AumentarStock(int id,
+            [FromQuery] int cantidad,
+            [FromQuery] decimal? nuevoPrecio = null,
+            [FromQuery] decimal? nuevoCosto = null)
         {
             if (cantidad <= 0)
                 return BadRequest("La cantidad a aumentar debe ser mayor que cero.");
@@ -167,7 +219,15 @@ namespace WebAppInventario.Controllers
                 return NotFound("No se encontró el producto en inventario.");
 
             inventario.cantidad += cantidad;
-            // Actualizar fecha de última modificación
+
+            // Actualizar precio si se proporciona
+            if (nuevoPrecio.HasValue)
+                inventario.precio = nuevoPrecio.Value;
+
+            // Actualizar costo si se proporciona
+            if (nuevoCosto.HasValue)
+                inventario.costo = nuevoCosto.Value;
+
             inventario.ultimaActualizacion = DateTime.Now;
 
             await _context.SaveChangesAsync();
@@ -175,7 +235,9 @@ namespace WebAppInventario.Controllers
             {
                 mensaje = "Stock aumentado correctamente.",
                 inventario.idInventario,
-                inventario.cantidad
+                inventario.cantidad,
+                inventario.precio,
+                inventario.costo
             });
         }
 
