@@ -19,7 +19,7 @@
         .dash-card {
             padding: 0.8rem;
             border-radius: 0.4rem;
-            background: white;
+            background: rgba(255, 255, 255, 0.042);
             box-shadow: 0 0 6px rgba(0,0,0,0.1);
             height: 100%;
             transition: transform 0.2s;
@@ -33,7 +33,7 @@
         .dash-title {
             font-size: 0.85rem;
             font-weight: 600;
-            color: #555;
+            color: #fffcfce3;
             margin-bottom: 0.2rem;
         }
 
@@ -102,59 +102,125 @@
                 <!-- INDICADORES -->
                 <div class="col-md-3 col-6">
                     <div class="dash-card">
-                        <div class="dash-title"><i class="bi bi-box-seam"></i> Productos Totales</div>
+                        <div class="dash-title">
+                            <i class="bi bi-box-seam-fill"></i> Productos Totales
+                        </div>
                         <div id="kpiProductosTotales" class="dash-value text-primary">0</div>
+                        <small class="text-muted">Productos registrados</small>
                     </div>
                 </div>
 
                 <div class="col-md-3 col-6">
                     <div class="dash-card">
-                        <div class="dash-title"><i class="bi bi-cart-check"></i> Ventas Hoy</div>
-                        <div id="kpiVentasHoy" class="dash-value text-success">$0.00</div>
+                        <div class="dash-title">
+                            <i class="bi bi-currency-dollar"></i> Valor Inventario
+                        </div>
+                        <div id="kpiValorInventario" class="dash-value text-primary">0</div>
+                        <small class="text-muted">Inventario valorizado</small>
                     </div>
                 </div>
 
                 <div class="col-md-3 col-6">
                     <div class="dash-card">
-                        <div class="dash-title"><i class="bi bi-cash-stack"></i> Compras (mes)</div>
-                        <div id="kpiComprasMes" class="dash-value text-warning">$0.00</div>
-                    </div>
-                </div>
-
-                <div class="col-md-3 col-6">
-                    <div class="dash-card">
-                        <div class="dash-title"><i class="bi bi-person-badge"></i> Clientes</div>
-                        <div id="kpiClientes" class="dash-value text-info">0</div>
-                    </div>
-                </div>
-
-                <div class="col-md-3 col-6">
-                    <div class="dash-card">
-                        <div class="dash-title"><i class="bi bi-shop"></i> Proveedores</div>
-                        <div id="kpiProveedores" class="dash-value text-secondary">0</div>
-                    </div>
-                </div>
-
-                <div class="col-md-3 col-6">
-                    <div class="dash-card">
-                        <div class="dash-title"><i class="bi bi-arrow-counterclockwise"></i> Devoluciones (mes)</div>
-                        <div id="kpiDevolucionesMes" class="dash-value text-danger">0</div>
-                    </div>
-                </div>
-
-                <div class="col-md-3 col-6">
-                    <div class="dash-card">
-                        <div class="dash-title"><i class="bi bi-exclamation-triangle"></i> Stock Bajo</div>
+                        <div class="dash-title">
+                            <i class="bi bi-exclamation-octagon-fill"></i> Stock Bajo
+                        </div>
                         <div id="kpiStockBajo" class="dash-value text-danger">0</div>
+                        <small class="text-muted">Productos por reabastecer</small>
                     </div>
                 </div>
 
                 <div class="col-md-3 col-6">
                     <div class="dash-card">
-                        <div class="dash-title"><i class="bi bi-journal-text"></i> Facturas (hoy)</div>
+                        <div class="dash-title">
+                            <i class="bi bi-receipt-cutoff"></i> Facturas (hoy)
+                        </div>
                         <div id="kpiFacturasHoy" class="dash-value text-primary">0</div>
+                        <small class="text-muted">Facturas generadas hoy</small>
                     </div>
                 </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="dash-card">
+                        <div class="dash-title">
+                            <i class="bi bi-graph-up-arrow"></i> Ventas Hoy
+                        </div>
+                        <div id="kpiVentasHoy" class="dash-value text-success">$0.00</div>
+                        <small class="text-muted">Ingresos del día</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="dash-card">
+                        <div class="dash-title">
+                            <i class="bi bi-bag-check-fill"></i> Compras (mes)
+                        </div>
+                        <div id="kpiComprasMes" class="dash-value text-warning">$0.00</div>
+                        <small class="text-muted">Compras registradas este mes</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="dash-card">
+                        <div class="dash-title">
+                            <i class="bi bi-cart-check-fill"></i> Compras Realizadas (mes)
+                        </div>
+                        <div id="kpiComprasRealizadasMes" class="dash-value text-warning">$0.00</div>
+                        <small class="text-muted">Total gastado en proveedores</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="dash-card">
+                        <div class="dash-title">
+                            <i class="bi bi-arrow-return-left"></i> Devoluciones (mes)
+                        </div>
+                        <div id="kpiDevolucionesMes" class="dash-value text-danger">0</div>
+                        <small class="text-muted">Productos devueltos por clientes</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="dash-card">
+                        <div class="dash-title">
+                            <i class="bi bi-building-fill"></i> Proveedores
+                        </div>
+                        <div id="kpiProveedores" class="dash-value text-secondary">0</div>
+                        <small class="text-muted">Proveedores activos</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="dash-card">
+                        <div class="dash-title">
+                            <i class="bi bi-people-fill"></i> Clientes
+                        </div>
+                        <div id="kpiClientes" class="dash-value text-info">0</div>
+                        <small class="text-muted">Clientes registrados</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="dash-card">
+                        <div class="dash-title">
+                            <i class="bi bi-person-workspace"></i> Empleados
+                        </div>
+                        <div id="kpiEmpelados" class="dash-value text-info">0</div>
+                        <small class="text-muted">Personal activo</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="dash-card">
+                        <div class="dash-title">
+                            <i class="bi bi-tags-fill"></i>Categorias
+                        </div>
+                        <div id="kpiCategorias" class="dash-value text-secondary">0</div>
+                        <small class="text-muted">Categorias registradas</small>
+                    </div>
+                </div>
+
+
 
                 <!-- 🔥 CONTENEDOR GENERAL PARA ALINEAR TODO LO DEMÁS -->
                 <div class="col-12">
@@ -386,9 +452,13 @@
             function updateKPIs() {
                 const kpiData = {
                     productosTotales: 245,
+                    valorInventario: 4503.24,
                     ventasHoy: 1250.75,
                     comprasMes: 3850.20,
+                    ComprasRealizadasMes: 18,
+                    Categorias: 12,
                     clientes: 128,
+                    empleados: 12,
                     proveedores: 24,
                     devolucionesMes: 8,
                     stockBajo: 12,
@@ -398,9 +468,13 @@
                 // Actualizar KPIs
                 const elementos = {
                     'kpiProductosTotales': kpiData.productosTotales,
+                    'kpiValorInventario': '$' + kpiData.valorInventario.toFixed(2),
                     'kpiVentasHoy': '$' + kpiData.ventasHoy.toFixed(2),
                     'kpiComprasMes': '$' + kpiData.comprasMes.toFixed(2),
+                    'kpiCategorias': kpiData.Categorias,
+                    'kpiComprasRealizadasMes': kpiData.ComprasRealizadasMes,
                     'kpiClientes': kpiData.clientes,
+                    'kpiEmpelados': kpiData.empleados,
                     'kpiProveedores': kpiData.proveedores,
                     'kpiDevolucionesMes': kpiData.devolucionesMes,
                     'kpiStockBajo': kpiData.stockBajo,
