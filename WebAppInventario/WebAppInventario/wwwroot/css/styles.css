@@ -5,7 +5,6 @@
 body {
     min-height: 100vh;
     margin: 0;
-    overflow: hidden;
     background-color: var(--bs-body-bg);
     font-family: 'Inter', sans-serif; /* NUEVO */
 }
@@ -49,14 +48,12 @@ main {
     font-weight: 600;
     color: var(--bs-emphasis-color);
     background-color: transparent;
-    transition: all 0.3s ease;
 }
 
     .btn-toggle:hover,
     .btn-toggle:focus {
         color: var(--bs-primary);
         background-color: var(--bs-secondary-bg);
-        transform: translateX(5px);
     }
 
     .btn-toggle::before {
@@ -179,3 +176,4 @@ main {
         margin-left: 0;
     }
 }
+
