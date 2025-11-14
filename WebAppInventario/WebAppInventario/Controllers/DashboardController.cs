@@ -152,7 +152,95 @@ namespace WebAppInventario.Controllers
             }
         }
 
+        [HttpGet("actividad-reciente")]
+        public async Task<ActionResult> GetActividadReciente()
+        {
+            try
+            {
+                var hoy = DateOnly.FromDateTime(DateTime.Now);
+                var ayer = DateOnly.FromDateTime(DateTime.Now.AddDays(-1));
 
+                var ultimas24Horas = await _context.Compras
+                    .Where(c => c.fechaCompra >= ayer && c.fechaCompra <= hoy)
+                    .ToListAsync();
+
+                var actividades = new List<actividadReciente>();
+
+                // 1. Últimas compras (últimas 24 horas)
+                var comprasRecientes = await _context.Compras
+                    .Include(c => c.Proveedor)
+                    .Where(c => c.fechaCompra >= ayer && c.fechaCompra <= hoy)
+                    .OrderByDescending(c => c.fechaCompra)
+                    .Take(5)
+                    .ToListAsync();
+
+                foreach (var compra in comprasRecientes)
+                {
+                    actividades.Add(new actividadReciente
+                    {
+                        tipo = "compra",
+                        titulo = "Compra recibida",
+                        descripcion = $"Proveedor: {compra.Proveedor.nombre}",
+                        fecha = compra.fechaCompra,
+                        icono = "bi-bag-check",
+                        color = "primary"
+                    });
+                }
+
+                // 2. Últimas facturas (últimas 24 horas)
+                var facturasRecientes = await _context.Facturas
+                    .Where(f => f.fecha >= ayer && f.fecha <= hoy)
+                    .OrderByDescending(f => f.fecha)
+                    .Take(5)
+                    .ToListAsync();
+
+                foreach (var factura in facturasRecientes)
+                {
+                    actividades.Add(new actividadReciente
+                    {
+                        tipo = "venta",
+                        titulo = "Venta en caja",
+                        descripcion = $"Factura {factura.numeroFactura}",
+                        fecha = factura.fecha,
+                        icono = "bi-cart-check",
+                        color = "success"
+                    });
+                }
+
+                // 3. Últimas devoluciones (últimas 24 horas)
+                var devolucionesRecientes = await _context.Devoluciones
+                    .Include(d => d.Factura)
+                    .Where(d => d.fechaDevolucion >= ayer && d.fechaDevolucion <= hoy)
+                    .OrderByDescending(d => d.fechaDevolucion)
+                    .Take(5)
+                    .ToListAsync();
+
+                foreach (var devolucion in devolucionesRecientes)
+                {
+                    actividades.Add(new actividadReciente
+                    {
+                        tipo = "devolucion",
+                        titulo = "Devolución registrada",
+                        descripcion = $"Factura {devolucion.Factura.numeroFactura}",
+                        fecha = devolucion.fechaDevolucion,
+                        icono = "bi-arrow-return-left",
+                        color = "warning"
+                    });
+                }
+
+                // Ordenar por fecha (más reciente primero) y tomar solo 3
+                var resultado = actividades
+                    .OrderByDescending(a => a.fecha)
+                    .Take(3)
+                    .ToList();
+
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = $"Error interno: {ex.Message}" });
+            }
+        }
 
 
         [HttpGet("top-productos")]

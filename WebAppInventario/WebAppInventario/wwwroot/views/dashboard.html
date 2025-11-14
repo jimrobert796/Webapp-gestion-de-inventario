@@ -278,7 +278,7 @@
                                 <h6 class="fw-bold mb-3">Top productos / Últimas compras</h6>
 
                                 <small class="text-muted">Top 5 productos</small>
-                                <ul class="list-group list-group-flush mt-2">
+                                <ul class="list-group list-group-flush mt-2" id="listaTopProductos">
                                     <li class="list-group-item d-flex justify-content-between px-0">Martillo <span class="badge bg-light text-dark">120</span></li>
                                     <li class="list-group-item d-flex justify-content-between px-0">Cinta métrica <span class="badge bg-light text-dark">94</span></li>
                                     <li class="list-group-item d-flex justify-content-between px-0">Taladro <span class="badge bg-light text-dark">73</span></li>
@@ -291,7 +291,7 @@
                                     <thead>
                                         <tr><th>Fecha</th><th>Proveedor</th><th class="text-end">Total</th></tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="tbodyUltimasCompras">
                                         <tr><td>2025-11-01</td><td>Galvanissa</td><td class="text-end">$250.00</td></tr>
                                         <tr><td>2025-11-02</td><td>Ferromax</td><td class="text-end">$480.00</td></tr>
                                         <tr><td>2025-11-04</td><td>Construrama</td><td class="text-end">$140.00</td></tr>
@@ -328,7 +328,7 @@
                                     <small class="text-muted">Últimas 24h</small>
                                 </div>
 
-                                <ul class="list-group list-group-flush">
+                                <ul class="list-group list-group-flush" id="listaActividadReciente">
                                     <li class="list-group-item">
                                         <div class="d-flex gap-3">
                                             <div class="badge bg-primary rounded-circle p-2"><i class="bi bi-bag-check"></i></div>
@@ -387,14 +387,12 @@
             // Función para cargar Chart.js dinámicamente
             function cargarChartJS() {
                 return new Promise((resolve, reject) => {
-                    // Si ya está cargado, resolver inmediatamente
                     if (typeof Chart !== 'undefined') {
                         chartJsLoaded = true;
                         resolve();
                         return;
                     }
 
-                    // Cargar Chart.js dinámicamente
                     const script = document.createElement('script');
                     script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
                     script.onload = () => {
@@ -410,6 +408,32 @@
                 });
             }
 
+            // Cargar datos reales de las APIs
+            async function cargarDatosDashboard() {
+                try {
+                    const [kpis, ventasMensuales, topProductos, ultimasCompras, ultimasFacturas, actividadReciente] = await Promise.all([
+                        fetch('/api/dashboard/kpis').then(r => r.json()),
+                        fetch('/api/dashboard/ventas-mensuales').then(r => r.json()),
+                        fetch('/api/dashboard/top-productos').then(r => r.json()),
+                        fetch('/api/dashboard/ultimas-compras').then(r => r.json()),
+                        fetch('/api/dashboard/ultimas-facturas').then(r => r.json()),
+                        fetch('/api/dashboard/actividad-reciente').then(r => r.json()) // ← NUEVA
+                    ]);
+
+                    return {
+                        kpis,
+                        ventasMensuales,
+                        topProductos,
+                        ultimasCompras,
+                        ultimasFacturas,
+                        actividadReciente // ← NUEVA
+                    };
+                } catch (error) {
+                    console.error('❌ Error cargando datos del dashboard:', error);
+                    return null;
+                }
+            }
+
             async function inicializarDashboard() {
                 console.log('🚀 Inicializando dashboard...');
 
@@ -417,10 +441,26 @@
                     // Cargar Chart.js primero
                     await cargarChartJS();
 
+                    // Cargar datos reales de las APIs
+                    const datos = await cargarDatosDashboard();
+
                     updateDateTime();
                     setInterval(updateDateTime, 60000);
-                    updateKPIs();
-                    createSalesChart();
+
+                    if (datos) {
+                        // Usar datos reales de la API
+                        updateKPIs(datos.kpis);
+                        createSalesChart(datos.ventasMensuales);
+                        actualizarTopProductos(datos.topProductos);
+                        actualizarUltimasCompras(datos.ultimasCompras);
+                        actualizarUltimasFacturas(datos.ultimasFacturas);
+                        actualizarActividadReciente(datos.actividadReciente); // ← NUEVA
+                    } else {
+                        // Usar datos por defecto si la API falla
+                        updateKPIs();
+                        createSalesChart();
+                    }
+
                     setupQuickButtons();
 
                     console.log('✅ Dashboard inicializado correctamente');
@@ -428,7 +468,7 @@
                     console.error('❌ Error inicializando dashboard:', error);
                 }
             }
-
+            
             function updateDateTime() {
                 const now = new Date();
                 const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
@@ -449,36 +489,39 @@
                 }
             }
 
-            function updateKPIs() {
-                const kpiData = {
+            function updateKPIs(kpiData = null) {
+                // Si no hay datos de la API, usar datos por defecto
+                const datos = kpiData || {
                     productosTotales: 245,
                     valorInventario: 4503.24,
                     ventasHoy: 1250.75,
                     comprasMes: 3850.20,
-                    ComprasRealizadasMes: 18,
-                    Categorias: 12,
+                    comprasRealizadasMes: 18,
+                    categorias: 12,
                     clientes: 128,
                     empleados: 12,
                     proveedores: 24,
                     devolucionesMes: 8,
                     stockBajo: 12,
-                    facturasHoy: 15
+                    facturasHoy: 15,
+                    ventasTotalesMes: 15280.45,
+                    promedioDiario: 509.35
                 };
 
                 // Actualizar KPIs
                 const elementos = {
-                    'kpiProductosTotales': kpiData.productosTotales,
-                    'kpiValorInventario': '$' + kpiData.valorInventario.toFixed(2),
-                    'kpiVentasHoy': '$' + kpiData.ventasHoy.toFixed(2),
-                    'kpiComprasMes': '$' + kpiData.comprasMes.toFixed(2),
-                    'kpiCategorias': kpiData.Categorias,
-                    'kpiComprasRealizadasMes': kpiData.ComprasRealizadasMes,
-                    'kpiClientes': kpiData.clientes,
-                    'kpiEmpelados': kpiData.empleados,
-                    'kpiProveedores': kpiData.proveedores,
-                    'kpiDevolucionesMes': kpiData.devolucionesMes,
-                    'kpiStockBajo': kpiData.stockBajo,
-                    'kpiFacturasHoy': kpiData.facturasHoy
+                    'kpiProductosTotales': datos.productosTotales,
+                    'kpiValorInventario': '$' + datos.valorInventario.toFixed(2),
+                    'kpiVentasHoy': '$' + datos.ventasHoy.toFixed(2),
+                    'kpiComprasMes': '$' + datos.comprasMes.toFixed(2),
+                    'kpiCategorias': datos.categorias,
+                    'kpiComprasRealizadasMes': datos.comprasRealizadasMes,
+                    'kpiClientes': datos.clientes,
+                    'kpiEmpelados': datos.empleados,
+                    'kpiProveedores': datos.proveedores,
+                    'kpiDevolucionesMes': datos.devolucionesMes,
+                    'kpiStockBajo': datos.stockBajo,
+                    'kpiFacturasHoy': datos.facturasHoy
                 };
 
                 Object.keys(elementos).forEach(id => {
@@ -489,17 +532,14 @@
                 });
 
                 // Actualizar resumen de ventas
-                const ventasTotales = 15280.45;
-                const promedioDiario = ventasTotales / 30;
-
                 const ventasTotalesElem = document.getElementById('ventasTotalesMes');
                 const promedioDiarioElem = document.getElementById('promedioDiario');
 
-                if (ventasTotalesElem) ventasTotalesElem.textContent = '$' + ventasTotales.toFixed(2);
-                if (promedioDiarioElem) promedioDiarioElem.textContent = '$' + promedioDiario.toFixed(2);
+                if (ventasTotalesElem) ventasTotalesElem.textContent = '$' + datos.ventasTotalesMes.toFixed(2);
+                if (promedioDiarioElem) promedioDiarioElem.textContent = '$' + datos.promedioDiario.toFixed(2);
             }
 
-            function createSalesChart() {
+            function createSalesChart(ventasMensuales = null) {
                 if (!chartJsLoaded) {
                     console.error('Chart.js no está cargado');
                     return;
@@ -517,8 +557,11 @@
                     ventasChartInstance.destroy();
                 }
 
+                // Usar datos reales o generar aleatorios
                 const labels = Array.from({ length: 30 }, (_, i) => (i + 1) + '/11');
-                const data = labels.map(() => Math.floor(Math.random() * 1000) + 200);
+                const data = ventasMensuales
+                    ? ventasMensuales.map(v => v.ventas)
+                    : labels.map(() => Math.floor(Math.random() * 1000) + 200);
 
                 ventasChartInstance = new Chart(ctx, {
                     type: 'line',
@@ -555,6 +598,121 @@
                 });
 
                 console.log('📊 Gráfica de ventas creada correctamente');
+            }
+
+            // Funciones para actualizar las listas con datos reales
+            function actualizarTopProductos(topProductos) {
+                if (!topProductos || !Array.isArray(topProductos)) {
+                    console.log('No hay datos de top productos');
+                    return;
+                }
+
+                const lista = document.getElementById('listaTopProductos'); // ← Cambiado
+                if (lista) {
+                    lista.innerHTML = '';
+                    topProductos.forEach(producto => {
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item d-flex justify-content-between px-0';
+                        li.innerHTML = `${producto.nombre} <span class="badge bg-light text-dark">${producto.ventas}</span>`;
+                        lista.appendChild(li);
+                    });
+                }
+            }   
+
+            function actualizarUltimasCompras(ultimasCompras) {
+                if (!ultimasCompras || !Array.isArray(ultimasCompras)) {
+                    console.log('No hay datos de últimas compras');
+                    return;
+                }
+
+                const tbody = document.querySelector('.table tbody');
+                if (tbody) {
+                    tbody.innerHTML = '';
+                    ultimasCompras.forEach(compra => {
+                        const fecha = new Date(compra.fecha).toISOString().split('T')[0];
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${fecha}</td>
+                            <td>${compra.proveedor}</td>
+                            <td class="text-end">$${compra.total.toFixed(2)}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            }
+
+            function actualizarUltimasCompras(ultimasCompras) {
+                if (!ultimasCompras || !Array.isArray(ultimasCompras)) return;
+
+                const tbody = document.getElementById('tbodyUltimasCompras'); // ← Cambiado
+                if (tbody) {
+                    tbody.innerHTML = '';
+                    ultimasCompras.forEach(compra => {
+                        const fecha = new Date(compra.fecha).toISOString().split('T')[0];
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                <td>${fecha}</td>
+                <td>${compra.proveedor}</td>
+                <td class="text-end">$${compra.total.toFixed(2)}</td>
+            `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            }
+
+            function actualizarUltimasFacturas(ultimasFacturas) {
+                if (!ultimasFacturas || !Array.isArray(ultimasFacturas)) return;
+
+                const tbody = document.getElementById('tbodyUltimasFacturas'); // ← Cambiado
+                if (tbody) {
+                    tbody.innerHTML = '';
+                    ultimasFacturas.forEach(factura => {
+                        const fecha = new Date(factura.fecha).toISOString().split('T')[0];
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                <td>${fecha}</td>
+                <td>${factura.numeroFactura}</td>
+                <td class="text-end">$${factura.total.toFixed(2)}</td>
+            `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            }
+
+
+            function actualizarActividadReciente(actividadReciente) {
+                if (!actividadReciente || !Array.isArray(actividadReciente)) {
+                    console.log('No hay datos de actividad reciente');
+                    return;
+                }
+
+                const lista = document.getElementById('listaActividadReciente'); // ← Cambiado
+                if (lista) {
+                    lista.innerHTML = '';
+
+                    actividadReciente.forEach(actividad => {
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item';
+
+                        // Formatear fecha
+                        const fecha = new Date(actividad.fecha);
+                        const fechaFormateada = fecha.toLocaleDateString('es-ES');
+
+                        li.innerHTML = `
+                <div class="d-flex gap-3">
+                    <div class="badge bg-${actividad.color} rounded-circle p-2">
+                        <i class="bi ${actividad.icono}"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold">${actividad.titulo}</div>
+                        <div class="small text-muted">${actividad.descripcion} — ${fechaFormateada}</div>
+                    </div>
+                </div>
+            `;
+
+                        lista.appendChild(li);
+                    });
+                }
             }
 
             function setupQuickButtons() {

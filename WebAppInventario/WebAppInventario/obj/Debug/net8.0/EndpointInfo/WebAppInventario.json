@@ -1183,6 +1183,18 @@
         }
       }
     },
+    "/api/Dashboard/actividad-reciente": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Dashboard/top-productos": {
       "get": {
         "tags": [

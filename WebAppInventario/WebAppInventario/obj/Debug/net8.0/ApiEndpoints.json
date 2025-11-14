@@ -675,6 +675,16 @@
   },
   {
     "ContainingType": "WebAppInventario.Controllers.DashboardController",
+    "Method": "GetActividadReciente",
+    "RelativePath": "api/Dashboard/actividad-reciente",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebAppInventario.Controllers.DashboardController",
     "Method": "GetKpis",
     "RelativePath": "api/Dashboard/kpis",
     "HttpMethod": "GET",
