@@ -674,6 +674,66 @@
     ]
   },
   {
+    "ContainingType": "WebAppInventario.Controllers.DashboardController",
+    "Method": "GetKpis",
+    "RelativePath": "api/Dashboard/kpis",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "WebAppInventario.Models.Dashboard",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WebAppInventario.Controllers.DashboardController",
+    "Method": "GetTopProductos",
+    "RelativePath": "api/Dashboard/top-productos",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebAppInventario.Controllers.DashboardController",
+    "Method": "GetUltimasCompras",
+    "RelativePath": "api/Dashboard/ultimas-compras",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebAppInventario.Controllers.DashboardController",
+    "Method": "GetUltimasFacturas",
+    "RelativePath": "api/Dashboard/ultimas-facturas",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebAppInventario.Controllers.DashboardController",
+    "Method": "GetVentasMensuales",
+    "RelativePath": "api/Dashboard/ventas-mensuales",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "WebAppInventario.Controllers.DevolucionesController",
     "Method": "GetDevoluciones",
     "RelativePath": "api/Devoluciones",

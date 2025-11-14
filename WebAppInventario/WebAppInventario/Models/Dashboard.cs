@@ -2,15 +2,19 @@
 {
     public class Dashboard
     {
-        public int ProductosTotales { get; set; }
-        public decimal VentasHoy { get; set; }
-        public decimal ComprasMes { get; set; }
-        public int Clientes { get; set; }
-        public int Proveedores { get; set; }
-        public int DevolucionesMes { get; set; }
-        public int StockBajo { get; set; }
-        public int FacturasHoy { get; set; }
-        public decimal VentasTotalesMes { get; set; }
-        public decimal PromedioDiario { get; set; }
+        public int productosTotales { get; set; }
+        public decimal valorInventario { get; set; }
+        public int stockBajo { get; set; }
+        public int facturasHoy { get; set; }
+        public decimal ventasHoy { get; set; }
+        public decimal comprasMes { get; set; }
+        public int comprasRealizadasMes { get; set; }
+        public int devolucionesMes { get; set; }
+        public int proveedores { get; set; }
+        public int clientes { get; set; }
+        public int empleados { get; set; }
+        public int categorias { get; set; }
+        public decimal ventasTotalesMes { get; set; }
+        public decimal promedioDiario { get; set; }
     }
 }

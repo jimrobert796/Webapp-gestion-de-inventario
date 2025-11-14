@@ -1142,6 +1142,83 @@
         }
       }
     },
+    "/api/Dashboard/kpis": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dashboard"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dashboard"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dashboard"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Dashboard/ventas-mensuales": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Dashboard/top-productos": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Dashboard/ultimas-compras": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Dashboard/ultimas-facturas": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Devoluciones": {
       "get": {
         "tags": [
@@ -3620,6 +3697,68 @@
           },
           "compra": {
             "$ref": "#/components/schemas/Compra"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Dashboard": {
+        "type": "object",
+        "properties": {
+          "productosTotales": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "valorInventario": {
+            "type": "number",
+            "format": "double"
+          },
+          "stockBajo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "facturasHoy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ventasHoy": {
+            "type": "number",
+            "format": "double"
+          },
+          "comprasMes": {
+            "type": "number",
+            "format": "double"
+          },
+          "comprasRealizadasMes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "devolucionesMes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "proveedores": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "clientes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "empleados": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categorias": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ventasTotalesMes": {
+            "type": "number",
+            "format": "double"
+          },
+          "promedioDiario": {
+            "type": "number",
+            "format": "double"
           }
         },
         "additionalProperties": false
