@@ -7,6 +7,7 @@
     <!-- Bootstrap CSS e íconos -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- CSS personalizado -->
     <link href="/css/styles.css" rel="stylesheet">
 </head>
@@ -286,6 +287,15 @@
                 .then(resp => resp.text())
                 .then(vista => {
                     $('#contenido').html(vista);
+
+                    // Inicializar dashboard
+                    if (form === 'dashboard') {
+                        setTimeout(() => {
+                            if (typeof window.inicializarDashboard === 'function') {
+                                window.inicializarDashboard();
+                            }
+                        }, 100);
+                    }
                 })
                 .catch(error => {
                     console.error('Error:', error);
