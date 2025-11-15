@@ -98,6 +98,66 @@ namespace WebAppInventario.Controllers
             return Ok(nuevoCodigo);
         }
 
+        // GET: api/Productos/filtrar-anidado? categoriaId = 1 & proveedorId = 2 & buscar = arroz
+        [HttpGet("filtrar-anidado")]
+        public async Task<IActionResult> FiltrarProductos(
+            int? categoriaId,
+            int? proveedorId,
+            string? buscar
+        )
+        {
+            var query = _context.Productos
+                .Include(p => p.Categoria)
+                .Include(p => p.Proveedor)
+                .AsQueryable();
+
+            // 📌 Filtro por categoría
+            if (categoriaId.HasValue)
+                query = query.Where(p => p.idCategoria == categoriaId.Value);
+
+            // 📌 Filtro por proveedor
+            if (proveedorId.HasValue)
+                query = query.Where(p => p.idProveedor == proveedorId.Value);
+
+            // 📌 Filtro por texto general
+            if (!string.IsNullOrWhiteSpace(buscar))
+            {
+                string b = buscar.Trim().ToLower();
+
+                query = query.Where(p =>
+                    p.nombre.ToLower().Contains(b) ||
+                    p.codigo.ToLower().Contains(b) ||
+                    p.descripcion.ToLower().Contains(b) ||
+                    p.Categoria.nombre.ToLower().Contains(b) ||
+                    p.Proveedor.nombre.ToLower().Contains(b)
+                );
+            }
+
+            // 📌 Resultado Final
+            var resultado = await query
+                .Select(p => new
+                {
+                    p.idProducto,
+                    p.idCategoria,
+                    p.idProveedor,
+
+                    p.codigo,
+                    p.nombre,
+                    p.descripcion,
+                    p.estado,
+                    p.fechaProd,
+                    p.fechaVenc,
+
+                    categoria = p.Categoria.nombre.Trim(),
+                    proveedor = p.Proveedor.nombre.Trim()
+                })
+                .OrderBy(p => p.nombre)
+                .ToListAsync();
+
+            return Ok(resultado);
+        }
+
+
         // GET: api/Productos/buscar?buscar={TEXTO}
         [HttpGet("buscar")]
         public async Task<ActionResult<IEnumerable<Producto>>> BuscarProductos([FromQuery] ProductoBusquedaParametros parametros)

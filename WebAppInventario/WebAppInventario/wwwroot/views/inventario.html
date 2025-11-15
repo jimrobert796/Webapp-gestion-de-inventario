@@ -300,6 +300,16 @@
 
                     const url = `/api/Inventario/filtrar-anidado?${params.toString()}`;
 
+                    // Mostrar loading
+                    $('#tablaInventario tbody').html(`
+    <tr>
+        <td colspan="7" class="text-center text-muted py-4">
+            <div class="spinner-border spinner-border-sm" role="status"></div>
+            <span class="ms-2">Buscando productos en inventario...</span>
+        </td>
+    </tr>
+`);
+
                     $.ajax({
                         url: url,
                         method: "GET",
