@@ -20,12 +20,13 @@
                 color: white;
             }
 
-        .producto-seleccionado {
-            border-left: 4px solid #0d6efd;
+        .table tbody tr.row-seleccionada {
+            background-color: #d1ecf1 !important;
+            border: 2px solid #0d6efd; /* Opcional: borde azul para mayor visibilidad */
         }
 
-        .row-seleccionada {
-            background-color: #d1ecf1 !important;
+        .producto-seleccionado {
+            border-left: 4px solid #0d6efd;
         }
     </style>
 </head>
@@ -385,10 +386,11 @@
         var todasDevoluciones = [];
         var devolucionSeleccionada = null;
         var modalNueva, modalDetalle, modalExito, modalError, modalConfirmacion;
+        var debounceTimer;              // Timer para debounce en búsqueda
 
         // Inicializar
         $(document).ready(function () {
-            // Resetear variables para evitar conflictos al recargar
+            // Resetear variables para evitar conflictos al recargar actualizar
             facturaActual = null;
             productoSeleccionado = null;
             todasDevoluciones = [];
@@ -405,7 +407,7 @@
             modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
             modalError = new bootstrap.Modal(document.getElementById('modalError'));
             modalConfirmacion = new bootstrap.Modal(document.getElementById('modalConfirmacion'));  // ← AGREGAR
-        }
+        } 
 
         function configurarEventos() {
             $('#btnNueva').click(() => modalNueva.show());
@@ -475,14 +477,14 @@
 
             devoluciones.forEach(dev => {
                 const tr = $(`
-                                <tr style="cursor: pointer;" onclick="seleccionarDevolucion(${dev.idDevolucion})">
-                                    <td><span class="badge bg-primary">${dev.numeroFactura || 'N/A'}</span></td>
-                                    <td>${dev.nombre || 'Empleado'}</td>
-                                    <td class="text-center"><span class="badge bg-secondary">${dev.cantidad || 0}</span></td>
-                                    <td>${new Date(dev.fechaDevolucion + 'T00:00:00').toLocaleDateString('es-SV') }</td>
-                                    <td class="text-end fw-bold text-primary">$${(dev.totalDevolucion || 0).toFixed(2)}</td>
-                                </tr>
-                            `);
+            <tr style="cursor: pointer;" data-id="${dev.idDevolucion}" onclick="seleccionarDevolucion(${dev.idDevolucion})">
+                <td><span class="badge bg-primary">${dev.numeroFactura || 'N/A'}</span></td>
+                <td>${dev.nombre || 'Empleado'}</td>
+                <td class="text-center"><span class="badge bg-secondary">${dev.cantidad || 0}</span></td>
+                <td>${new Date(dev.fechaDevolucion + 'T00:00:00').toLocaleDateString('es-SV')}</td>
+                <td class="text-end fw-bold text-primary">$${(dev.totalDevolucion || 0).toFixed(2)}</td>
+            </tr>
+        `);
                 tbody.append(tr);
             });
         }
@@ -805,14 +807,11 @@
         function seleccionarDevolucion(idDevolucion) {
             devolucionSeleccionada = todasDevoluciones.find(d => d.idDevolucion === idDevolucion);
             $('#btnVerDetalle').prop('disabled', false);
-
-            $('#tablaDevoluciones tbody tr').removeClass('row-seleccionada');
-            $(`#tablaDevoluciones tbody tr`).each(function () {
-                if ($(this).text().includes(`#${String(idDevolucion).padStart(3, '0')}`)) {
-                    $(this).addClass('row-seleccionada');
-                }
-            });
+            // Remover clase de todas las filas
+            $('#tablaDevoluciones tbody tr').removeClass('table-primary');
+            $(`#tablaDevoluciones tbody tr[data-id="${idDevolucion}"]`).addClass('table-primary');
         }
+
 
         function verDetalle() {
             if (!devolucionSeleccionada) return;
@@ -881,69 +880,75 @@
             const busqueda = $('#inputBuscar').val().trim();
             const fecha = $('#inputFecha').val();
 
-            // Construir URL para el filtro anidado (siempre usar este endpoint)
-            let url = '/api/Devoluciones/filtrar-anidado?';
-            const params = [];
-
-
             // MOSTRAR LOADING AL INICIAR BÚSQUEDA
             $('#tablaDevoluciones tbody').html(`
-        <tr>
-            <td colspan="6" class="text-center text-muted py-4">
-                <div class="spinner-border spinner-border-sm" role="status"></div>
-                <span class="ms-2">Buscando devoluciones...</span>
-            </td>
-        </tr>
-    `);
-
-            if (busqueda) {
-                params.push(`buscar=${encodeURIComponent(busqueda)}`);
-            }
-
-            if (fecha) {
-                params.push(`fecha=${encodeURIComponent(fecha)}`);
-
-            }
-
-            // Si no hay filtros, el endpoint devolverá todas las devoluciones
-            url += params.length > 0 ? params.join('&') : 'buscar=&fecha=';
-
-            $.ajax({
-                url: url,
-                method: 'GET',
-                success: function (devolucionesFiltradas) {
-                    todasDevoluciones = devolucionesFiltradas; // Mantener referencia global
-
-                    // Verificar si hay resultados
-                    if (devolucionesFiltradas.length === 0) {
-                        const tbody = $('#tablaDevoluciones tbody');
-                        tbody.html(`
-                    <tr>
-                        <td colspan="6" class="text-center text-muted py-4">
-                            ${params.length > 0
-                            ? 'No se encontraron devoluciones con ese criterio de búsqueda'
-                                : 'No hay devoluciones registradas'}
-                        </td>
-                    </tr>
-                `);
-                    } else {
-                        actualizarTabla(devolucionesFiltradas);
-                    }
-                },
-                error: function (err) {
-                    console.error('Error en búsqueda:', err);
-
-                    const tbody = $('#tablaDevoluciones tbody');
-                    tbody.html(`
                 <tr>
                     <td colspan="6" class="text-center text-muted py-4">
-                        <i class="bi bi-exclamation-triangle fs-1 d-block mb-2"></i>
-                        No se pudieron cargar los resultados
+                        <div class="spinner-border spinner-border-sm" role="status"></div>
+                        <span class="ms-2">Buscando devoluciones...</span>
                     </td>
                 </tr>
             `);
-                } 
-            });
+
+            $('#btnVerDetalle').prop('disabled', true);
+
+            // Limpiar timer anterior para debounce
+            clearTimeout(debounceTimer);
+            // Esperar 300ms antes de hacer la llamada (evita llamadas excesivas)
+            debounceTimer = setTimeout(() => {
+                    // Construir URL para el filtro anidado (siempre usar este endpoint)
+                    let url = '/api/Devoluciones/filtrar-anidado?';
+                    const params = [];
+
+                    if (busqueda) {
+                        params.push(`buscar=${encodeURIComponent(busqueda)}`);
+                    }
+
+                    if (fecha) {
+                        params.push(`fecha=${encodeURIComponent(fecha)}`);
+
+                    }
+
+                    // Si no hay filtros, el endpoint devolverá todas las devoluciones
+                    url += params.length > 0 ? params.join('&') : 'buscar=&fecha=';
+
+                    $.ajax({
+                        url: url,
+                        method: 'GET',
+                        success: function (devolucionesFiltradas) {
+                            todasDevoluciones = devolucionesFiltradas; // Mantener referencia global
+
+                            // Verificar si hay resultados
+                            if (devolucionesFiltradas.length === 0) {
+                                const tbody = $('#tablaDevoluciones tbody');
+                                tbody.html(`
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    ${params.length > 0
+                                    ? 'No se encontraron devoluciones con ese criterio de búsqueda'
+                                        : 'No hay devoluciones registradas'}
+                                </td>
+                            </tr>
+                        `);
+                            } else {
+                                actualizarTabla(devolucionesFiltradas);
+                            }
+                        },
+                        error: function (err) {
+                            console.error('Error en búsqueda:', err);
+
+                            const tbody = $('#tablaDevoluciones tbody');
+                            tbody.html(`
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                <i class="bi bi-exclamation-triangle fs-1 d-block mb-2"></i>
+                                No se pudieron cargar los resultados
+                            </td>
+                        </tr>
+                    `);
+                        } 
+                    });
+            }, 300);  // Debounce de 300ms
         }
 
         function limpiarBusqueda() {

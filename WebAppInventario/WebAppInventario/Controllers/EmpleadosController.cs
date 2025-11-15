@@ -93,6 +93,58 @@ namespace WebAppInventario.Controllers
             return Ok(resultado);
         }
 
+        // GET: api/Empleados/filtrar-anidado?idRol=2&buscar=juan
+        [HttpGet("filtrar-anidado")]
+        public async Task<ActionResult<IEnumerable<object>>> FiltrarEmpleados(
+            int? idRol,
+            string? buscar)
+        {
+            var consulta = _context.Empleados
+                .Where(e => e.estado) // solo activos
+                .Include(e => e.Rol)
+                .AsQueryable();
+
+            // 🔹 Filtro por ID Rol (int)
+            if (idRol.HasValue)
+            {
+                consulta = consulta.Where(e => e.idRol == idRol.Value);
+            }
+
+            // 🔹 Filtro general: nombre o credencial
+            if (!string.IsNullOrWhiteSpace(buscar))
+            {
+                string b = buscar.Trim().ToLower();
+                consulta = consulta.Where(e =>
+                    e.nombre.ToLower().Contains(b) ||
+                    e.credencial.ToLower().Contains(b) // 👈 aquí ya incluye credencial
+                );
+            }
+
+            var resultado = await consulta
+                .Select(e => new
+                {
+                    e.idEmpleado,
+                    e.idRol,
+                    e.nombre,
+                    e.credencial,
+                    e.contraseña,
+                    e.telefono,
+                    e.email,
+                    e.direccion,
+                    e.fechaNacimiento,
+                    e.estado,
+                    e.ultimaActualizacion,
+                    rol = e.Rol != null ? e.Rol.rol : "Sin rol"
+                })
+                .OrderBy(e => e.idEmpleado)
+                .ToListAsync();
+
+            return Ok(resultado);
+        }
+
+
+
+
         // GET: api/Empleados/nueva-credencial
         [HttpGet("nueva-credencial")]
         public async Task<ActionResult<string>> GetNuevaCredencial()

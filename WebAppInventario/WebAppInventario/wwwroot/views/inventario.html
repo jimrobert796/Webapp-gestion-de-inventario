@@ -287,11 +287,23 @@
 
             // ========== FUNCIÓN PARA BUSCAR INVENTARIOS CON FILTROS ==========
             function buscarInventarios(textoBusqueda = '', categoriaId = '', proveedorId = '', stock = '') {
+                // MOSTRAR LOADING AL INICIAR BÚSQUEDA
+                $('#tablaInventario tbody').html(`
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            <div class="spinner-border spinner-border-sm" role="status"></div>
+                            <span class="ms-2">Buscando productos en inventario...</span>
+                        </td>
+                    </tr>
+                `);
+
                 clearTimeout(debounceTimer);
 
                 debounceTimer = setTimeout(() => {
                     // Construir URL con parámetros
                     let params = new URLSearchParams();
+
+                    
 
                     if (textoBusqueda) params.append('buscar', textoBusqueda);
                     if (categoriaId) params.append('categoriaId', categoriaId);
@@ -363,11 +375,7 @@
                 // Realizar búsqueda vacía para cargar todos los datos
                 buscarInventarios('', '', '', '');
 
-                // Restaurar botón después de 1 segundo
-                setTimeout(() => {
-                    btn.prop('disabled', false);
-                    btn.html(originalHtml);
-                }, 1000);
+                
             }
 
 
@@ -417,7 +425,6 @@
                     }
                 });
             }
-
             // ========== FUNCIÓN PARA RENDERIZAR LA TABLA ==========
             function renderTabla() {
                 let tbody = $("#tablaInventario tbody");
@@ -427,44 +434,61 @@
                     tbody.append(`
             <tr>
                 <td colspan="7" class="text-center text-muted">
-                    No se encontraron productos con los criterios de búsqueda seleccionados
+                    No se encontraron productos
                 </td>
             </tr>
         `);
                     return;
                 }
 
-                inventariosFiltrados.forEach((inv) => {
+                // Limpiar selección
+                productoSeleccionado = null;
+                $("#btnVerDetalle").prop('disabled', true);
+
+                // Renderizar filas
+                inventariosFiltrados.forEach((inv, index) => {
                     tbody.append(`
-            <tr class="fila-producto" data-id="${inv.idProducto}">
+            <tr data-index="${index}">
                 <td>${inv.productoNombre}</td>
                 <td>${inv.productoCodigo}</td>
                 <td>${inv.productoproveedor}</td>
                 <td>${inv.productocategoria}</td>
-                <td>${inv.precio.toFixed(2)}</td>
-                <td>${inv.costo.toFixed(2)}</td>
+                <td>$${inv.precio.toFixed(2)}</td>
+                <td>$${inv.costo.toFixed(2)}</td>
                 <td>${inv.cantidad}</td>
             </tr>
         `);
                 });
 
-                // SOLO UNA VEZ - Agregar event listeners a las filas
-                $(".fila-producto").off('click').on("click", function () {
+                // Evento de clic para selección (igual que facturas)
+                $("#tablaInventario tbody tr").click(function () {
+                    // Ignitar fila de "no resultados"
+                    if ($(this).find('td').length === 1) return;
+
                     // Remover selección anterior
-                    $(".fila-producto").removeClass("table-active");
+                    $("#tablaInventario tbody tr").removeClass("table-primary");
 
-                    // Seleccionar fila actual
-                    $(this).addClass("table-active");
+                    // Aplicar selección actual
+                    $(this).addClass("table-primary");
 
-                    // Habilitar botón Ver Detalle
+                    // Obtener producto seleccionado
+                    const index = $(this).data("index");
+                    productoSeleccionado = inventariosFiltrados[index];
+
+                    // Habilitar botón de detalle
                     $("#btnVerDetalle").prop('disabled', false);
+                });
 
-                    // Guardar producto seleccionado
-                    const productId = $(this).data('id');
-                    productoSeleccionado = inventariosFiltrados.find(inv => inv.idProducto === productId);
+                // Doble clic para abrir detalle directamente
+                $("#tablaInventario tbody tr").dblclick(function () {
+                    if ($(this).find('td').length === 1) return;
+
+                    const index = $(this).data("index");
+                    productoSeleccionado = inventariosFiltrados[index];
+                    mostrarDetalleProducto();
                 });
             }
-
+            
             // ========== FUNCIÓN PARA MOSTRAR DETALLE DEL PRODUCTO ==========
             // ========== FUNCIÓN PARA MOSTRAR DETALLE DEL PRODUCTO ==========
             function mostrarDetalleProducto() {

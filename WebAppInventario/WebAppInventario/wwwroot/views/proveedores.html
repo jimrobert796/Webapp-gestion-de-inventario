@@ -230,6 +230,15 @@
 
             // ========== FUNCIÓN PARA BUSCAR PROVEEDORES DESDE LA API ==========
             function buscarProveedores(textoBusqueda = '') {
+
+                $('#tablaProveedores tbody').html(`
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+                            <div class="spinner-border spinner-border-sm" role="status"></div>
+                            <span class="ms-2">Buscando proveedores...</span>
+                        </td>
+                    </tr>
+                `);
                 // Limpiar timer anterior para debounce
                 clearTimeout(debounceTimer);
                 // Esperar 300ms antes de hacer la llamada (evita llamadas excesivas)
@@ -268,7 +277,7 @@
             function renderTabla() {
                 let tbody = $("#tablaProveedores tbody");
                 tbody.empty(); // Limpiar el contenido actual de la tabla
-
+               
                 // Si no hay proveedores, mostrar mensaje
                 if (proveedoresFiltrados.length === 0) {
                     let mensaje = "No se encontraron proveedores con ese criterio de búsqueda";

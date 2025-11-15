@@ -312,7 +312,7 @@
                                     <thead>
                                         <tr><th>Fecha</th><th>Factura</th><th class="text-end">Total</th></tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="tbodyUltimasFacturas">
                                         <tr><td>2025-11-05</td><td>FAC000002</td><td class="text-end">$35.50</td></tr>
                                         <tr><td>2025-11-05</td><td>FAC000003</td><td class="text-end">$18.10</td></tr>
                                         <tr><td>2025-11-06</td><td>FAC000004</td><td class="text-end">$89.99</td></tr>
@@ -617,29 +617,7 @@
                         lista.appendChild(li);
                     });
                 }
-            }   
-
-            function actualizarUltimasCompras(ultimasCompras) {
-                if (!ultimasCompras || !Array.isArray(ultimasCompras)) {
-                    console.log('No hay datos de últimas compras');
-                    return;
-                }
-
-                const tbody = document.querySelector('.table tbody');
-                if (tbody) {
-                    tbody.innerHTML = '';
-                    ultimasCompras.forEach(compra => {
-                        const fecha = new Date(compra.fecha).toISOString().split('T')[0];
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td>${fecha}</td>
-                            <td>${compra.proveedor}</td>
-                            <td class="text-end">$${compra.total.toFixed(2)}</td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
-                }
-            }
+            } 
 
             function actualizarUltimasCompras(ultimasCompras) {
                 if (!ultimasCompras || !Array.isArray(ultimasCompras)) return;
@@ -648,7 +626,7 @@
                 if (tbody) {
                     tbody.innerHTML = '';
                     ultimasCompras.forEach(compra => {
-                        const fecha = new Date(compra.fecha).toISOString().split('T')[0];
+                        const fecha = new Date(compra.fecha + 'T00:00:00').toLocaleDateString('es-SV');
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                 <td>${fecha}</td>
@@ -667,7 +645,7 @@
                 if (tbody) {
                     tbody.innerHTML = '';
                     ultimasFacturas.forEach(factura => {
-                        const fecha = new Date(factura.fecha).toISOString().split('T')[0];
+                        const fecha = new Date(factura.fecha + 'T00:00:00').toLocaleDateString('es-SV');
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                 <td>${fecha}</td>
@@ -695,9 +673,7 @@
                         li.className = 'list-group-item';
 
                         // Formatear fecha
-                        const fecha = new Date(actividad.fecha);
-                        const fechaFormateada = fecha.toLocaleDateString('es-ES');
-
+                        const fechaFormateada = new Date(actividad.fecha + 'T00:00:00').toLocaleDateString('es-SV') 
                         li.innerHTML = `
                 <div class="d-flex gap-3">
                     <div class="badge bg-${actividad.color} rounded-circle p-2">

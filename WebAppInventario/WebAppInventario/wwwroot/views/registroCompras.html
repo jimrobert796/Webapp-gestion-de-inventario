@@ -527,59 +527,64 @@
                 const estado = $('#filtroEstado').val();
                 const busqueda = $('#inputBuscar').val().toLowerCase();
 
-                // Mostrar loading
+                // ⬇️⬇️⬇️ AQUÍ VA EL LOADING ⬇️⬇️⬇️
                 $('#tablaCompras tbody').html(`
-                        <tr>
-                            <td colspan="7" class="text-center text-muted py-4">
-                                <div class="spinner-border spinner-border-sm" role="status"></div>
-                                <span class="ms-2">Buscando compras...</span>
-                            </td>
-                        </tr>
-                    `);
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            <div class="spinner-border spinner-border-sm" role="status"></div>
+                            <span class="ms-2">Buscando compras...</span>
+                        </td>
+                    </tr>
+                `);
+                 clearTimeout(debounceTimer);
+ // Esperar 300ms antes de hacer la llamada (evita llamadas excesivas)
+                debounceTimer = setTimeout(() => {
+                    // 🔥 CONSTRUIR URL CON FILTROS ANIDADOS
+                    let url = '/api/Compras/buscar-anidado?';
+                    let parametros = [];
 
-                // 🔥 CONSTRUIR URL CON FILTROS ANIDADOS
-                let url = '/api/Compras/buscar-anidado?';
-                let parametros = [];
+                    // Agregar cada filtro activo
+                    if (fecha) {
+                        parametros.push(`fecha=${encodeURIComponent(fecha)}`);
+                    }
 
-                // Agregar cada filtro activo
-                if (fecha) {
-                    parametros.push(`fecha=${encodeURIComponent(fecha)}`);
-                }
+                    if (proveedorId) {
+                        parametros.push(`proveedor=${encodeURIComponent(proveedorId)}`);
+                    }
 
-                if (proveedorId) {
-                    parametros.push(`proveedor=${encodeURIComponent(proveedorId)}`);
-                }
+                    if (estado) {
+                        parametros.push(`estado=${encodeURIComponent(estado)}`);
+                    }
 
-                if (estado) {
-                    parametros.push(`estado=${encodeURIComponent(estado)}`);
-                }
+                    if (busqueda) {
+                        parametros.push(`buscar=${encodeURIComponent(busqueda)}`);
+                    }
 
-                if (busqueda) {
-                    parametros.push(`buscar=${encodeURIComponent(busqueda)}`);
-                }
+                    // Si hay al menos un filtro, usar API de búsqueda anidada
+                    if (parametros.length > 0) {
+                        url += parametros.join('&');
 
-                // Si hay al menos un filtro, usar API de búsqueda anidada
-                if (parametros.length > 0) {
-                    url += parametros.join('&');
+                        $.ajax({
+                            url: url,
+                            method: 'GET',
+                            success: function (comprasFiltradas) {
+                                mostrarCompras(comprasFiltradas);
+                                actualizarContadoresFiltrados(comprasFiltradas);
+                            },
+                            error: function (err) {
+                                console.error('Error filtrando compras con fecha:' + fecha + ' idProveedor:' + proveedorId + ' estado:' + estado + ' busqueda:' + busqueda, err);
+                                // MEJOR MANEJO: Mostrar "no encontrado"
+                                mostrarCompras([]);
+                                actualizarContadoresFiltrados([]);
+                            }
+                        });
+                    } else {
+                        // 🔥 SI NO HAY FILTROS, CARGAR TODAS LAS COMPRAS
+                        cargarCompras();
+                    }
 
-                    $.ajax({
-                        url: url,
-                        method: 'GET',
-                        success: function (comprasFiltradas) {
-                            mostrarCompras(comprasFiltradas);
-                            actualizarContadoresFiltrados(comprasFiltradas);
-                        },
-                        error: function (err) {
-                            console.error('Error filtrando compras con fecha:' + fecha + ' idProveedor:' + proveedorId + ' estado:' + estado + ' busqueda:' + busqueda, err);
-                            // MEJOR MANEJO: Mostrar "no encontrado"
-                            mostrarCompras([]);
-                            actualizarContadoresFiltrados([]);
-                        }
-                    });
-                } else {
-                    // 🔥 SI NO HAY FILTROS, CARGAR TODAS LAS COMPRAS
-                    cargarCompras();
-                }
+                },300);  // Debounce de 300ms
+               
             }
             
             function actualizarContadores() {

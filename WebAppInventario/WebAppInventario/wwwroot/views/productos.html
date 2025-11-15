@@ -357,52 +357,55 @@
 
             // ========== FUNCIÓN PARA RENDERIZAR LA TABLA ==========
             function renderTabla() {
-                let tbody = $("#tablaProductos tbody");
-                tbody.empty(); // Limpiar el contenido actual de la tabla
 
-                // Si no hay productos, mostrar mensaje
-                if (productosFiltrados.length === 0) {
-                    let mensaje = "No se encontraron productos con ese criterio de búsqueda";
-                    tbody.append(`
-                                                <tr>
-                                                    <td colspan="6" class="text-center text-muted">
-                                                        ${mensaje}
-                                                    </td>
-                                                </tr>
-                                            `);
-                    return;
-                }
+                debounceTimer = setTimeout(() => { 
+                        let tbody = $("#tablaProductos tbody");
+                        tbody.empty(); // Limpiar el contenido actual de la tabla
 
-                // Recorrer el array de productos y crear filas
-                productosFiltrados.forEach((prod, i) => {
-                    tbody.append(`
-                                                <tr data-index="${i}">
-                                                    <td>${prod.nombre}</td>
-                                                    <td>${prod.codigo}</td>
-                                                    <td>${prod.proveedorNombre}</td>
-                                                    <td>${prod.categoriaNombre}</td>
-                                                    <td>${prod.descripcion}</td>
-                                                    <td>${prod.fechaProd ? new Date(prod.fechaProd).toLocaleDateString() : ''}</td>
-                                                    <td>${prod.fechaVenc ? new Date(prod.fechaVenc).toLocaleDateString() : ''}</td>
-                                                </tr>
-                                            `);
-                });
+                        // Si no hay productos, mostrar mensaje
+                        if (productosFiltrados.length === 0) {
+                            let mensaje = "No se encontraron productos con ese criterio de búsqueda";
+                            tbody.append(`
+                                                        <tr>
+                                                            <td colspan="6" class="text-center text-muted">
+                                                                ${mensaje}
+                                                            </td>
+                                                        </tr>
+                                                    `);
+                            return;
+                        }
 
-                // Agregar evento click a cada fila de la tabla
-                $("#tablaProductos tbody tr").click(function () {
-                    // No hacer nada si es la fila de "no hay productos"
-                    if ($(this).find('td').length === 1) return;
+                        // Recorrer el array de productos y crear filas
+                        productosFiltrados.forEach((prod, i) => {
+                            tbody.append(`
+                                                        <tr data-index="${i}">
+                                                            <td>${prod.nombre}</td>
+                                                            <td>${prod.codigo}</td>
+                                                            <td>${prod.proveedorNombre}</td>
+                                                            <td>${prod.categoriaNombre}</td>
+                                                            <td>${prod.descripcion}</td>
+                                                            <td>${prod.fechaProd ? new Date(prod.fechaProd).toLocaleDateString() : ''}</td>
+                                                            <td>${prod.fechaVenc ? new Date(prod.fechaVenc).toLocaleDateString() : ''}</td>
+                                                        </tr>
+                                                    `);
+                        });
 
-                    // Remover la clase de selección de todas las filas
-                    $("#tablaProductos tbody tr").removeClass("table-primary");
-                    // Agregar clase de selección a la fila clickeada
-                    $(this).addClass("table-primary");
-                    // Guardar el índice de la fila seleccionada
-                    filaSeleccionada = $(this).data("index");
+                        // Agregar evento click a cada fila de la tabla
+                        $("#tablaProductos tbody tr").click(function () {
+                            // No hacer nada si es la fila de "no hay productos"
+                            if ($(this).find('td').length === 1) return;
 
-                    // Habilitar los botones de Editar y Eliminar
-                    $("#btnEditar, #btnEliminar").prop("disabled", false);
-                });
+                            // Remover la clase de selección de todas las filas
+                            $("#tablaProductos tbody tr").removeClass("table-primary");
+                            // Agregar clase de selección a la fila clickeada
+                            $(this).addClass("table-primary");
+                            // Guardar el índice de la fila seleccionada
+                            filaSeleccionada = $(this).data("index");
+
+                            // Habilitar los botones de Editar y Eliminar
+                            $("#btnEditar, #btnEliminar").prop("disabled", false);
+                        });
+                }, 300); 
             }
 
             // ========== FUNCIÓN PARA CARGAR PROVEEDORES ==========
@@ -487,7 +490,7 @@
                 // Mostrar loading
                 $('#tablaProductos tbody').html(`
         <tr>
-            <td colspan="7" class="text-center text-muted py-4">
+            <td colspan="8" class="text-center text-muted py-4">
                 <div class="spinner-border spinner-border-sm" role="status"></div>
                 <span class="ms-2">Buscando productos...</span>
             </td>

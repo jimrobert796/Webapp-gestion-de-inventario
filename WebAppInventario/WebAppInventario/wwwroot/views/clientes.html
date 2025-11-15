@@ -227,6 +227,17 @@
 
             // ========== FUNCIÓN PARA BUSCAR CLIENTES DESDE LA API ==========
             function buscarClientes(textoBusqueda = '') {
+
+                // MOSTRAR LOADING AL INICIAR BÚSQUEDA
+                $('#tablaClientes tbody').html(`
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            <div class="spinner-border spinner-border-sm" role="status"></div>
+                            <span class="ms-2">Buscando clientes...</span>
+                        </td>
+                    </tr>
+                `);
+
                 // Limpiar timer anterior para debounce
                 clearTimeout(debounceTimer);
                 // Esperar 300ms antes de hacer la llamada (evita llamadas excesivas)

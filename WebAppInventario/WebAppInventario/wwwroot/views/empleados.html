@@ -43,12 +43,34 @@
                             <span class="input-group-text bg-primary text-white">
                                 <i class="bi bi-search"></i>
                             </span>
-                            <input type="text" class="form-control" id="inputBuscar" placeholder="Buscar por nombre o credencial...">
+
+                            <!-- Filtro por Rol (compacto) -->
+                            <select id="cboRol"
+                                    class="form-select  form-select-sm"
+                                    style="max-width: 130px;">
+                                <option value="">Todo rol</option>
+                                <option value="1">Admin</option>
+                                <option value="2">Bodega</option>
+                                <option value="3">Cajero</option>
+                            </select>
+
+                            <!-- Input más ancho -->
+                            <input type="text"
+                                   class="form-control"
+                                   id="inputBuscar"
+                                   style="flex-grow: 1;"
+                                   placeholder="Nombre o Credencial...">
+
                             <button class="btn btn-outline-secondary" type="button" id="btnLimpiarBusqueda" title="Limpiar búsqueda">
                                 <i class="bi bi-x-lg"></i>
                             </button>
+
+                            <button class="btn btn-outline-secondary" type="button" id="btnRefrescar" title="Refrescar datos">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
                         </div>
                     </div>
+
                 </div>
 
                 <!-- Tabla de empleados con scroll responsive -->
@@ -272,13 +294,40 @@
             }
 
             // ========== FUNCIÓN PARA BUSCAR EMPLEADOS DESDE LA API ==========
-            function buscarEmpleados(textoBusqueda = '') {
+            // ========== FUNCIÓN PARA BUSCAR EMPLEADOS DESDE LA API CON FILTRO ANIDADO ==========
+            function buscarEmpleados(textoBusqueda = '', idRol = '') {
+                // MOSTRAR LOADING AL INICIAR BÚSQUEDA
+                $('#tablaEmpleados tbody').html(`
+        <tr>
+            <td colspan="8" class="text-center text-muted py-4">
+                <div class="spinner-border spinner-border-sm" role="status"></div>
+                <span class="ms-2">Buscando empleados...</span>
+            </td>
+        </tr>
+    `);
+
                 // Limpiar timer anterior para debounce
                 clearTimeout(debounceTimer);
+
                 // Esperar 300ms antes de hacer la llamada (evita llamadas excesivas)
                 debounceTimer = setTimeout(() => {
+                    // Construir URL con parámetros opcionales para el filtro anidado
+                    let url = '/api/Empleados/filtrar-anidado?';
+                    const params = [];
+
+                    if (textoBusqueda) {
+                        params.push(`buscar=${encodeURIComponent(textoBusqueda)}`);
+                    }
+
+                    if (idRol) {
+                        params.push(`idRol=${encodeURIComponent(idRol)}`);
+                    }
+
+                    // Si no hay filtros, el endpoint devolverá todos los empleados
+                    url += params.length > 0 ? params.join('&') : 'buscar=&idRol=';
+
                     $.ajax({
-                        url: `/api/Empleados/buscar?buscar=${encodeURIComponent(textoBusqueda)}`,  // Endpoint de búsqueda
+                        url: url,
                         method: "GET",
                         success: function (data) {
                             // Mapear los datos recibidos al formato que usamos
@@ -310,7 +359,6 @@
                     });
                 }, 300);  // Debounce de 300ms
             }
-
             // ========== FUNCIÓN PARA RENDERIZAR LA TABLA ==========
             function renderTabla() {
                 let tbody = $("#tablaEmpleados tbody");
@@ -380,7 +428,7 @@
 
             // ========== FUNCIÓN PARA CARGAR EMPLEADOS DESDE LA API (PARA INICIALIZACIÓN) ==========
             function cargarEmpleados() {
-                buscarEmpleados('');  // Inicializar búsqueda vacía (mostrar todos)
+                buscarEmpleados('', '');   // Inicializar búsqueda vacía (mostrar todos)
             }
 
             // ========== FUNCIÓN PARA LIMPIAR EL FORMULARIO ==========
@@ -604,6 +652,13 @@
                     }
                 });
 
+                // ===== FILTRO POR ROL =====
+                $("#cboRol").on("change", function () {
+                    const textoBusqueda = $("#inputBuscar").val();
+                    const idRol = $(this).val();
+                    buscarEmpleados(textoBusqueda, idRol);
+                });
+
                 // ===== LIMPIAR FORMULARIO AL CERRAR EL MODAL =====
                 $('#modalEmpleado').on('hidden.bs.modal', function () {
                     limpiarFormulario();
@@ -611,18 +666,29 @@
 
                 // ===== BÚSQUEDA EN TIEMPO REAL CON DEBOUNCE =====
                 $("#inputBuscar").on("input", function () {
-                    let textoBusqueda = $(this).val();
-                    buscarEmpleados(textoBusqueda);
+                    const textoBusqueda = $(this).val();
+                    const idRol = $("#cboRol").val();
+                    buscarEmpleados(textoBusqueda, idRol);
                 });
 
-                // ===== LIMPIAR BÚSQUEDA =====
                 $("#btnLimpiarBusqueda").click(function () {
                     $("#inputBuscar").val("");
-                    buscarEmpleados("");  // Limpiar búsqueda
+                    // Mantener el rol seleccionado y volver a buscar
+                    const idRol = $("#cboRol").val();
+                    buscarEmpleados("", idRol);
                     // Resetear selección
                     filaSeleccionada = null;
                     $("#btnEditar, #btnEliminar").prop("disabled", true);
                 });
+
+                $("#btnRefrescar").click(function () {
+                    $("#inputBuscar").val("");
+                    $("#cboRol").val(""); // Limpiar también el filtro de rol
+                    buscarEmpleados("", ""); // Recargar todos los empleados
+                    filaSeleccionada = null;
+                    $("#btnEditar, #btnEliminar").prop("disabled", true);
+                });
+
 
                 // ===== FIX PARA ARIA-HIDDEN WARNING ===== 
                 $('.modal').on('hide.bs.modal', function () {
