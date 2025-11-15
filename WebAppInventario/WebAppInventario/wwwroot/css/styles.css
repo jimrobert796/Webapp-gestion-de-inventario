@@ -1,31 +1,46 @@
 ﻿/* ========== IMPORTACIÓN DE TIPOGRAFÍAS ========== */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
-/* ========== APLICACIÓN DE TIPOGRAFÍAS SOLO EN EL SISTEMA (NO LOGIN) ========== */
+/* ========== VARIABLES DE COLOR CONSISTENTES ========== */
+:root {
+    --ferreteria-primary: #2C3E50;
+    --ferreteria-accent: #E67E22;
+    --ferreteria-light: #ECF0F1;
+    --ferreteria-dark: #212529;
+    --ferreteria-success: #27AE60;
+    --ferreteria-danger: #E74C3C;
+    --ferreteria-warning: #E67E22;
+}
+
+/* ========== APLICACIÓN DE TIPOGRAFÍAS ========== */
 body {
     min-height: 100vh;
     margin: 0;
     background-color: var(--bs-body-bg);
-    font-family: 'Inter', sans-serif; /* NUEVO */
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
 }
 
 /* Tipografía para encabezados del sistema */
 h1, h2, h3, h4, h5, h6,
 .navbar-brand,
 .card-header,
+.modal-title,
 .sidebar h1, .sidebar h2, .sidebar h3, .sidebar h4, .sidebar h5, .sidebar h6 {
-    font-family: 'Montserrat', sans-serif; /* NUEVO */
+    font-family: 'Montserrat', sans-serif;
     font-weight: 600;
+    color: var(--ferreteria-primary);
 }
 
 /* Tipografía para botones del sistema */
-.btn:not(.btn-ferreteria), /* Excluye botones del login */
+.btn:not(.btn-ferreteria),
 .sidebar .btn,
 .sidebar button {
-    font-family: 'Inter', sans-serif; /* NUEVO */
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
 }
 
-/* ========== TODO EL RESTO DE TU CSS GLOBAL SE MANTIENE IGUAL ========== */
+/* ========== LAYOUT PRINCIPAL ========== */
 html {
     height: 100%;
 }
@@ -37,62 +52,7 @@ main {
     overflow-y: hidden;
 }
 
-/* ========== DROPDOWNS ========== */
-.dropdown-toggle {
-    outline: 0;
-}
-
-/* ========== BOTONES TOGGLE (MENÚS DESPLEGABLES) ========== */
-.btn-toggle {
-    padding: .25rem .5rem;
-    font-weight: 600;
-    color: var(--bs-emphasis-color);
-    background-color: transparent;
-}
-
-    .btn-toggle:hover,
-    .btn-toggle:focus {
-        color: var(--bs-primary);
-        background-color: var(--bs-secondary-bg);
-    }
-
-    .btn-toggle::before {
-        width: 1.25em;
-        line-height: 0;
-        content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
-        transition: transform .35s ease;
-        transform-origin: .5em 50%;
-    }
-
-    .btn-toggle[aria-expanded="true"] {
-        color: rgba(var(--bs-emphasis-color-rgb), .85);
-    }
-
-        .btn-toggle[aria-expanded="true"]::before {
-            transform: rotate(90deg);
-        }
-
-/* ========== NAVEGACIÓN EN SUBMENÚS ========== */
-.btn-toggle-nav a {
-    padding: .1875rem .5rem;
-    margin-top: .125rem;
-    margin-left: 1.25rem;
-    transition: all 0.3s ease;
-}
-
-    .btn-toggle-nav a:hover,
-    .btn-toggle-nav a:focus {
-        background-color: var(--bs-secondary-bg);
-        color: var(--bs-primary);
-        border-radius: 5px;
-    }
-
-/* ========== ÁREA DE SCROLL ========== */
-.scrollarea {
-    overflow-y: auto;
-}
-
-/* ========== SIDEBAR PRINCIPAL ========== */
+/* ========== SIDEBAR MEJORADO ========== */
 .sidebar {
     width: 280px;
     position: fixed;
@@ -100,72 +60,221 @@ main {
     left: 0;
     bottom: 0;
     overflow-y: auto;
-    background-color: #212529 !important; /* Fuerza fondo oscuro siempre */
-    color: #ffffff !important; /* Fuerza texto claro siempre */
-    box-shadow: 2px 0 5px var(--bs-border-color);
-    border-right: 1px solid var(--bs-border-color);
+    background: linear-gradient(180deg, var(--ferreteria-dark), #1a1d20) !important;
+    color: #ffffff !important;
+    box-shadow: 3px 0 15px rgba(0, 0, 0, 0.3);
+    border-right: 1px solid #343a40;
+    z-index: 1000;
 }
 
-/* ========== CONTENIDO PRINCIPAL ========== */
-.main-content {
-    margin-left: 280px;
-    padding: 20px;
-    background-color: var(--bs-body-bg);
-    min-height: 100vh;
-}
-
-/* ========== INFORMACIÓN DE USUARIO ========== */
-#btnCerrarSesion:focus,
-#btnCerrarSesion:active {
-    outline: none;
-    box-shadow: none;
-}
-
-/* ========== LOGO ========== */
+/* Logo del sidebar */
 #logoLink {
     transition: all 0.3s ease;
+    border-bottom: 1px solid #343a40 !important;
 }
 
     #logoLink:hover {
-        color: var(--bs-primary) !important;
+        color: var(--ferreteria-accent) !important;
+        transform: translateX(5px);
     }
 
-/* ========== ÍCONOS ========== */
+        #logoLink:hover i {
+            transform: scale(1.1);
+            color: var(--ferreteria-accent) !important;
+        }
+
+/* ========== BOTONES TOGGLE MEJORADOS ========== */
+.btn-toggle {
+    padding: .5rem .75rem;
+    font-weight: 600;
+    color: #e9ecef !important;
+    background-color: transparent;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    margin-bottom: 2px;
+}
+
+    .btn-toggle:hover,
+    .btn-toggle:focus {
+        color: var(--ferreteria-accent) !important;
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        transform: translateX(5px);
+    }
+
+    .btn-toggle::before {
+        width: 1.25em;
+        line-height: 0;
+        content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%28233,236,239,0.7%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+        transition: transform 0.35s ease;
+        transform-origin: .5em 50%;
+    }
+
+    .btn-toggle[aria-expanded="true"] {
+        color: var(--ferreteria-accent) !important;
+        background-color: rgba(230, 126, 34, 0.1) !important;
+    }
+
+        .btn-toggle[aria-expanded="true"]::before {
+            transform: rotate(90deg);
+            content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%28230,126,34,1%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+        }
+
+/* ========== NAVEGACIÓN EN SUBMENÚS MEJORADA ========== */
+.btn-toggle-nav a {
+    padding: .4rem .75rem;
+    margin-top: .125rem;
+    margin-left: 1.5rem;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    color: #adb5bd !important;
+    font-size: 0.9rem;
+}
+
+    .btn-toggle-nav a:hover,
+    .btn-toggle-nav a:focus {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        color: var(--ferreteria-accent) !important;
+        transform: translateX(5px);
+    }
+
+/* ========== BOTONES DEL MENÚ MEJORADOS ========== */
+.sidebar .btn:not(.btn-toggle),
+.sidebar button:not(.btn-toggle) {
+    border-radius: 8px;
+    margin-bottom: 4px;
+    color: #e9ecef !important;
+    padding: 0.5rem 0.75rem;
+    transition: all 0.3s ease;
+    background-color: transparent;
+    border: none;
+    text-align: left;
+    width: 100%;
+}
+
+    .sidebar .btn:not(.btn-toggle):hover,
+    .sidebar button:not(.btn-toggle):hover {
+        background: linear-gradient(135deg, rgba(230, 126, 34, 0.2), rgba(44, 62, 80, 0.3)) !important;
+        color: var(--ferreteria-accent) !important;
+        transform: translateX(5px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+/* ========== ÍCONOS MEJORADOS ========== */
 .sidebar i {
-    transition: transform 0.3s ease;
-    color: #adb5bd !important; /* Color gris claro para íconos en dark */
+    transition: all 0.3s ease;
+    color: #adb5bd !important;
+    width: 20px;
+    text-align: center;
 }
 
 .sidebar a:hover i,
 .sidebar button:hover i {
     transform: scale(1.1);
-    color: var(--bs-primary) !important;
+    color: var(--ferreteria-accent) !important;
 }
 
-/* ========== BOTONES DEL MENÚ ========== */
-.sidebar .btn,
-.sidebar button {
+/* ========== INFORMACIÓN DE USUARIO MEJORADA ========== */
+.sidebar .border-top {
+    border-color: #343a40 !important;
+}
+
+#btnCerrarSesion {
+    background: linear-gradient(135deg, #E74C3C, #C0392B) !important;
+    border: none;
     border-radius: 8px;
-    margin-bottom: 5px;
-    color: #ffffff !important; /* Fuerza texto blanco en botones */
+    font-weight: 600;
+    transition: all 0.3s ease;
 }
 
-    .sidebar .btn:hover,
-    .sidebar button:hover {
-        background-color: #495057 !important; /* Fondo gris oscuro al hover */
-        box-shadow: 0 2px 4px var(--bs-border-color);
+    #btnCerrarSesion:hover {
+        background: linear-gradient(135deg, #C0392B, #E74C3C) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
     }
 
-/* ========== FLECHAS BLANCAS EN SIDEBAR ========== */
-.sidebar .btn-toggle::before {
-    content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%28255,255,255,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e") !important;
+    #btnCerrarSesion:focus,
+    #btnCerrarSesion:active {
+        outline: none;
+        box-shadow: none;
+        transform: translateY(0);
+    }
+
+/* ========== CONTENIDO PRINCIPAL MEJORADO ========== */
+.main-content {
+    margin-left: 280px;
+    padding: 30px;
+    background: linear-gradient(145deg, #1a1d21 0%, #212529 100%);
+    border-left: 1px solid #343a40;
+    min-height: 100vh;
+    transition: margin-left 0.3s ease;
 }
 
-/* ========== RESPONSIVE PARA MÓVILES ========== */
+/* ========== SCROLLBAR PERSONALIZADO ========== */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: #1a1d20;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: var(--ferreteria-accent);
+    border-radius: 3px;
+}
+
+    .sidebar::-webkit-scrollbar-thumb:hover {
+        background: #d35400;
+    }
+
+/* ========== TARJETAS Y COMPONENTES GLOBALES ========== */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+    .card:hover {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+
+.card-header {
+    background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 15px 20px;
+    border: none;
+}
+
+/* ========== BOTONES GLOBALES MEJORADOS ========== */
+.btn {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+/* ========== RESPONSIVE MEJORADO ========== */
 @media (max-width: 768px) {
     .sidebar {
         transform: translateX(-100%);
         transition: transform 0.3s ease;
+        box-shadow: 3px 0 15px rgba(0, 0, 0, 0.4);
     }
 
         .sidebar.show {
@@ -174,6 +283,63 @@ main {
 
     .main-content {
         margin-left: 0;
+        padding: 15px;
+    }
+
+    /* Botón hamburguesa para móviles */
+    .mobile-menu-btn {
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 1001;
+        background: var(--ferreteria-primary);
+        border: none;
+        border-radius: 6px;
+        color: white;
+        padding: 8px 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
 }
 
+/* ========== ANIMACIONES Y TRANSICIONES ========== */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========== ESTILOS PARA TABLAS GLOBALES ========== */
+.table-scroll {
+    max-height: 500px;
+    overflow-y: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+    .table-scroll thead th {
+        position: sticky;
+        top: 0;
+        background: linear-gradient(135deg, var(--ferreteria-primary), #34495E);
+        color: white;
+        z-index: 100;
+        border-bottom: 2px solid #dee2e6;
+        padding: 12px 8px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+    }
+
+.table-hover tbody tr:hover {
+    background-color: rgba(44, 62, 80, 0.05);
+    transform: scale(1.01);
+    transition: all 0.2s ease;
+}
