@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Búsqueda de Inventario</title>  <!-- Título cambiado para reflejar solo búsqueda -->
+    <title>Búsqueda de Inventario</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -11,23 +11,19 @@
     <!-- Estilos personalizados para scroll interno en la tabla -->
     <style>
         .table-scroll {
-            max-height: 300px; /* Altura máxima de la tabla (ajusta según necesites) */
-            overflow-y: auto; /* Scroll vertical interno */
-        }
-        /* Encabezados fijos */
-        .table-scroll thead th {
-            position: sticky;
-            top: 0;
- 
-            z-index: 100;
-            border-bottom: 2px solid #dee2e6;
+            max-height: 300px;
+            overflow-y: auto;
         }
 
-        /* Asegurar que las celdas tengan buen contraste */
-        .table-scroll thead th {
-            color: white;
-            padding: 12px 8px;
-        }
+            .table-scroll thead th {
+                position: sticky;
+                top: 0;
+                background-color: #212529;
+                z-index: 100;
+                border-bottom: 2px solid #dee2e6;
+                color: white;
+                padding: 12px 8px;
+            }
     </style>
 </head>
 <body>
@@ -37,16 +33,23 @@
         <div class="card shadow">
             <!-- Encabezado de la tarjeta -->
             <div class="card-header bg-primary text-white">
-                <h2 class="mb-0">Búsqueda de Inventario</h2>  <!-- Título cambiado -->
+                <h2 class="mb-0">Búsqueda de Inventario</h2>
             </div>
 
             <!-- Cuerpo de la tarjeta -->
             <div class="card-body">
-                <!-- Solo el buscador (removidos los botones CRUD) -->
+                <!-- Buscador y Botón Ver Detalle en la misma fila -->
                 <div class="row mb-3 align-items-center">
-                    <!-- Buscador al lado derecho (ahora ocupa toda la fila) -->
-                    <div class="col-md-12">
-                        <!-- Cambiado a col-md-12 para ocupar toda la fila -->
+
+                    <!-- Botón Ver Detalle -->
+                    <div class="col-md-4">
+                        <button id="btnVerDetalle" class="btn btn-primary" disabled>
+                            <i class="bi bi-eye"></i> Ver Detalles
+                        </button>
+                    </div>
+
+                    <!-- Buscador -->
+                    <div class="col-md-8">
                         <div class="input-group">
                             <span class="input-group-text bg-primary text-white">
                                 <i class="bi bi-search"></i>
@@ -55,7 +58,36 @@
                             <button class="btn btn-outline-secondary" type="button" id="btnLimpiarBusqueda" title="Limpiar búsqueda">
                                 <i class="bi bi-x-lg"></i>
                             </button>
+                            <button class="btn btn-outline-secondary" type="button" id="btnRefrescar" title="Refrescar datos">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Filtros compactos -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label small">Proveedor</label>
+                        <select class="form-select form-select-sm" id="filtroProveedor">
+                            <option value="">Todos los proveedores</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small">Categoria</label>
+                        <select class="form-select form-select-sm" id="filtroCategoria">
+                            <option value="">Todas las categorías</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small">Nivel de Stock</label>
+                        <select class="form-select form-select-sm" id="filtroStock">
+                            <option value="">Todos los niveles</option>
+                            <option value="minimo">Mínimo</option>
+                            <option value="moderado">Moderado</option>
+                            <option value="normal">Normal</option>
+                            <option value="maximo">Máximo</option>
+                        </select>
                     </div>
                 </div>
 
@@ -71,14 +103,155 @@
                                 <th>Precio</th>
                                 <th>Costo</th>
                                 <th>Cantidad</th>
-                                <th>Ubicación</th>
-                                <th>Última Actualización</th>
                             </tr>
                         </thead>
                         <tbody>
                             <!-- Los datos de inventario se cargan dinámicamente aquí -->
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL DE DETALLE DEL PRODUCTO ========== -->
+    <div class="modal fade" id="modalProducto" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <!-- Encabezado del modal -->
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="modalTitulo">
+                        <i class="bi bi-box-seam"></i> Detalle del Producto
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Cuerpo del modal con todo visible -->
+                <div class="modal-body">
+                    <form id="formProducto">
+                        <!-- Campos ocultos -->
+                        <input type="hidden" id="idProducto">
+                        <input type="hidden" id="idInventario">
+
+                        <!-- Sección Producto -->
+                        <div class="border rounded p-3 mb-4">
+                            <h6 class="text-primary mb-3">
+                                <i class="bi bi-tag"></i> Información del Producto
+                            </h6>
+
+                            <!-- Fila: Proveedor y Categoría -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="idProveedor" class="form-label">
+                                        <i class="bi bi-truck"></i> Proveedor
+                                    </label>
+                                    <select id="idProveedor" class="form-select" disabled>
+                                        <option value="">Seleccione un proveedor</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="idCategoria" class="form-label">
+                                        <i class="bi bi-tags"></i> Categoría
+                                    </label>
+                                    <select id="idCategoria" class="form-select" disabled>
+                                        <option value="">Seleccione una categoría</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Fila: Código y Nombre Producto -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="codigo" class="form-label">
+                                        <i class="bi bi-upc"></i> Código
+                                    </label>
+                                    <input type="text" class="form-control" id="codigo" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="nombreProducto" class="form-label">
+                                        <i class="bi bi-box"></i> Nombre Producto
+                                    </label>
+                                    <input type="text" class="form-control" id="nombreProducto" readonly>
+                                </div>
+                            </div>
+
+                            <!-- Descripción -->
+                            <div class="mb-3">
+                                <label for="descripcion" class="form-label">
+                                    <i class="bi bi-textarea"></i> Descripción
+                                </label>
+                                <textarea class="form-control" id="descripcion" rows="3" readonly></textarea>
+                            </div>
+
+                            <!-- Fila: Fechas -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="fechaProd" class="form-label">
+                                        <i class="bi bi-calendar"></i> Fecha de Producción
+                                    </label>
+                                    <input type="date" class="form-control" id="fechaProd" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="fechaVenc" class="form-label">
+                                        <i class="bi bi-calendar-x"></i> Fecha de Vencimiento
+                                    </label>
+                                    <input type="date" class="form-control" id="fechaVenc" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sección Inventario -->
+                        <div class="border rounded p-3">
+                            <h6 class="text-success mb-3">
+                                <i class="bi bi-clipboard-data"></i> Información del Inventario
+                            </h6>
+
+                            <!-- Fila: Precio y Costo -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="precio" class="form-label">
+                                        <i class="bi bi-cash"></i> Precio
+                                    </label>
+                                    <input type="number" class="form-control" id="precio" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="costo" class="form-label">
+                                        <i class="bi bi-calculator"></i> Costo
+                                    </label>
+                                    <input type="number" class="form-control" id="costo" readonly>
+                                </div>
+                            </div>
+
+                            <!-- Fila: Cantidad y Ubicación -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="cantidad" class="form-label">
+                                        <i class="bi bi-hash"></i> Cantidad
+                                    </label>
+                                    <input type="number" class="form-control" id="cantidad" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="ubicacion" class="form-label">
+                                        <i class="bi bi-geo-alt"></i> Ubicación
+                                    </label>
+                                    <input type="text" class="form-control" id="ubicacion" readonly>
+                                </div>
+                            </div>
+
+                            <!-- Última Actualización -->
+                            <div class="mb-3">
+                                <label for="ultimaActualizacion" class="form-label">
+                                    <i class="bi bi-clock"></i> Última Actualización
+                                </label>
+                                <input type="text" class="form-control" id="ultimaActualizacion" readonly>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Pie del modal -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
@@ -93,7 +266,6 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Mensaje dinámico de error (se cambia desde JavaScript) -->
                     <p class="mb-0" id="mensajeError"></p>
                 </div>
                 <div class="modal-footer">
@@ -103,25 +275,35 @@
         </div>
     </div>
 
-    <!-- ========== JAVASCRIPT SIMPLIFICADO ========== -->
+    <!-- ========== JAVASCRIPT ACTUALIZADO ========== -->
     <script>
-       
         (function () {
             // ========== VARIABLES GLOBALES ==========
-            let inventariosFiltrados = [];     // Array para almacenar inventarios filtrados desde la API
-            let debounceTimer;                 // Timer para debounce en búsqueda
+            let inventariosFiltrados = [];
+            let debounceTimer;
+            let proveedores = [];
+            let categorias = [];
+            let productoSeleccionado = null;
 
-            // ========== FUNCIÓN PARA BUSCAR INVENTARIOS DESDE LA API ==========
-            function buscarInventarios(textoBusqueda = '') {
-                // Limpiar timer anterior para debounce
+            // ========== FUNCIÓN PARA BUSCAR INVENTARIOS CON FILTROS ==========
+            function buscarInventarios(textoBusqueda = '', categoriaId = '', proveedorId = '', stock = '') {
                 clearTimeout(debounceTimer);
-                // Esperar 300ms antes de hacer la llamada (evita llamadas excesivas)
+
                 debounceTimer = setTimeout(() => {
+                    // Construir URL con parámetros
+                    let params = new URLSearchParams();
+
+                    if (textoBusqueda) params.append('buscar', textoBusqueda);
+                    if (categoriaId) params.append('categoriaId', categoriaId);
+                    if (proveedorId) params.append('proveedorId', proveedorId);
+                    if (stock) params.append('stock', stock);
+
+                    const url = `/api/Inventario/filtrar-anidado?${params.toString()}`;
+
                     $.ajax({
-                        url: `/api/Inventario/buscar?buscar=${encodeURIComponent(textoBusqueda)}`,  // Endpoint de búsqueda
+                        url: url,
                         method: "GET",
                         success: function (data) {
-                            // Mapear los datos recibidos al formato que usamos
                             inventariosFiltrados = data.map(inv => ({
                                 idInventario: inv.idInventario,
                                 idProducto: inv.idProducto,
@@ -140,77 +322,224 @@
                                 productocategoria: inv.productocategoria.trim(),
                                 productoproveedor: inv.productoproveedor.trim()
                             }));
-                            renderTabla(); // Actualizar la tabla con los datos filtrados
+                            renderTabla();
+                            // Deshabilitar botón Ver Detalle al cargar nuevos datos
+                            $("#btnVerDetalle").prop('disabled', true);
+                            productoSeleccionado = null;
                         },
                         error: function (err) {
                             console.error("Error buscando inventarios:", err);
-                            // Mostrar modal de error
                             $("#mensajeError").text("Error al buscar productos. Intente nuevamente.");
                             let modalError = new bootstrap.Modal(document.getElementById('modalError'));
                             modalError.show();
                         }
                     });
-                }, 300);  // Debounce de 300ms
+                }, 300);
+            }
+
+
+            // ========== FUNCIÓN PARA REFRESCAR DATOS ==========
+            function refrescarDatos() {
+                // Limpiar TODOS los filtros y búsqueda
+                $("#inputBuscar").val("");
+                $("#filtroProveedor").val("");
+                $("#filtroCategoria").val("");
+                $("#filtroStock").val("");
+
+                // Deshabilitar botón Ver Detalle
+                $("#btnVerDetalle").prop('disabled', true);
+                productoSeleccionado = null;
+
+                // Realizar búsqueda vacía para cargar todos los datos
+                buscarInventarios('', '', '', '');
+
+                // Restaurar botón después de 1 segundo
+                setTimeout(() => {
+                    btn.prop('disabled', false);
+                    btn.html(originalHtml);
+                }, 1000);
+            }
+
+
+            // ========== FUNCIÓN PARA CARGAR FILTROS ==========
+            function cargarFiltros() {
+                // Cargar proveedores (ejemplo - ajusta según tu API)
+                $.ajax({
+                    url: '/api/Proveedores', // Ajusta esta URL
+                    method: "GET",
+                    success: function (data) {
+                        proveedores = data;
+                        let selectProveedor = $("#filtroProveedor");
+                        let selectProveedorModal = $("#idProveedor");
+
+                        selectProveedor.empty().append('<option value="">Todos los proveedores</option>');
+                        selectProveedorModal.empty().append('<option value="">Seleccione un proveedor</option>');
+
+                        data.forEach(prov => {
+                            selectProveedor.append(`<option value="${prov.idProveedor}">${prov.nombre}</option>`);
+                            selectProveedorModal.append(`<option value="${prov.idProveedor}">${prov.nombre}</option>`);
+                        });
+                    },
+                    error: function (err) {
+                        console.error("Error cargando proveedores:", err);
+                    }
+                });
+
+                // Cargar categorías (ejemplo - ajusta según tu API)
+                $.ajax({
+                    url: '/api/Categorias', // Ajusta esta URL
+                    method: "GET",
+                    success: function (data) {
+                        categorias = data;
+                        let selectCategoria = $("#filtroCategoria");
+                        let selectCategoriaModal = $("#idCategoria");
+
+                        selectCategoria.empty().append('<option value="">Todas las categorías</option>');
+                        selectCategoriaModal.empty().append('<option value="">Seleccione una categoría</option>');
+
+                        data.forEach(cat => {
+                            selectCategoria.append(`<option value="${cat.idCategoria}">${cat.nombre}</option>`);
+                            selectCategoriaModal.append(`<option value="${cat.idCategoria}">${cat.nombre}</option>`);
+                        });
+                    },
+                    error: function (err) {
+                        console.error("Error cargando categorías:", err);
+                    }
+                });
             }
 
             // ========== FUNCIÓN PARA RENDERIZAR LA TABLA ==========
             function renderTabla() {
                 let tbody = $("#tablaInventario tbody");
-                tbody.empty(); // Limpiar el contenido actual de la tabla
+                tbody.empty();
 
-                // Si no hay inventarios, mostrar mensaje
                 if (inventariosFiltrados.length === 0) {
-                    let mensaje = "No se encontraron productos con ese criterio de búsqueda";
                     tbody.append(`
-                                    <tr>
-                                        <td colspan="9" class="text-center text-muted">  <!-- Cambiado a 9 columnas -->
-                                            ${mensaje}
-                                        </td>
-                                    </tr>
-                                `);
+            <tr>
+                <td colspan="7" class="text-center text-muted">
+                    No se encontraron productos con los criterios de búsqueda seleccionados
+                </td>
+            </tr>
+        `);
                     return;
                 }
 
-                // Recorrer el array de inventarios y crear filas
                 inventariosFiltrados.forEach((inv) => {
                     tbody.append(`
-                                    <tr>
-                                        <td>${inv.productoNombre}</td>
-                                        <td>${inv.productoCodigo}</td>
-                                        <td>${inv.productoproveedor}</td>
-                                        <td>${inv.productocategoria}</td>
-                                        <td>${inv.precio.toFixed(2)}</td>
-                                        <td>${inv.costo.toFixed(2)}</td>
-                                        <td>${inv.cantidad}</td>
-                                        <td>${inv.ubicacion}</td>
-                                        <td>${new Date(inv.ultimaActualizacion).toLocaleString()}</td>
-                                    </tr>
-                                `);
+            <tr class="fila-producto" data-id="${inv.idProducto}">
+                <td>${inv.productoNombre}</td>
+                <td>${inv.productoCodigo}</td>
+                <td>${inv.productoproveedor}</td>
+                <td>${inv.productocategoria}</td>
+                <td>${inv.precio.toFixed(2)}</td>
+                <td>${inv.costo.toFixed(2)}</td>
+                <td>${inv.cantidad}</td>
+            </tr>
+        `);
                 });
 
-                // Removido: Eventos de clic en filas, ya que no hay acciones a realizar
+                // SOLO UNA VEZ - Agregar event listeners a las filas
+                $(".fila-producto").off('click').on("click", function () {
+                    // Remover selección anterior
+                    $(".fila-producto").removeClass("table-active");
+
+                    // Seleccionar fila actual
+                    $(this).addClass("table-active");
+
+                    // Habilitar botón Ver Detalle
+                    $("#btnVerDetalle").prop('disabled', false);
+
+                    // Guardar producto seleccionado
+                    const productId = $(this).data('id');
+                    productoSeleccionado = inventariosFiltrados.find(inv => inv.idProducto === productId);
+                });
             }
 
-            // ========== FUNCIÓN PARA CARGAR INVENTARIOS DESDE LA API (PARA INICIALIZACIÓN) ==========
-            function cargarInventarios() {
-                buscarInventarios('');  // Inicializar búsqueda vacía (mostrar todos)
+            // ========== FUNCIÓN PARA MOSTRAR DETALLE DEL PRODUCTO ==========
+            // ========== FUNCIÓN PARA MOSTRAR DETALLE DEL PRODUCTO ==========
+            function mostrarDetalleProducto() {
+                if (!productoSeleccionado) {
+                    $("#mensajeError").text("Por favor, seleccione un producto primero.");
+                    let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                    modalError.show();
+                    return;
+                }
+
+                const producto = productoSeleccionado;
+
+                // Llenar el modal con los datos del producto
+                $("#idProducto").val(producto.idProducto);
+                $("#idInventario").val(producto.idInventario);
+                $("#idProveedor").val(producto.idProveedor);
+                $("#idCategoria").val(producto.idCategoria);
+                $("#codigo").val(producto.productoCodigo);
+                $("#nombreProducto").val(producto.productoNombre);
+                $("#descripcion").val(producto.productoDescripcion);
+                $("#fechaProd").val(producto.productoFechaProd ? producto.productoFechaProd.split('T')[0] : '');
+                $("#fechaVenc").val(producto.productoFechaVenc ? producto.productoFechaVenc.split('T')[0] : '');
+                $("#precio").val(producto.precio);
+                $("#costo").val(producto.costo);
+                $("#cantidad").val(producto.cantidad);
+                $("#ubicacion").val(producto.ubicacion);
+                $("#ultimaActualizacion").val(new Date(producto.ultimaActualizacion).toLocaleString());
+
+                // Actualizar título del modal
+                $("#modalTitulo").html(`<i class="bi bi-box-seam"></i> ${producto.productoNombre}`);
+
+                // Mostrar el modal
+                let modalProducto = new bootstrap.Modal(document.getElementById('modalProducto'));
+                modalProducto.show();
             }
 
-            // ========== INICIALIZACIÓN CUANDO EL DOCUMENTO ESTÁ LISTO ==========
+            // ========== FUNCIÓN PARA REALIZAR BÚSQUEDA CON FILTROS ==========
+            function realizarBusqueda() {
+                const textoBusqueda = $("#inputBuscar").val();
+                const categoriaId = $("#filtroCategoria").val();
+                const proveedorId = $("#filtroProveedor").val();
+                const stock = $("#filtroStock").val();
+
+                buscarInventarios(textoBusqueda, categoriaId, proveedorId, stock);
+            }
+
+            // ========== INICIALIZACIÓN ==========
             $(document).ready(function () {
-                // Cargar datos iniciales
-                cargarInventarios();
+                // Cargar datos iniciales y filtros
+                buscarInventarios('');
+                cargarFiltros();
 
-                // ===== BÚSQUEDA EN TIEMPO REAL CON DEBOUNCE =====
+                // ===== EVENTOS DE BÚSQUEDA =====
                 $("#inputBuscar").on("input", function () {
-                    let textoBusqueda = $(this).val();
-                    buscarInventarios(textoBusqueda);
+                    realizarBusqueda();
+                });
+
+                // ===== EVENTOS DE FILTROS =====
+                $("#filtroProveedor, #filtroCategoria, #filtroStock").on("change", function () {
+                    realizarBusqueda();
                 });
 
                 // ===== LIMPIAR BÚSQUEDA =====
                 $("#btnLimpiarBusqueda").click(function () {
                     $("#inputBuscar").val("");
-                    buscarInventarios("");  // Limpiar búsqueda
+                    realizarBusqueda();
+                });
+
+                // ===== BOTÓN REFRESCAR =====
+                $("#btnRefrescar").click(function () {
+                    refrescarDatos();
+                });
+
+                // ===== BOTÓN VER DETALLE =====
+                $("#btnVerDetalle").click(function () {
+                    mostrarDetalleProducto();
+                });
+
+                // Doble clic en fila también abre el detalle
+                $(document).on("dblclick", ".fila-producto", function () {
+                    $(this).addClass("table-active");
+                    const productId = $(this).data('id');
+                    productoSeleccionado = inventariosFiltrados.find(inv => inv.idProducto === productId);
+                    $("#btnVerDetalle").prop('disabled', false);
+                    mostrarDetalleProducto();
                 });
             });
         })();

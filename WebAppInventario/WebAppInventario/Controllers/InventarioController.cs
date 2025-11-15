@@ -79,6 +79,96 @@ namespace WebAppInventario.Controllers
         ]
         */
 
+        [HttpGet("filtrar-anidado")]
+        public async Task<IActionResult> FiltrarInventario(
+         int? categoriaId,
+         int? proveedorId,
+         string? buscar,
+         string? stock) // 👈 nuevo filtro
+        {
+            var query = _context.Inventario
+                .Include(i => i.Producto)
+                    .ThenInclude(p => p.Categoria)
+                .Include(i => i.Producto.Proveedor)
+                .Where(i => i.Producto != null && i.Producto.estado)
+                .AsQueryable();
+
+            // 📌 Filtro por categoría
+            if (categoriaId.HasValue)
+                query = query.Where(i => i.Producto.idCategoria == categoriaId.Value);
+
+            // 📌 Filtro por proveedor
+            if (proveedorId.HasValue)
+                query = query.Where(i => i.Producto.idProveedor == proveedorId.Value);
+
+            // 📌 Filtro general
+            if (!string.IsNullOrWhiteSpace(buscar))
+            {
+                string b = buscar.Trim().ToLower();
+                query = query.Where(i =>
+                    i.Producto.nombre.ToLower().Contains(b) ||
+                    i.Producto.codigo.ToLower().Contains(b) ||
+                    i.Producto.descripcion.ToLower().Contains(b) ||
+                    i.Producto.Categoria.nombre.ToLower().Contains(b) ||
+                    i.Producto.Proveedor.nombre.ToLower().Contains(b)
+                );
+            }
+
+            // 📌 Filtro por stock
+            if (!string.IsNullOrWhiteSpace(stock))
+            {
+                switch (stock.ToLower().Trim())
+                {
+                    case "minimo":
+                        query = query.Where(i => i.cantidad < 20);
+                        break;
+
+                    case "moderado":
+                        query = query.Where(i => i.cantidad >= 20 && i.cantidad < 100);
+                        break;
+
+                    case "normal":
+                        query = query.Where(i => i.cantidad >= 100 && i.cantidad <= 400);
+                        break;
+
+                    case "maximo":
+                        query = query.Where(i => i.cantidad > 400 && i.cantidad <= 500);
+                        break;
+                }
+            }
+
+            var resultado = await query
+                .Select(i => new {
+                    i.idInventario,
+                    i.idProducto,
+                    idCategoria = i.Producto.idCategoria,
+                    idProveedor = i.Producto.idProveedor,
+                    i.precio,
+                    i.costo,
+                    i.cantidad,
+                    i.ubicacion,
+                    i.ultimaActualizacion,
+
+                    productoNombre = i.Producto.nombre.Trim(),
+                    productoDescripcion = i.Producto.descripcion.Trim(),
+                    productoCodigo = i.Producto.codigo.Trim(),
+                    productoEstado = i.Producto.estado,
+                    productoFechaProd = i.Producto.fechaProd,
+                    productoFechaVenc = i.Producto.fechaVenc,
+
+                    productocategoria = i.Producto.Categoria.nombre.Trim(),
+                    productoproveedor = i.Producto.Proveedor.nombre.Trim()
+                })
+                .OrderBy(i => i.productoNombre)
+                .ToListAsync();
+
+            return Ok(resultado);
+        }
+
+
+
+
+
 
         // GET: api/Inventario/buscar-cajero?buscar=martillo
         [HttpGet("buscar-cajero")]

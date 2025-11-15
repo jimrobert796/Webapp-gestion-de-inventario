@@ -39,7 +39,7 @@ namespace WebAppInventario.Controllers
                 
                 // Stock bajo
                 var stockBajo = await _context.Inventario
-                    .Where(p => p.cantidad <= 15 && p.Producto.estado == true)
+                    .Where(p => p.cantidad <= 20 && p.Producto.estado == true)
                     .CountAsync();
                  
                 // Valor del inventario

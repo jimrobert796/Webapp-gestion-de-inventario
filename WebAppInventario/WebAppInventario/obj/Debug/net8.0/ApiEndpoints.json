@@ -1767,6 +1767,37 @@
   },
   {
     "ContainingType": "WebAppInventario.Controllers.InventarioController",
+    "Method": "FiltrarInventario",
+    "RelativePath": "api/Inventario/filtrar-anidado",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "categoriaId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "proveedorId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "buscar",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "stock",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebAppInventario.Controllers.InventarioController",
     "Method": "ReducirStock",
     "RelativePath": "api/Inventario/reducir-stock/{id}",
     "HttpMethod": "PUT",

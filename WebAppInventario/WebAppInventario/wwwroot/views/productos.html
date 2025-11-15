@@ -14,20 +14,19 @@
             max-height: 300px; /* Altura máxima de la tabla (ajusta según necesites) */
             overflow-y: auto; /* Scroll vertical interno */
         }
-                /* Encabezados fijos */
-        .table-scroll thead th {
-            position: sticky;
-            top: 0;
- 
-            z-index: 100;
-            border-bottom: 2px solid #dee2e6;
-        }
+            /* Encabezados fijos */
+            .table-scroll thead th {
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                border-bottom: 2px solid #dee2e6;
+            }
 
-        /* Asegurar que las celdas tengan buen contraste */
-        .table-scroll thead th {
-            color: white;
-            padding: 12px 8px;
-        }
+            /* Asegurar que las celdas tengan buen contraste */
+            .table-scroll thead th {
+                color: white;
+                padding: 12px 8px;
+            }
     </style>
 </head>
 <body>
@@ -349,28 +348,28 @@
                 if (productosFiltrados.length === 0) {
                     let mensaje = "No se encontraron productos con ese criterio de búsqueda";
                     tbody.append(`
-                                            <tr>
-                                                <td colspan="6" class="text-center text-muted">
-                                                    ${mensaje}
-                                                </td>
-                                            </tr>
-                                        `);
+                                                <tr>
+                                                    <td colspan="6" class="text-center text-muted">
+                                                        ${mensaje}
+                                                    </td>
+                                                </tr>
+                                            `);
                     return;
                 }
 
                 // Recorrer el array de productos y crear filas
                 productosFiltrados.forEach((prod, i) => {
                     tbody.append(`
-                                            <tr data-index="${i}">
-                                                <td>${prod.nombre}</td>
-                                                <td>${prod.codigo}</td>
-                                                <td>${prod.proveedorNombre}</td>
-                                                <td>${prod.categoriaNombre}</td>
-                                                <td>${prod.descripcion}</td>
-                                                <td>${prod.fechaProd ? new Date(prod.fechaProd).toLocaleDateString() : ''}</td>
-                                                <td>${prod.fechaVenc ? new Date(prod.fechaVenc).toLocaleDateString() : ''}</td>
-                                            </tr>
-                                        `);
+                                                <tr data-index="${i}">
+                                                    <td>${prod.nombre}</td>
+                                                    <td>${prod.codigo}</td>
+                                                    <td>${prod.proveedorNombre}</td>
+                                                    <td>${prod.categoriaNombre}</td>
+                                                    <td>${prod.descripcion}</td>
+                                                    <td>${prod.fechaProd ? new Date(prod.fechaProd).toLocaleDateString() : ''}</td>
+                                                    <td>${prod.fechaVenc ? new Date(prod.fechaVenc).toLocaleDateString() : ''}</td>
+                                                </tr>
+                                            `);
                 });
 
                 // Agregar evento click a cada fila de la tabla
@@ -435,7 +434,7 @@
                 buscarProductos('');  // Inicializar búsqueda vacía (mostrar todos)
             }
 
-            
+
 
             // ========== FUNCIÓN PARA LIMPIAR EL FORMULARIO ==========
             function limpiarFormulario() {
@@ -549,7 +548,7 @@
                             $("#mensajeError").text("No se pudo actualizar el producto. Por favor, intente nuevamente.");
                             let modalError = new bootstrap.Modal(document.getElementById('modalError'));
                             modalError.show();
-                        } 
+                        }
                     });
                 }
                 // ===== MODO AGREGAR (POST) =====
