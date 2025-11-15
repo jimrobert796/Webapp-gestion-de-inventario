@@ -56,9 +56,16 @@
                             <span class="input-group-text bg-primary text-white">
                                 <i class="bi bi-search"></i>
                             </span>
-                            <input type="text" class="form-control" id="inputBuscarFact" placeholder="Buscar por cliente o número de factura...">
+                            <!-- AGREGAR ESTO: Input para fecha -->
+                            <input type="date" class="form-control" id="filtroFecha" style="max-width: 140px;" max="<?php echo date('Y-m-d'); ?>">
+
+
+                            <input type="text" class="form-control" id="inputBuscarFact" placeholder="Cliente o factura...">
                             <button class="btn btn-outline-secondary" type="button" id="btnLimpiarBusquedaFact" title="Limpiar búsqueda">
                                 <i class="bi bi-x-lg"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary" type="button" id="btnRefrescar" title="Refrescar datos">
+                                <i class="bi bi-arrow-clockwise"></i>
                             </button>
                         </div>
                     </div>
@@ -86,7 +93,7 @@
 
     <!-- ========== MODAL PARA VER DETALLE DE FACTURA ========== -->
     <div class="modal fade" id="modalDetalleFactura" tabindex="-1">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <!-- Encabezado del modal -->
                 <div class="modal-header bg-info text-white">
@@ -179,12 +186,42 @@
             let modalDetalleFactura;
             let debounceTimer;
 
-            // ========== FUNCIÓN PARA BUSCAR FACTURAS DESDE LA API ==========
-            function buscarFacturas(textoBusqueda = '') {
+            // ========== FUNCIÓN PARA BUSCAR FACTURAS DESDE LA API CON FILTRO ANIDADO ==========
+            // ========== FUNCIÓN PARA BUSCAR FACTURAS DESDE LA API CON FILTRO ANIDADO ==========
+            function buscarFacturas(textoBusqueda = '', fechaFiltro = '') {
+
+                // MOSTRAR LOADING AL INICIAR BÚSQUEDA
+                $('#tablaFacturas tbody').html(`
+        <tr>
+            <td colspan="6" class="text-center text-muted py-4">
+                <div class="spinner-border spinner-border-sm" role="status"></div>
+                <span class="ms-2">Buscando devoluciones...</span>
+            </td>
+        </tr>
+    `);
+
                 clearTimeout(debounceTimer);
                 debounceTimer = setTimeout(() => {
+
+
+
+                    // Construir URL con parámetros opcionales
+                    let url = '/api/Facturas/filtrar-anidado?';
+                    const params = [];
+
+                    if (textoBusqueda) {
+                        params.push(`buscar=${encodeURIComponent(textoBusqueda)}`);
+                    }
+
+                    if (fechaFiltro) {
+                        
+                        params.push(`fecha=${encodeURIComponent(fechaFiltro)}`);
+                    }
+
+                    url += params.join('&');
+
                     $.ajax({
-                        url: `/api/Facturas/buscar?buscar=${encodeURIComponent(textoBusqueda)}`,
+                        url: url,
                         method: "GET",
                         success: function (data) {
                             facturasFiltradas = data.map(fact => ({
@@ -212,6 +249,9 @@
                 }, 300);
             }
 
+            // ======== FUNCION PARA FORMATEAR LA FECHA ====== 
+
+
             // ========== FUNCIÓN PARA RENDERIZAR LA TABLA ==========
             function renderTabla() {
                 let tbody = $("#tablaFacturas tbody");
@@ -229,7 +269,7 @@
                 }
 
                 facturasFiltradas.forEach((fact, i) => {
-                    let fechaHora = `${new Date(fact.fecha).toLocaleDateString()} ${fact.hora}`;
+                    let fechaHora = `${new Date(fact.fecha + 'T00:00:00').toLocaleDateString('es-SV')} ${fact.hora}`;
 
                     tbody.append(`
                         <tr data-index="${i}">
@@ -272,7 +312,7 @@
                         $("#detalleCajero").text(facturaActual.cajeroNombre);
                         $("#detalleMetodoPago").text(facturaActual.metodoPago);
 
-                        let fechaHora = `${new Date(facturaActual.fecha).toLocaleDateString()} ${facturaActual.hora}`;
+                        let fechaHora = `${new Date(facturaActual.fecha + 'T00:00:00').toLocaleDateString('es-SV')} ${facturaActual.hora}`;
                         $("#detalleFecha").text(fechaHora);
                         $("#detalleSubtotal").text(`$${(facturaActual.total - facturaActual.iva).toFixed(2)}`);
                         $("#detalleIVA").text(`$${facturaActual.iva.toFixed(2)}`);
@@ -312,12 +352,32 @@
                 $("#btnVerDetalleFact").click(verDetalleFactura);
 
                 $("#inputBuscarFact").on("input", function () {
-                    buscarFacturas($(this).val());
+                    const textoBusqueda = $(this).val();
+                    const fechaFiltro = $("#filtroFecha").val();
+                    buscarFacturas(textoBusqueda, fechaFiltro);
                 });
 
+                // Evento para el filtro de fecha
+                $("#filtroFecha").on("change", function () {
+                    const textoBusqueda = $("#inputBuscarFact").val();
+                    const fechaFiltro = $(this).val();
+                    buscarFacturas(textoBusqueda, fechaFiltro);
+                });
+
+                // Botón Limpiar Búsqueda - Solo limpia el input de texto
                 $("#btnLimpiarBusquedaFact").click(function () {
                     $("#inputBuscarFact").val("");
-                    buscarFacturas("");
+                    const fechaFiltro = $("#filtroFecha").val();
+                    buscarFacturas("", fechaFiltro);
+                    filaSeleccionada = null;
+                    $("#btnVerDetalleFact").prop("disabled", true);
+                });
+
+                // Botón Refrescar - Limpia TODOS los filtros
+                $("#btnRefrescar").click(function () {
+                    $("#inputBuscarFact").val("");
+                    $("#filtroFecha").val("");
+                    buscarFacturas("", "");
                     filaSeleccionada = null;
                     $("#btnVerDetalleFact").prop("disabled", true);
                 });

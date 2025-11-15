@@ -58,6 +58,9 @@
                             <button class="btn btn-outline-secondary" type="button" id="btnLimpiarBusq">
                                 <i class="bi bi-x-lg"></i>
                             </button>
+                            <button class="btn btn-outline-secondary" type="button" id="btnRefrescar" title="Refrescar datos">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -75,10 +78,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td colspan="6" class="text-center text-muted py-4">
-                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                                    Cargando devoluciones...
-                                </td>
+                                
                             </tr>
                         </tbody>
                     </table>
@@ -267,7 +267,7 @@
 
     <!-- MODAL: Detalle -->
     <div class="modal fade" id="modalDetalle" tabindex="-1">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-info text-white">
                     <h5 class="modal-title">
@@ -395,7 +395,7 @@
             devolucionSeleccionada = null;
 
             inicializarModales();
-            cargarDevoluciones();
+            filtrarDevoluciones();
             configurarEventos();
         });
 
@@ -415,17 +415,28 @@
             const hoy = new Date().toISOString().split('T')[0];
             $('#inputFecha').attr('max', hoy);
 
-            $('#inputFecha').on('change', filtrarPorFecha);
+            $('#inputFecha').on('change', filtrarDevoluciones);
             $('#btnLimpiarBusq').click(() => {
+                // Solo limpia el input de búsqueda, mantiene la fecha
                 $('#inputBuscar').val('');
-                $('#inputFecha').val('');
-                cargarDevoluciones()
+
+                // Obtener la fecha actual (si hay alguna seleccionada)
+                const fechaActual = $('#inputFecha').val();
+
+                // Volver a filtrar manteniendo la fecha
+                filtrarDevoluciones();
             });
             $('#buscarFactura').on('keypress', (e) => { if (e.which === 13) buscarFactura(); });
             $('#motivoDevolucion, #descripcionDevolucion, #cantidadDevolver').on('input change', () => {
                 validarFormulario();
                 actualizarResumen();
             });
+
+            $('#btnRefrescar').click(function() {
+    $('#inputBuscar').val('');
+    $('#inputFecha').val('');
+    filtrarDevoluciones(); // Limpiar filtros y recargar
+});
         }
 
         function cargarDevoluciones() {
@@ -443,35 +454,7 @@
             });
         }
 
-        function filtrarPorFecha() {
-            const fecha = $('#inputFecha').val();
-            const hoy = new Date().toISOString().split('T')[0];
-
-            // Validar que no sea fecha futura
-            if (fecha > hoy) {
-                mostrarError('No puede buscar devoluciones de fechas futuras');
-                $('#inputFecha').val(''); // Limpiar el campo
-                cargarDevoluciones();
-                return;
-            }
-
-            if (!fecha) {
-                cargarDevoluciones();
-                return;
-            }
-
-            $.ajax({
-                url: `/api/Devoluciones/buscar-por-fecha?fecha=${fecha}`,
-                method: 'GET',
-                success: function (devolucionesFiltradas) {
-                    actualizarTabla(devolucionesFiltradas);
-                },
-                error: function (err) {
-                    console.error('Error:', err);
-                    mostrarError('No existen devoluciones para el '+ fecha);
-                }
-            });
-        }
+        
 
 
         // TABLA DE VISTA AL INICIO
@@ -483,8 +466,7 @@
                 tbody.html(`
                                 <tr>
                                     <td colspan="6" class="text-center text-muted py-4">
-                                        <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                                        No hay devoluciones registradas
+                                         No se encontraron devoluciones con ese criterio de búsqueda
                                     </td>
                                 </tr>
                             `);
@@ -497,7 +479,7 @@
                                     <td><span class="badge bg-primary">${dev.numeroFactura || 'N/A'}</span></td>
                                     <td>${dev.nombre || 'Empleado'}</td>
                                     <td class="text-center"><span class="badge bg-secondary">${dev.cantidad || 0}</span></td>
-                                    <td>${new Date(dev.fechaDevolucion).toLocaleDateString('es-SV')}</td>
+                                    <td>${new Date(dev.fechaDevolucion + 'T00:00:00').toLocaleDateString('es-SV') }</td>
                                     <td class="text-end fw-bold text-primary">$${(dev.totalDevolucion || 0).toFixed(2)}</td>
                                 </tr>
                             `);
@@ -849,11 +831,10 @@
                     const empleadoNombre = (devolucionSeleccionada.nombre ||
                         detalles[0]?.empleadoNombre ||
                         'N/A').trim();
-
                     $('#detalleNumero').text(String(devolucionSeleccionada.idDevolucion).padStart(3, '0'));
                     $('#detalleFactura').text(devolucionSeleccionada.numeroFactura || 'N/A');
                     $('#detalleCliente').text(clienteNombre);
-                    $('#detalleFecha').text(new Date(devolucionSeleccionada.fechaDevolucion).toLocaleDateString('es-SV') + ' ' + (devolucionSeleccionada.horaDevolucion || ''));
+                    $('#detalleFecha').text(new Date(devolucionSeleccionada.fechaDevolucion + 'T00:00:00').toLocaleDateString('es-SV') + ' ' + (devolucionSeleccionada.horaDevolucion || ''));
                     $('#detalleTotal').text((devolucionSeleccionada.totalDevolucion || 0).toFixed(2));
                     $('#detalleEmpleado').text(empleadoNombre);
 
@@ -898,35 +879,70 @@
 
         function filtrarDevoluciones() {
             const busqueda = $('#inputBuscar').val().trim();
-            const fecha = $('#inputFecha').val(); // AGREGAR esta línea
+            const fecha = $('#inputFecha').val();
 
-            // Si hay fecha seleccionada, priorizar filtro por fecha
+            // Construir URL para el filtro anidado (siempre usar este endpoint)
+            let url = '/api/Devoluciones/filtrar-anidado?';
+            const params = [];
+
+
+            // MOSTRAR LOADING AL INICIAR BÚSQUEDA
+            $('#tablaDevoluciones tbody').html(`
+        <tr>
+            <td colspan="6" class="text-center text-muted py-4">
+                <div class="spinner-border spinner-border-sm" role="status"></div>
+                <span class="ms-2">Buscando devoluciones...</span>
+            </td>
+        </tr>
+    `);
+
+            if (busqueda) {
+                params.push(`buscar=${encodeURIComponent(busqueda)}`);
+            }
+
             if (fecha) {
-                filtrarPorFecha();
-                return;
+                params.push(`fecha=${encodeURIComponent(fecha)}`);
+
             }
 
-            if (!busqueda) {
-                cargarDevoluciones();
-                return;
-            }
+            // Si no hay filtros, el endpoint devolverá todas las devoluciones
+            url += params.length > 0 ? params.join('&') : 'buscar=&fecha=';
 
             $.ajax({
-                url: `/api/Devoluciones/buscar-devoluciones?buscar=${encodeURIComponent(busqueda)}`,
+                url: url,
                 method: 'GET',
                 success: function (devolucionesFiltradas) {
-                    actualizarTabla(devolucionesFiltradas);
+                    todasDevoluciones = devolucionesFiltradas; // Mantener referencia global
+
+                    // Verificar si hay resultados
+                    if (devolucionesFiltradas.length === 0) {
+                        const tbody = $('#tablaDevoluciones tbody');
+                        tbody.html(`
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            ${params.length > 0
+                            ? 'No se encontraron devoluciones con ese criterio de búsqueda'
+                                : 'No hay devoluciones registradas'}
+                        </td>
+                    </tr>
+                `);
+                    } else {
+                        actualizarTabla(devolucionesFiltradas);
+                    }
                 },
-                error: function () {
+                error: function (err) {
+                    console.error('Error en búsqueda:', err);
+
                     const tbody = $('#tablaDevoluciones tbody');
                     tbody.html(`
                 <tr>
-                    <td colspan="6" class="text-center py-4">
-                        Error al buscar devoluciones
+                    <td colspan="6" class="text-center text-muted py-4">
+                        <i class="bi bi-exclamation-triangle fs-1 d-block mb-2"></i>
+                        No se pudieron cargar los resultados
                     </td>
                 </tr>
             `);
-                }
+                } 
             });
         }
 

@@ -88,6 +88,59 @@ namespace WebAppInventario.Controllers
             return Ok(resultado);
         }
 
+
+        // GET: api/Facturas/filtrar-anidado?buscar=juan&fecha=2025-11-18
+        [HttpGet("filtrar-anidado")]
+        public async Task<ActionResult<IEnumerable<object>>> FiltrarFacturas(
+            [FromQuery] string? buscar,
+            [FromQuery] DateOnly? fecha
+        )
+        {
+            var query = _context.Facturas
+                .Include(f => f.Cliente)
+                .Include(f => f.Empleado)
+                .AsQueryable();
+
+            // 🔍 Filtro general por texto
+            if (!string.IsNullOrWhiteSpace(buscar))
+            {
+                string b = buscar.Trim().ToLower();
+
+                query = query.Where(f =>
+                    f.numeroFactura.ToLower().Contains(b) ||
+                    (f.Cliente != null && f.Cliente.nombre.ToLower().Contains(b)) ||
+                    (f.Empleado != null && f.Empleado.nombre.ToLower().Contains(b))
+                );
+            }
+
+            // 📅 Filtro por DateOnly (comparación exacta)
+            if (fecha.HasValue)
+            {
+                query = query.Where(f => f.fecha == fecha.Value);
+            }
+
+            var resultado = await query
+                .Select(f => new
+                {
+                    f.idFactura,
+                    f.idCliente,
+                    f.idEmpleado,
+                    f.numeroFactura,
+                    f.metodoPago,
+                    clienteNombre = f.Cliente != null ? f.Cliente.nombre : "Sin cliente",
+                    cajeroNombre = f.Empleado != null ? f.Empleado.nombre : "Sin cajero",
+                    f.iva,
+                    f.fecha,
+                    f.hora,
+                    f.total
+                })
+                .OrderByDescending(f => f.fecha)
+                .ToListAsync();
+
+            return Ok(resultado);
+        }
+
+
         // En FacturasController
         [HttpGet("buscar-para-devolucion")]
         public IActionResult BuscarFacturaParaDevolucion([FromQuery] string numeroFactura)

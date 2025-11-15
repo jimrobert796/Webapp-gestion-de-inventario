@@ -43,8 +43,6 @@ namespace WebAppInventario.Controllers
                     })
                     .ToListAsync();
 
-                if (!devoluciones.Any())
-                    return NotFound(new { mensaje = "No hay devoluciones registradas." });
 
                 return Ok(devoluciones);
             }
@@ -92,6 +90,57 @@ namespace WebAppInventario.Controllers
 
             return Ok(devoluciones);
         }
+
+        // GET: api/Devoluciones/filtrar-anidado?buscar=juan&fecha=2025-11-18
+        [HttpGet("filtrar-anidado")]
+        public async Task<ActionResult<IEnumerable<object>>> FiltrarDevoluciones(
+            [FromQuery] string? buscar,
+            [FromQuery] DateOnly? fecha
+        )
+        {
+            var query = _context.Devoluciones
+                .Include(d => d.Empleado)
+                .Include(d => d.Factura)
+                .AsQueryable();
+
+            // 🔍 Filtro general por texto
+            if (!string.IsNullOrWhiteSpace(buscar))
+            {
+                string b = buscar.Trim().ToLower();
+
+                query = query.Where(d =>
+                    d.idFactura.ToString().Contains(b) ||
+                    d.Factura.numeroFactura.ToLower().Contains(b) ||
+                    (d.Empleado != null && d.Empleado.nombre.ToLower().Contains(b))
+                );
+            }
+
+            // 📅 Filtro por fecha DateOnly
+            if (fecha.HasValue)
+            {
+                query = query.Where(d => d.fechaDevolucion == fecha.Value);
+            }
+
+            // 📌 Selección de datos
+            var resultado = await query
+                .Select(d => new
+                {
+                    d.idDevolucion,
+                    d.idFactura,
+                    numeroFactura = d.Factura.numeroFactura,
+                    d.idEmpleado,
+                    nombre = d.Empleado != null ? d.Empleado.nombre : "Sin empleado",
+                    d.cantidad,
+                    d.fechaDevolucion,
+                    d.horaDevolucion,
+                    d.totalDevolucion
+                })
+                .OrderByDescending(d => d.fechaDevolucion)
+                .ToListAsync();
+
+            return Ok(resultado);
+        }
+
 
         // GET: api/Devoluciones/buscar-por-fecha?fecha=2024-01-15
         [HttpGet("buscar-por-fecha")]
