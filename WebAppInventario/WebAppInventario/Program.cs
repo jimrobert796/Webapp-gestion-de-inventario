@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WebAppInventario.Models;
+using FacturacionElectronica.Models;
+using FacturacionElectronica.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,15 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Configuración SMTP
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+var smtpSettings = builder.Configuration.GetSection("SmtpSettings").Get<SmtpSettings>();
+if (smtpSettings != null)
+    builder.Services.AddSingleton(smtpSettings);
+
+// Servicio de facturación
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 
 
 // Configurar el contexto de la base de datos para conexion SQL Server

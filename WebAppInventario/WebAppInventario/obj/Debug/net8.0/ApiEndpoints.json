@@ -1911,6 +1911,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "FacturacionElectronica.Controllers.InvoicingController",
+    "Method": "SendInvoice",
+    "RelativePath": "api/Invoicing/send",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "invoice",
+        "Type": "FacturacionElectronica.Models.Invoice",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "WebAppInventario.Controllers.ProductosController",
     "Method": "GetProductos",
     "RelativePath": "api/Productos",

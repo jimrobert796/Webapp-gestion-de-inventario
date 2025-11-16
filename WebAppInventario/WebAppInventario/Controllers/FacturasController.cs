@@ -134,7 +134,6 @@ namespace WebAppInventario.Controllers
                     f.hora,
                     f.total
                 })
-                .OrderByDescending(f => f.fecha)
                 .ToListAsync();
 
             return Ok(resultado);

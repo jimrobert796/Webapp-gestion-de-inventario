@@ -648,8 +648,10 @@
                         const clientes = data.map(cliente => ({
                             id: cliente.idCliente,
                             nombre: cliente.nombre,
-                            email: cliente.email
+                            email: cliente.email,
+                            direccion: cliente.direccion
                         }));
+                        console.log(clientes);
                         actualizarSelectClientes(clientes);
                     },
                     error: function (err) {
@@ -690,8 +692,10 @@
                             const clientes = data.map(cliente => ({
                                 id: cliente.idCliente,
                                 nombre: cliente.nombre,
-                                email: cliente.email
+                                email: cliente.email,
+                                direccion: cliente.direccion
                             }));
+                            console.log(clientes);
                             actualizarSelectClientes(clientes);
                         },
                         error: function (err) {
@@ -731,7 +735,13 @@
                     select.append('<option value="" disabled>No se encontraron resultados</option>');
                 } else {
                     clientes.forEach(cliente => {
-                        select.append(`<option value="${cliente.id}" data-email="${cliente.email}">${cliente.nombre}</option>`);
+                        select.append(`
+                            <option value="${cliente.id}" 
+                                    data-email="${cliente.email}" 
+                                    data-direccion="${cliente.direccion || ''}"> <!-- ← AGREGAR AQUÍ -->
+                                ${cliente.nombre}
+                            </option>
+                        `);
                     });
                 }
             }
@@ -996,6 +1006,60 @@
                 });
             }
 
+            function enviarFacturaFormatoExterno() {
+                // Solo enviar si hay un cliente seleccionado
+                const clienteId = $('#cliente').val();
+                if (!clienteId) {
+                    console.log('No se envió factura externa: Cliente no seleccionado');
+                    return; // Salir de la función si no hay cliente
+                }
+                const clienteSeleccionado = $('#cliente option:selected');
+                const clienteNombre = clienteSeleccionado.text();
+                const clienteEmail = clienteSeleccionado.data('email') || '';
+                const clienteDireccion = clienteSeleccionado.data('direccion') || ''; // ← ESTO ESTÁ BIEN
+
+                const subtotal = detallesVenta.reduce((sum, d) => sum + d.subtotal, 0);
+                const iva = subtotal * 0.13;
+                const total = subtotal + iva;
+
+                const facturaExterna = {
+                    "invoiceNumber": numeroFacturaActual,
+                    "customer": {
+                        "name": clienteNombre.trim(),
+                        "email": clienteEmail,
+                        "address": clienteDireccion.trim()
+                    },
+                    "items": detallesVenta.map(detalle => ({
+                        "description": detalle.productoNombre,
+                        "quantity": detalle.cantidad,
+                        "unitPrice": detalle.precio
+                    })),
+                    "subtotal": subtotal,
+                    "taxAmount": iva,
+                    "grandTotal": total,
+                    "currency": "USD"
+                };
+
+                console.log('Enviando factura a sistema externo:', facturaExterna);
+
+                // Enviar a API externa
+                $.ajax({
+                    url: '/api/Invoicing/send',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(facturaExterna),
+                    success: function (response) {
+                        console.log('✅ Factura enviada exitosamente a sistema externo');
+                    },
+                    error: function (err) {
+                        console.warn('⚠️ Factura no se pudo enviar a sistema externo, pero el proceso continúa:', err);
+                        // No mostrar error al usuario para no interrumpir el flujo
+                    }
+                });
+            }
+
+
+
             function procesarPago() {
                 modalConfirmacionCompra.hide();
 
@@ -1028,6 +1092,13 @@
                     success: function (responseFactura) {
                         const idFacturaCreada = responseFactura.idFactura;
                         console.log('Factura creada con ID:', idFacturaCreada);
+
+                        // ✅ SOLO ENVIAR A SISTEMA EXTERNO SI HAY CLIENTE
+                        if (clienteId) {
+                            enviarFacturaFormatoExterno();
+                        } else {
+                            console.log('📝 Factura guardada localmente (sin cliente)');
+                        }
 
                         // Enviar cada detalle individualmente con el idFactura correcto
                         let detallesEnviados = 0;
