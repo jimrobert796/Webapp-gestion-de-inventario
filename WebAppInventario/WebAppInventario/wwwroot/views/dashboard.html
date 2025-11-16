@@ -89,9 +89,9 @@
         <!-- Encabezado -->
         <div class="header-info">
             <div class="row text-center">
-                <div class="col"><strong>Usuario:</strong> Admin</div>
-                <div class="col"><strong>Fecha:</strong> <span id="currentDate">13/11/2025</span></div>
-                <div class="col"><strong>Hora:</strong> <span id="currentTime">21:55</span></div>
+                <div class="col"><strong>Rol:</strong> <span id="rolEmpleado">rol</span></div>
+                <div class="col"><strong>Fecha:</strong> <span id="currentDate">--/--/--</span></div>
+                <div class="col"><strong>Hora:</strong> <span id="currentTime">--:--</span></div>
             </div>
         </div>
 
@@ -444,8 +444,15 @@
                     // Cargar datos reales de las APIs
                     const datos = await cargarDatosDashboard();
 
+                    // Mostar la ultima actualizacion en tiempo en el fondo
+                    lastUpdateTime()
+
+
                     updateDateTime();
-                    setInterval(updateDateTime, 60000);
+                    setInterval(updateDateTime, 1000);
+
+                    // USO: Llamar después del login o al cargar la página
+                    mostrarRolEmpleado();
 
                     if (datos) {
                         // Usar datos reales de la API
@@ -472,11 +479,10 @@
             function updateDateTime() {
                 const now = new Date();
                 const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
-                const timeOptions = { hour: '2-digit', minute: '2-digit' };
+                const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit'};
 
                 const currentDateElem = document.getElementById('currentDate');
                 const currentTimeElem = document.getElementById('currentTime');
-                const lastUpdateElem = document.getElementById('lastUpdate');
 
                 if (currentDateElem) {
                     currentDateElem.textContent = now.toLocaleDateString('es-ES', dateOptions);
@@ -484,10 +490,48 @@
                 if (currentTimeElem) {
                     currentTimeElem.textContent = now.toLocaleTimeString('es-ES', timeOptions);
                 }
+                
+            }
+
+            // Encargada de mostar el tiempo de la ultima actualizacion del dashboard
+            function lastUpdateTime() {
+                const now = new Date();
+                const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                const lastUpdateElem = document.getElementById('lastUpdate');
+
                 if (lastUpdateElem) {
                     lastUpdateElem.textContent = now.toLocaleDateString('es-CL') + ' ' + now.toLocaleTimeString('es-ES', timeOptions);
                 }
+              
             }
+
+            function mostrarRolEmpleado() {
+                try {
+                    // Obtener el rol del localStorage (donde normalmente se guarda al hacer login)
+                    const rolEmpleado = localStorage.getItem('empleadoRolNombre') ||
+                        sessionStorage.getItem('empleadoRolNombre') ||
+                        'No especificado';
+
+                    // Mostrar en el elemento con id 'rolEmpleado'
+                    const rolElement = document.getElementById('rolEmpleado');
+                    if (rolElement) {
+                        // Opcional: formatear el rol para que se vea mejor
+                        const rolFormateado = rolEmpleado.charAt(0).toUpperCase() + rolEmpleado.slice(1).toLowerCase();
+                        rolElement.textContent = rolFormateado;
+                    } else {
+                        console.warn('Elemento con id "rolEmpleado" no encontrado');
+                    }
+
+                    return rolEmpleado;
+                } catch (error) {
+                    console.error('Error al obtener el rol del empleado:', error);
+                    return 'Error';
+                }
+            }
+
+            
+
+
 
             function updateKPIs(kpiData = null) {
                 // Si no hay datos de la API, usar datos por defecto
@@ -715,6 +759,7 @@
                 document.addEventListener('DOMContentLoaded', inicializarDashboard);
             } else {
                 inicializarDashboard();
+                setInterval(inicializarDashboard, 60000)
             }
 
         })();
