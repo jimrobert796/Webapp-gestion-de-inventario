@@ -905,6 +905,15 @@
                     }
 
                     if (fecha) {
+
+                            const hoy = new Date().toISOString().split('T')[0];
+                            if (fecha > hoy) {
+                                $("#mensajeError").text("No se pueden buscar facturas de fechas futuras.");
+                                let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                                modalError.show();
+                                $("#inputFecha").val(""); // Limpiar fecha inválida
+                            }
+
                         params.push(`fecha=${encodeURIComponent(fecha)}`);
 
                     }

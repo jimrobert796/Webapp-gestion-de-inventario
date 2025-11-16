@@ -545,6 +545,15 @@
 
                     // Agregar cada filtro activo
                     if (fecha) {
+
+                        const hoy = new Date().toISOString().split('T')[0];
+                        if (fecha > hoy) {
+                            $("#mensajeError").text("No se pueden buscar facturas de fechas futuras.");
+                            let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                            modalError.show();
+                            $("#filtroFecha").val(""); // Limpiar fecha inválida
+                        }
+
                         parametros.push(`fecha=${encodeURIComponent(fecha)}`);
                     }
 

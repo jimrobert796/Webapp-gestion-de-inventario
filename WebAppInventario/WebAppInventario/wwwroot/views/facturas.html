@@ -214,7 +214,17 @@
                     }
 
                     if (fechaFiltro) {
-                        
+                        // VALIDAR FECHA FUTURA
+                        if (fechaFiltro) {
+                            const hoy = new Date().toISOString().split('T')[0];
+                            if (fechaFiltro > hoy) {
+                                $("#mensajeErrorFact").text("No se pueden buscar facturas de fechas futuras.");
+                                let modalError = new bootstrap.Modal(document.getElementById('modalErrorFact'));
+                                modalError.show();
+                                $("#filtroFecha").val(""); // Limpiar fecha inválida
+                                fechaFiltro = "";
+                            }
+                        }
                         params.push(`fecha=${encodeURIComponent(fechaFiltro)}`);
                     }
 
@@ -347,6 +357,11 @@
             // ========== INICIALIZACIÓN ==========
             function inicializar() {
                 modalDetalleFactura = new bootstrap.Modal(document.getElementById('modalDetalleFactura'));
+
+                // ESTABLECER FECHA MÁXIMA COMO HOY
+                const hoy = new Date().toISOString().split('T')[0];
+                $("#filtroFecha").attr('max', hoy);
+
                 buscarFacturas();
 
                 $("#btnVerDetalleFact").click(verDetalleFactura);
