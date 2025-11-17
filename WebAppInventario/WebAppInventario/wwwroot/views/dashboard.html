@@ -734,7 +734,7 @@
                     });
                 }
             }
-
+            /*
             function setupQuickButtons() {
                 const buttons = {
                     'btnNuevaCompra': 'Nueva compra',
@@ -749,7 +749,26 @@
                         button.onclick = () => alert(buttons[btnId]);
                     }
                 });
+            }*/
+
+            // QUE ABRA ASI COMO EN EL INDEX SIN PROBLEMA ALGUNO
+            function setupQuickButtons() {
+                const botones = {
+                    'btnNuevaCompra': 'compras',
+                    'btnNuevaFactura': 'cajero',
+                    'btnNuevoProducto': 'productos',
+                    'btnNuevoCliente': 'clientes'
+                };
+
+                Object.keys(botones).forEach(btnId => {
+                    const button = document.getElementById(btnId);
+                    if (button) {
+                        button.onclick = () => abrirVentana(botones[btnId]);
+                    }
+                });
             }
+
+
 
             // Hacer la función global
             window.inicializarDashboard = inicializarDashboard;
