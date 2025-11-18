@@ -1,11 +1,14 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Twilio.TwiML.Voice;
 using WebAppInventario.Models;
+using WebAppInventario.Services;
+using Microsoft.Extensions.Options; // <-- 2. AÑADIR ESTE 'USING'
 
 namespace WebAppInventario.Controllers
 {
@@ -16,10 +19,17 @@ namespace WebAppInventario.Controllers
     public class InventarioController : ControllerBase
     {
         private readonly MyDbContext _context;
+        private readonly WhatsAppService _whatsAppService;
+        // 3. AÑADIR EL CAMPO PRIVADO PARA LA CONFIGURACIÓN
+        private readonly TwilioConfig _config;
 
-        public InventarioController(MyDbContext context)
+        public InventarioController(MyDbContext context,
+                                  WhatsAppService whatsAppService,
+                                  IOptions<TwilioConfig> config)
         {
             _context = context;
+            _whatsAppService = whatsAppService;
+            _config = config.Value; // Asignar la configuración
         }
 
         // GET: api/Inventarios
@@ -273,6 +283,30 @@ namespace WebAppInventario.Controllers
                 return BadRequest("No hay suficiente stock disponible.");
 
             inventario.cantidad -= cantidad;
+
+            // --- 5. LÓGICA DE ALERTA AÑADIDA ---
+
+            // Leemos el umbral desde appsettings.json
+            int stockMinimo = _config.StockMinimo;
+
+            if (inventario.cantidad < stockMinimo)
+            {
+                try
+                {
+                    var producto = await _context.Productos.FindAsync(inventario.idProducto);
+                    string nombreProducto = producto?.nombre ?? "Producto Desconocido";
+
+                    _whatsAppService.EnviarAlertaStockBajo(
+                        nombreProducto.Trim(),
+                        inventario.cantidad
+                    );
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error al enviar alerta de WhatsApp: {ex.Message}");
+                }
+            }
+            // --- FIN DE LA LÓGICA AÑADIDA ---
 
             // Actualizar fecha de última modificación
             inventario.ultimaActualizacion = DateTime.Now;
