@@ -351,6 +351,7 @@ namespace WebAppInventario.Controllers
 
             inventario.ultimaActualizacion = DateTime.Now;
 
+
             await _context.SaveChangesAsync();
             return Ok(new
             {
