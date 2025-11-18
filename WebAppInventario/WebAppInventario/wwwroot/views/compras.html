@@ -937,9 +937,6 @@
                 $('#precioCompra').val('');
                 $('#costoCompra').val('');
 
-                // Actualizar el texto informativo
-                $('#infoStockCompra').text(`Stock actual: ${cantidadActual} | Máximo permitido: ${maximoPermitido} unidades`);
-
                 // Opcional: mostrar el costo actual como sugerencia
                 if (costoActual > 0) {
                     $('#precioCompra').attr('placeholder', `Actual: ${precioVenta.toFixed(2)}`);
