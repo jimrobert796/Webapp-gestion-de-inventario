@@ -235,7 +235,8 @@ namespace WebAppInventario.Controllers
                     i.Producto != null &&
                     i.Producto.estado &&
                     i.Producto.idProveedor == idProveedor &&
-                    i.cantidad > 0)
+                    i.cantidad > 0 && i.cantidad < 500
+                    )
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(buscar))
