@@ -357,8 +357,6 @@
 
             // ========== FUNCIÓN PARA RENDERIZAR LA TABLA ==========
             function renderTabla() {
-
-                debounceTimer = setTimeout(() => { 
                         let tbody = $("#tablaProductos tbody");
                         tbody.empty(); // Limpiar el contenido actual de la tabla
 
@@ -367,7 +365,7 @@
                             let mensaje = "No se encontraron productos con ese criterio de búsqueda";
                             tbody.append(`
                                                         <tr>
-                                                            <td colspan="6" class="text-center text-muted">
+                                                            <td colspan="7" class="text-center text-muted">
                                                                 ${mensaje}
                                                             </td>
                                                         </tr>
@@ -404,8 +402,7 @@
 
                             // Habilitar los botones de Editar y Eliminar
                             $("#btnEditar, #btnEliminar").prop("disabled", false);
-                        });
-                }, 300); 
+                        }); 
             }
 
             // ========== FUNCIÓN PARA CARGAR PROVEEDORES ==========
@@ -473,6 +470,21 @@
 
 
             function filtrarProductos() {
+
+                // Mostrar loading
+                $('#tablaProductos tbody').html(`
+    <tr>
+        <td colspan="8" class="text-center text-muted py-4">
+            <div class="spinner-border spinner-border-sm" role="status"></div>
+            <span class="ms-2">Buscando productos...</span>
+        </td>
+    </tr>
+`);
+
+                clearTimeout(debounceTimer);
+
+                debounceTimer = setTimeout(() => {
+
                 const proveedorId = $('#filtroProveedor').val();
                 const categoriaId = $('#filtroCategoria').val();
                 const busqueda = $('#inputBuscar').val();
@@ -487,15 +499,7 @@
 
                 url += parametros.join('&');
 
-                // Mostrar loading
-                $('#tablaProductos tbody').html(`
-        <tr>
-            <td colspan="8" class="text-center text-muted py-4">
-                <div class="spinner-border spinner-border-sm" role="status"></div>
-                <span class="ms-2">Buscando productos...</span>
-            </td>
-        </tr>
-    `);
+               
 
                 $.ajax({
                     url: url,
@@ -525,6 +529,8 @@
                         modalError.show();
                     }
                 });
+
+                }, 300);
             }
 
 
@@ -791,11 +797,12 @@
                     limpiarFormulario();
                 });
 
-                
+                $("#inputBuscar").on("input", function () {
+                    filtrarProductos();
+                });
                 // CON estos nuevos:
-                $("#inputBuscar, #filtroProveedor, #filtroCategoria").on("input change", function () {
-                    clearTimeout(debounceTimer);
-                    debounceTimer = setTimeout(filtrarProductos, 300);
+                $("#filtroProveedor, #filtroCategoria").on("change", function () {
+                   filtrarProductos()
                 });
 
                 $("#btnLimpiarBusqueda").click(limpiarSoloBusqueda);
