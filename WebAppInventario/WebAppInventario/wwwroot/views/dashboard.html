@@ -305,7 +305,10 @@
                             <div class="card p-3 h-100">
                                 <div class="d-flex justify-content-between mb-2">
                                     <h6 class="fw-bold">Últimas Facturas</h6>
-                                    <a href="#" class="small">Ver todas</a>
+                                    <button class="small" id="verTodasFacturas" style="background:none;border:none;padding:0;color:#0d6efd;cursor:pointer;">
+                                        Ver todas
+                                    </button>
+
                                 </div>
 
                                 <table class="table table-sm mb-0">
@@ -469,6 +472,8 @@
                     }
 
                     setupQuickButtons();
+
+                    verFacturas()
 
                     console.log('✅ Dashboard inicializado correctamente');
                 } catch (error) {
@@ -767,6 +772,15 @@
                     }
                 });
             }
+
+            function verFacturas() {
+                const button = document.getElementById('verTodasFacturas');
+
+                if (button) {
+                    button.onclick = () => abrirVentana('facturas');
+                }
+            }
+
 
 
 
