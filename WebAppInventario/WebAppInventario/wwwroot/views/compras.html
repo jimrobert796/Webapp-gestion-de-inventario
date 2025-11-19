@@ -917,7 +917,7 @@
         `);
                 }
 
-                // ✅ NUEVO: Actualizar información de costo actual
+                // NUEVO: Actualizar información de costo actual
                 if (costoActual > 0) {
                     $('#infoCostoActual').html(`
             <i class="bi bi-info-circle me-1"></i>Costo actual: <strong class="text-success">$${costoActual.toFixed(2)}</strong>
@@ -928,7 +928,7 @@
         `);
                 }
 
-                // ✅ NUEVO: Actualizar información de stock
+                // NUEVO: Actualizar información de stock
                 $('#infoStockCompra').html(`
         <i class="bi bi-box me-1"></i>Stock actual: <strong>${cantidadActual}</strong> | Máximo: <strong class="text-warning">${maximoPermitido}</strong>
     `);
@@ -937,11 +937,7 @@
                 $('#precioCompra').val('');
                 $('#costoCompra').val('');
 
-                // Opcional: mostrar el costo actual como sugerencia
-                if (costoActual > 0) {
-                    $('#precioCompra').attr('placeholder', `Actual: ${precioVenta.toFixed(2)}`);
-                    $('#costoCompra').attr('placeholder', `Actual: ${costoActual.toFixed(2)}`);
-                }
+                
             }
 
             function agregarProductoCompra() {
