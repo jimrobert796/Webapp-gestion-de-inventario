@@ -508,9 +508,9 @@
                 $("#idCategoria").val(producto.idCategoria);
                 $("#codigo").val(producto.productoCodigo);
                 $("#nombreProducto").val(producto.productoNombre);
-                $("#descripcion").val(producto.productoDescripcion);
-                $("#fechaProd").val(producto.productoFechaProd ? producto.productoFechaProd.split('T')[0] : '');
-                $("#fechaVenc").val(producto.productoFechaVenc ? producto.productoFechaVenc.split('T')[0] : '');
+                $("#descripcion").val(producto.productoDescripcion || "Sin descripcion");
+                $("#fechaProd").val(producto.productoFechaProd ? producto.productoFechaProd.split('T')[0] : 'No aplica');
+                $("#fechaVenc").val(producto.productoFechaVenc ? producto.productoFechaVenc.split('T')[0] : 'No aplica');
                 $("#precio").val(producto.precio);
                 $("#costo").val(producto.costo);
                 $("#cantidad").val(producto.cantidad);

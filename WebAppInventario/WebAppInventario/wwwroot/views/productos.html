@@ -381,9 +381,9 @@
                                                             <td>${prod.codigo}</td>
                                                             <td>${prod.proveedorNombre}</td>
                                                             <td>${prod.categoriaNombre}</td>
-                                                            <td>${prod.descripcion}</td>
-                                                            <td>${prod.fechaProd ? new Date(prod.fechaProd).toLocaleDateString() : ''}</td>
-                                                            <td>${prod.fechaVenc ? new Date(prod.fechaVenc).toLocaleDateString() : ''}</td>
+                                                            <td>${prod.descripcion || "Sin descripcion"}</td>
+                                                            <td>${prod.fechaProd ? new Date(prod.fechaProd).toLocaleDateString() : 'No aplica'}</td>
+                                                            <td>${prod.fechaVenc ? new Date(prod.fechaVenc).toLocaleDateString() : 'No aplica'}</td>
                                                         </tr>
                                                     `);
                         });
