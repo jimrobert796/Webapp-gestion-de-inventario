@@ -218,7 +218,7 @@
                                                step="1"
                                                required
                                                onkeydown="if(['e','E','+','-','.'].includes(event.key)) event.preventDefault();"
-                                               oninput="if(this.value < 1) this.value = 1;" />
+                                               oninput="validarCantidadMaximaEdicion(this)" />
 
                                     </div>
                                 </div>
@@ -344,7 +344,7 @@
                                step="1"
                                required
                                onkeydown="if(['e','E','+','-','.'].includes(event.key)) event.preventDefault();"
-                               oninput="if(this.value < 1) this.value = 1;" />
+                               oninput="validarCantidadMaximaEdicion(this)" />
 
                         <small class="text-muted">La cantidad debe ser mayor a 0</small>
                     </div>
@@ -769,6 +769,7 @@
                 $('#precio').val(precio > 0 ? `${precio.toFixed(2)}` : '');
                 // Establecer el max en el input cantidad basado en el stock
                 $('#cantidad').attr('max', stock);
+                $('#cantidad').val(1);
             }
 
             function agregarProducto() {
@@ -826,6 +827,42 @@
                 actualizarTabla();
                 limpiarFormularioProducto();
             }
+
+
+            // Agregar esta función global (junto a validarCantidadMaxima)
+            window.validarCantidadMaximaEdicion = function (input) {
+                const max = parseInt(input.getAttribute('max'));
+                const min = parseInt(input.getAttribute('min'));
+                const value = parseInt(input.value) || 0;
+
+                if (value > max) {
+                    input.value = max;
+                    mostrarModalError(`La cantidad máxima permitida es ${max} unidades`);
+                }
+
+                if (value < min) {
+                    input.value = "";
+                }
+            };
+
+
+
+            // Agregar esta función global (junto a validarCantidadMaxima)
+            window.validarCantidadMaximaEdicion = function (input) {
+                const max = parseInt(input.getAttribute('max')) || 500;
+                const min = parseInt(input.getAttribute('min')) || 1;
+                const value = parseInt(input.value) || 0;
+
+                if (value > max) {
+                    input.value = max;
+                    mostrarModalError(`La cantidad máxima permitida es ${max} unidades`);
+                }
+
+                if (value < min) {
+                    input.value = "";
+                }
+            };
+
 
             function limpiarFormularioProducto() {
                 $('#producto').val('');

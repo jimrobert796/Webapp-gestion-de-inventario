@@ -502,7 +502,7 @@
                         if (response.success) {
                             modalAnular.hide();
                             mostrarExito('Compra anulada exitosamente');
-                            cargarCompras();
+                            filtrarCompras();
                             compraSeleccionada = null;
                             $("#btnVerDetalles, #btnAnular").prop("disabled", true);
                         } else {

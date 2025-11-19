@@ -803,9 +803,7 @@
 
             setTimeout(() => {
                 modalNueva.hide();
-                $('#inputBuscar').val('');
-                $('#inputFecha').val('');
-                filtrarDevoluciones(); // Limpiar filtros y recargar
+                filtrarDevoluciones()
                 limpiarFormulario();
             }, 2000);
         }
