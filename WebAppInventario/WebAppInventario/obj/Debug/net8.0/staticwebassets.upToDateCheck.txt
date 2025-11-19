@@ -6,7 +6,6 @@ wwwroot\views\categorias.html
 wwwroot\views\clientes.html
 wwwroot\views\compras.html
 wwwroot\views\dashboard.html
-wwwroot\views\devoluciones.html
 wwwroot\views\empleados.html
 wwwroot\views\facturas.html
 wwwroot\views\index.html
@@ -15,5 +14,6 @@ wwwroot\views\login.html
 wwwroot\views\perfil.html
 wwwroot\views\productos.html
 wwwroot\views\proveedores.html
-wwwroot\views\test.html
 wwwroot\views\registroCompras.html
+wwwroot\views\test.html
+wwwroot\views\devoluciones.html

@@ -414,7 +414,10 @@
             $('#btnVerDetalle').click(verDetalle);
             $('#inputBuscar').on('keyup', filtrarDevoluciones);
 
-            const hoy = new Date().toISOString().split('T')[0];
+            // ESTABLECER FECHA MÁXIMA COMO HOY
+            const hoy = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+                .toISOString()
+                .split('T')[0];
             $('#inputFecha').attr('max', hoy);
 
             $('#inputFecha').on('change', filtrarDevoluciones);
@@ -719,7 +722,9 @@
                 idFactura: facturaActual.idFactura,
                 idEmpleado: parseInt(localStorage.getItem('empleadoId')) || 1,
                 cantidad: cantidad,
-                fechaDevolucion: new Date().toISOString().split('T')[0],
+                fechaDevolucion: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+                    .toISOString()
+                    .split("T")[0],
                 horaDevolucion: new Date().toTimeString().split(' ')[0],
                 totalDevolucion: totalConIva
             };
@@ -790,7 +795,6 @@
         function finalizarDevolucion(idDevolucion, total, cantidadItems) {
             $('#mensajeExito').html(`
                             <div class="alert alert-success">
-                                <p class="mb-2"><strong>Devolución:</strong> #${String(idDevolucion).padStart(3, '0')}</p>
                                 <p class="mb-2"><strong>Cantidad:</strong> ${cantidadItems} items</p>
                                 <p class="mb-0"><strong>Total:</strong> ${total.toFixed(2)}</p>
                             </div>

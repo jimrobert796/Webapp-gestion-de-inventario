@@ -1079,7 +1079,9 @@
                     total: total,
                     iva: iva,
                     metodoPago: tipoPago.charAt(0).toUpperCase() + tipoPago.slice(1),
-                    fecha: new Date().toISOString().split('T')[0],
+                    fecha: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+                        .toISOString()
+                        .split("T")[0],
                     hora: new Date().toTimeString().split(' ')[0]
                 };
 
