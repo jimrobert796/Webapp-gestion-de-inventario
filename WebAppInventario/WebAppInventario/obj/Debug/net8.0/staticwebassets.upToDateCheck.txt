@@ -8,7 +8,6 @@ wwwroot\css\img\favicon.ico
 wwwroot\css\img\logo 1-1.png
 wwwroot\css\img\logo 1-2.png
 wwwroot\css\img\site.webmanifest
-wwwroot\css\styles.css
 wwwroot\js\cajero.js
 wwwroot\js\empleados.js
 wwwroot\views\cajero.html
@@ -26,4 +25,5 @@ wwwroot\views\productos.html
 wwwroot\views\proveedores.html
 wwwroot\views\registroCompras.html
 wwwroot\views\test.html
+wwwroot\css\styles.css
 wwwroot\views\index.html
