@@ -101,6 +101,7 @@
                                 <th>Proveedor</th>
                                 <th>Categoria</th>
                                 <th>Precio</th>
+                                <th>Precio+IVA</th>
                                 <th>Costo</th>
                                 <th>Cantidad</th>
                             </tr>
@@ -239,11 +240,19 @@
                             </div>
 
                             <!-- Última Actualización -->
-                            <div class="mb-3">
-                                <label for="ultimaActualizacion" class="form-label">
-                                    <i class="bi bi-clock"></i> Última Actualización
-                                </label>
-                                <input type="text" class="form-control" id="ultimaActualizacion" readonly>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="precioConIVA" class="form-label">
+                                        <i class="bi bi-cash-stack"></i> Precio con IVA
+                                    </label>
+                                    <input type="text" class="form-control" id="precioConIVA" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="ultimaActualizacion" class="form-label">
+                                        <i class="bi bi-clock"></i> Última Actualización
+                                    </label>
+                                    <input type="text" class="form-control" id="ultimaActualizacion" readonly>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -290,7 +299,7 @@
                 // MOSTRAR LOADING AL INICIAR BÚSQUEDA
                 $('#tablaInventario tbody').html(`
                     <tr>
-                        <td colspan="7" class="text-center text-muted py-4">
+                        <td colspan="8" class="text-center text-muted py-4">
                             <div class="spinner-border spinner-border-sm" role="status"></div>
                             <span class="ms-2">Buscando productos en inventario...</span>
                         </td>
@@ -312,15 +321,7 @@
 
                     const url = `/api/Inventario/filtrar-anidado?${params.toString()}`;
 
-                    // Mostrar loading
-                    $('#tablaInventario tbody').html(`
-    <tr>
-        <td colspan="7" class="text-center text-muted py-4">
-            <div class="spinner-border spinner-border-sm" role="status"></div>
-            <span class="ms-2">Buscando productos en inventario...</span>
-        </td>
-    </tr>
-`);
+                    
 
                     $.ajax({
                         url: url,
@@ -433,7 +434,7 @@
                 if (inventariosFiltrados.length === 0) {
                     tbody.append(`
             <tr>
-                <td colspan="7" class="text-center text-muted">
+                <td colspan="8" class="text-center text-muted">
                     No se encontraron productos
                 </td>
             </tr>
@@ -454,6 +455,7 @@
                 <td>${inv.productoproveedor}</td>
                 <td>${inv.productocategoria}</td>
                 <td>$${inv.precio.toFixed(2)}</td>
+                <td>$${(inv.precio * 1.13).toFixed(2) }</td>
                 <td>$${inv.costo.toFixed(2)}</td>
                 <td>${inv.cantidad}</td>
             </tr>
@@ -511,10 +513,11 @@
                 $("#descripcion").val(producto.productoDescripcion || "Sin descripcion");
                 $("#fechaProd").val(producto.productoFechaProd ? producto.productoFechaProd.split('T')[0] : 'No aplica');
                 $("#fechaVenc").val(producto.productoFechaVenc ? producto.productoFechaVenc.split('T')[0] : 'No aplica');
-                $("#precio").val(producto.precio);
-                $("#costo").val(producto.costo);
+                $("#precio").val(producto.precio.toFixed(2));
+                $("#costo").val(producto.costo.toFixed(2));
                 $("#cantidad").val(producto.cantidad);
                 $("#ubicacion").val(producto.ubicacion);
+                $("#precioConIVA").val((producto.precio * 1.13).toFixed(2));
                 $("#ultimaActualizacion").val(new Date(producto.ultimaActualizacion).toLocaleString());
 
                 // Actualizar título del modal
