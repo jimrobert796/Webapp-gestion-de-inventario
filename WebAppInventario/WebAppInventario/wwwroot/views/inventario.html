@@ -335,9 +335,9 @@
                 inventariosFiltrados.forEach((inv) => {
                     // Determinar clase de stock según cantidad
                     let stockClass = '';
-                    if (inv.cantidad <= 5) {
+                    if (inv.cantidad <= 20) {
                         stockClass = 'stock-critico';
-                    } else if (inv.cantidad <= 15) {
+                    } else if (inv.cantidad <= 100) {
                         stockClass = 'stock-bajo';
                     } else {
                         stockClass = 'stock-optimo';
@@ -361,7 +361,7 @@
                                 </td>
                                 <td class="text-muted">$${inv.costo.toFixed(2)}</td>
                                 <td>
-                                    <span class="badge ${inv.cantidad <= 5 ? 'bg-danger' : inv.cantidad <= 15 ? 'bg-warning' : 'bg-success'}">
+                                    <span class="badge ${inv.cantidad <= 20 ? 'bg-danger' : inv.cantidad <= 100 ? 'bg-warning' : 'bg-success'}">
                                         ${inv.cantidad} unidades
                                     </span>
                                 </td>
