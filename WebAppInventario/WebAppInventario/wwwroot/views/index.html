@@ -304,5 +304,163 @@
             return localStorage.getItem('empleadoRol');
         }
     </script>
+
+    <script>
+        // ========== EASTER EGG 2 - SOLO MENSAJE ==========
+        let messageClicks = 0;
+        let messageActive = false;
+
+        function initMessageEasterEgg() {
+            // 20% de probabilidad de activar este easter egg
+            const shouldActivate = Math.random() < 0.90;
+            if (!shouldActivate) return;
+
+            // Crear trigger para mensaje
+            const messageTrigger = document.createElement('div');
+            messageTrigger.id = 'messageEasterTrigger';
+            messageTrigger.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 25px;
+        height: 25px;
+        background: rgba(231, 76, 60, 0.1);
+        cursor: pointer;
+        z-index: 9999;
+        border-radius: 50%;
+        border: 2px dashed rgba(231, 76, 60, 0.5);
+        animation: messagePulse 2s infinite;
+    `;
+
+            // Agregar animación
+            const style = document.createElement('style');
+            style.textContent += `
+        @keyframes messagePulse {
+            0% { border-color: rgba(231, 76, 60, 0.3); transform: scale(1); }
+            50% { border-color: rgba(231, 76, 60, 0.8); transform: scale(1.1); }
+            100% { border-color: rgba(231, 76, 60, 0.3); transform: scale(1); }
+        }
+        
+        .easter-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: linear-gradient(135deg, #1a1d21, #2C3E50);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            border: 3px solid #E67E22;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 10000;
+            text-align: center;
+            max-width: 400px;
+            font-family: 'Inter', sans-serif;
+            animation: easterPop 0.5s forwards;
+        }
+        
+        @keyframes easterPop {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            70% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        
+        .easter-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #E67E22;
+        }
+        
+        .easter-content {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .easter-signature {
+            font-style: italic;
+            color: #adb5bd;
+            border-top: 1px solid #343a40;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        
+        .easter-tools {
+            font-size: 2rem;
+            margin: 15px 0;
+        }
+    `;
+            document.head.appendChild(style);
+
+            messageTrigger.title = "💬 ¿Mensaje secreto?";
+            messageTrigger.addEventListener('click', handleMessageClick);
+            document.body.appendChild(messageTrigger);
+        }
+
+        function handleMessageClick() {
+            if (messageActive) return;
+
+            messageClicks++;
+
+            // Efecto visual al hacer click
+            const trigger = document.getElementById('messageEasterTrigger');
+            trigger.style.background = 'rgba(231, 76, 60, 0.3)';
+            setTimeout(() => {
+                trigger.style.background = 'rgba(231, 76, 60, 0.1)';
+            }, 200);
+
+            if (messageClicks >= 5) {
+                mostrarMensajeDesarrollador();
+                messageClicks = 0;
+                messageActive = true;
+                setTimeout(() => messageActive = false, 5000);
+            }
+        }
+
+        function mostrarMensajeDesarrollador() {
+            const mensaje = document.createElement('div');
+            mensaje.className = 'easter-message';
+
+            mensaje.innerHTML = `
+        <div class="easter-title">
+            🛠️ Mensaje del Desarrollador
+        </div>
+        
+        <div class="easter-tools">
+            🔨 ⚡ 🔧
+        </div>
+        
+        <div class="easter-content">
+            <p><strong>¡Hola!</strong> Has encontrado el mensaje secreto.</p>
+            <p>Este sistema fue creado con mucho esfuerzo y dedicación para hacer tu trabajo más fácil.</p>
+            <p>¡Espero que lo disfrutes! 🚀</p>
+        </div>
+        
+        <div class="easter-signature">
+            "La calidad no es un acto, es un hábito"<br>
+            <strong>- Ferretería Maestro</strong>
+        </div>
+    `;
+
+            document.body.appendChild(mensaje);
+
+            // Auto-eliminar después de 4 segundos
+            setTimeout(() => {
+                mensaje.style.transition = 'all 0.15s ease';
+                mensaje.style.opacity = '0';
+                mensaje.style.transform = 'translate(-50%, -50%) scale(0.8)';
+
+                setTimeout(() => {
+                    if (mensaje.parentNode) {
+                        mensaje.parentNode.removeChild(mensaje);
+                    }
+                }, 500);
+            }, 4000);
+        }
+
+        // Inicializar Easter Egg de Mensaje
+        setTimeout(initMessageEasterEgg, 7000);
+    </script>
+
 </body>
 </html>  
