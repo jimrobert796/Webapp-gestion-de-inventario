@@ -75,7 +75,7 @@ namespace FacturacionElectronica.Services
 
                                 row.ConstantItem(150).Height(60).Background(Colors.Blue.Lighten5)
                                     .Padding(10).AlignCenter().AlignMiddle()
-                                    .Text("EMPRESA FICTICIA S.A.S")
+                                    .Text("Ferreteria El Maestro")
                                     .SemiBold()
                                     .FontSize(10)
                                     .FontColor(Colors.Blue.Darken3);
@@ -93,7 +93,7 @@ namespace FacturacionElectronica.Services
                                 row.RelativeItem().PaddingRight(10).Column(col =>
                                 {
                                     col.Item().Text("EMISOR").SemiBold().FontSize(11).FontColor(Colors.Blue.Darken3);
-                                    col.Item().Text("Empresa Ficticia S.A.S").FontSize(9);
+                                    col.Item().Text("Ferreteria El Maestro").FontSize(9);
                                     col.Item().Text("NIT: 900.123.456-7").FontSize(9);
                                     col.Item().Text("Dirección: Cra 45 #26-85").FontSize(9);
                                     col.Item().Text("Teléfono: +57 601 123 4567").FontSize(9);
@@ -128,7 +128,7 @@ namespace FacturacionElectronica.Services
                                     header.Cell().Background(Colors.Blue.Lighten5).Padding(8).Text("DESCRIPCIÓN").SemiBold().FontSize(9);
                                     header.Cell().Background(Colors.Blue.Lighten5).Padding(8).AlignRight().Text("CANT.").SemiBold().FontSize(9);
                                     header.Cell().Background(Colors.Blue.Lighten5).Padding(8).AlignRight().Text("PRECIO UNIT.").SemiBold().FontSize(9);
-                                    header.Cell().Background(Colors.Blue.Lighten5).Padding(8).AlignRight().Text("TOTAL").SemiBold().FontSize(9);
+                                    header.Cell().Background(Colors.Blue.Lighten5).Padding(8).AlignRight().Text("SUBTOTAL.").SemiBold().FontSize(9);
                                 });
 
                                 // ITEMS DE LA FACTURA
@@ -146,6 +146,8 @@ namespace FacturacionElectronica.Services
                             // RESUMEN DE TOTALES
                             content.Item().AlignRight().Width(200).Column(totals =>
                             {
+                                // Si se necesita de deja comentado para mas despues 
+                                /*
                                 totals.Item().PaddingBottom(5).Row(row =>
                                 {
                                     row.RelativeItem().Text("Subtotal:").FontSize(9);
@@ -156,7 +158,7 @@ namespace FacturacionElectronica.Services
                                 {
                                     row.RelativeItem().Text("IVA (13%):").FontSize(9);
                                     row.ConstantItem(80).AlignRight().Text(invoiceData.TaxAmount.ToString("C")).FontSize(9);
-                                });
+                                }); */
 
                                 totals.Item().BorderTop(1).BorderColor(Colors.Grey.Medium).PaddingTop(5).Row(row =>
                                 {

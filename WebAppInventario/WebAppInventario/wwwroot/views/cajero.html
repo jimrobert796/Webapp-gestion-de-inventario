@@ -288,18 +288,12 @@
                             </div>
                             <!-- Totales -->
                             <div class="totales-box">
-                                <div class="row">
-                                    <div class="col-7 text-end">Subtotal:</div>
-                                    <div class="col-5 text-end fw-bold">$<span id="subtotalFactura">0.00</span></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-7 text-end">IVA (13%):</div>
-                                    <div class="col-5 text-end fw-bold">$<span id="ivaFactura">0.00</span></div>
-                                </div>
+                                
+                                
                                 <hr class="my-1">
                                 <div class="row">
                                     <div class="col-7 text-end"><h6 class="mb-0">TOTAL:</h6></div>
-                                    <div class="col-5 text-end"><h6 class="mb-0 text-success">$<span id="totalFactura">0.00</span></h6></div>
+                                    <div class="col-5 text-end"><h6 class="mb-0 text-white">$<span id="totalFactura">0.00</span></h6></div>
                                 </div>
                             </div>
                         </div>
@@ -764,9 +758,14 @@
             }
 
             function cambioProducto() {
-                const precio = $('#producto').find(':selected').data('precio') || 0;
+                const precioSinIVA = $('#producto').find(':selected').data('precio') || 0;
                 const stock = $('#producto').find(':selected').data('stock') || 0;
-                $('#precio').val(precio > 0 ? `${precio.toFixed(2)}` : '');
+
+                // ✅ CALCULAR PRECIO CON IVA PARA MOSTRAR
+                const precioConIVA = precioSinIVA * 1.13;
+
+
+                $('#precio').val(precioConIVA > 0 ? `${precioConIVA.toFixed(2)}` : '');
                 // Establecer el max en el input cantidad basado en el stock
                 $('#cantidad').attr('max', stock);
                 $('#cantidad').val(1);
@@ -883,12 +882,16 @@
                     $('#btnPagar').prop('disabled', true);
                 } else {
                     detallesVenta.forEach((detalle, index) => {
+                        // CALCULAR PRECIO Y SUBTOTAL CON IVA PARA MOSTRAR
+                        const precioConIVA = detalle.precio * 1.13;
+                        const subtotalConIVA = detalle.subtotal * 1.13;
+
                         tbody.append(`
                         <tr>
                             <td>${detalle.productoNombre}</td>
-                            <td class="text-end">$${detalle.precio.toFixed(2)}</td>
+                            <td class="text-end">$${precioConIVA.toFixed(2)}</td>
                             <td class="text-center">${detalle.cantidad}</td>
-                            <td class="text-end">$${detalle.subtotal.toFixed(2)}</td>
+                            <td class="text-end">$${subtotalConIVA.toFixed(2)}</td>
                             <td class="text-center">
                                 <div class="btn-group" role="group">
                                     <button class="btn btn-outline-warning btn-sm" onclick="abrirModalEditar(${index})">
@@ -913,7 +916,9 @@
                 const detalle = detallesVenta[index];
 
                 $('#editProductoNombre').text(detalle.productoNombre);
-                $('#editProductoPrecio').text(detalle.precio.toFixed(2));
+                //MOSTRAR PRECIO CON IVA EN EL MODAL
+                const precioConIVA = detalle.precio * 1.13;
+                $('#editProductoPrecio').text(precioConIVA.toFixed(2));
                 $('#editProductoCantidadActual').text(detalle.cantidad);
                 $('#editCantidad').val(detalle.cantidad).attr('max', detalle.stock);  // Establecer max basado en stock
 
@@ -923,11 +928,11 @@
 
             function actualizarNuevoSubtotal() {
                 const cantidad = parseInt($('#editCantidad').val()) || 0;
-                const precio = parseFloat($('#editProductoPrecio').text()) || 0;
+                const precio = parseFloat($('#editProductoPrecio').text()) / 1.13 || 0; // Convertir de vuelta a SIN IVA para cálculo
                 const nuevoSubtotal = cantidad * precio;
+                const nuevoSubtotalConIVA = nuevoSubtotal * 1.13; // ✅ MOSTRAR CON IVA
 
-
-                $('#editNuevoSubtotal').text(nuevoSubtotal.toFixed(2));
+                $('#editNuevoSubtotal').text(nuevoSubtotalConIVA.toFixed(2));
             }
 
             function confirmarEdicion() {
@@ -962,9 +967,12 @@
                 indexEliminar = index;
                 const detalle = detallesVenta[index];
 
+                // CALCULAR SUBTOTAL CON IVA PARA MOSTRAR
+                const subtotalConIVA = detalle.subtotal * 1.13;
+
                 $('#delProductoNombre').text(detalle.productoNombre);
                 $('#delProductoCantidad').text(detalle.cantidad);
-                $('#delProductoSubtotal').text(detalle.subtotal.toFixed(2));
+                $('#delProductoSubtotal').text(subtotalConIVA.toFixed(2));
 
                 modalEliminarProducto.show();
             }
@@ -1025,19 +1033,24 @@
                 const iva = subtotal * 0.13;
                 const total = subtotal + iva;
 
-                $('#confSubtotal').text(subtotal.toFixed(2));
-                $('#confIva').text(iva.toFixed(2));
-                $('#confTotal').text(total.toFixed(2));
+                $('#confSubtotal').text(subtotal.toFixed(2));  // Subtotal SIN IVA (para desglose)
+                $('#confIva').text(iva.toFixed(2));            // IVA separado
+                $('#confTotal').text(total.toFixed(2));        // Total CON IVA
 
                 const tbody = $('#confProductosTabla');
                 tbody.empty();
                 detallesVenta.forEach(detalle => {
+
+                    // CALCULAR PRECIO Y SUBTOTAL CON IVA PARA MOSTRAR
+                    const precioConIVA = detalle.precio * 1.13;
+                    const subtotalConIVA = detalle.subtotal * 1.13;
+
                     tbody.append(`
                     <tr>
                         <td>${detalle.productoNombre}</td>
-                        <td class="text-end">$${detalle.precio.toFixed(2)}</td>
+                        <td class="text-end">$${precioConIVA.toFixed(2)}</td>
                         <td class="text-center">${detalle.cantidad}</td>
-                        <td class="text-end">$${detalle.subtotal.toFixed(2)}</td>
+                        <td class="text-end">$${subtotalConIVA.toFixed(2)}</td>
                     </tr>
                 `);
                 });
@@ -1069,7 +1082,7 @@
                     "items": detallesVenta.map(detalle => ({
                         "description": detalle.productoNombre,
                         "quantity": detalle.cantidad,
-                        "unitPrice": detalle.precio
+                        "unitPrice": (detalle.precio * 1.13).toFixed(2) // OPCIONAL: CON IVA para mostrar
                     })),
                     "subtotal": subtotal,
                     "taxAmount": iva,
