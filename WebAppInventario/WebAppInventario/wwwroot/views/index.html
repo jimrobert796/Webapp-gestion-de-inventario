@@ -1,27 +1,36 @@
 ﻿<!DOCTYPE html>
-<!--<html data-bs-theme="dark">-->
 <html data-bs-theme="dark">
 <head>
     <meta charset="utf-8" />
-    <title>::.. Sistema de Inventario ..::</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Inventario</title>
+
+    <!-- FAVICON -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" href="/css/img/favicon.ico">
+
     <!-- Bootstrap CSS e íconos -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <!-- CSS personalizado -->
     <link href="/css/styles.css" rel="stylesheet">
 </head>
 <body>
     <main class="d-flex flex-nowrap">
-        <!--  -->
-        <!-- Sidebar -->
-        <div class="sidebar flex-shrink-0 p-3 bg-dark">
+
+        <!-- Sidebar COMPLETO Y BIEN ESTRUCTURADO -->
+        <div class="sidebar flex-shrink-0 p-3 bg-dark" style="width: 280px; min-height: 100vh;">
+
             <!-- Logo del sistema -->
             <a href="#" class="d-flex align-items-center pb-3 mb-3 link-light text-decoration-none border-bottom" id="logoLink">
-                <i class="bi bi-box-seam me-2" style="font-size: 1.8rem;"></i>
-                <span class="fs-5 fw-bold text-light">Sistema Inventario</span>
+                <i class="bi bi-box-seam me-2" style="font-size: 1.5rem;"></i>
+                <span class="fs-5 fw-bold text-light">Ferreteria El Maestri</span>
             </a>
 
+            <!-- Menú de navegación -->
             <ul class="list-unstyled ps-0">
 
                 <!-- NUEVOOO DASHBOARD -->
@@ -159,11 +168,18 @@
                     </button>
                 </li>
             </ul>
-        </div>
 
+        </div> <!-- Fin del Sidebar -->
         <!-- Contenido Principal -->
-        <div class="main-content flex-grow-1">
-            <div id="contenido"></div>
+        <div class="main-content flex-grow-1 p-4" style="background-color: var(--bs-dark-bg-subtle); min-height: 100vh;">
+            <div id="contenido">
+                <!-- Contenido por defecto -->
+                <div class="text-center mt-5">
+                    <i class="bi bi-box-seam text-primary" style="font-size: 5rem;"></i>
+                    <h2 class="mt-3">Bienvenido al Sistema de Inventario</h2>
+                    <p class="text-muted">Selecciona una opción del menú para comenzar</p>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -202,12 +218,13 @@
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Tu JavaScript existente (el mismo que tenías) -->
     <script>
         // ===== PROTECCIÓN Y CARGA DE USUARIO =====
         document.addEventListener("DOMContentLoaded", () => {
             verificarSesion();
             cargarInformacionUsuario();
-            mostrarBienvenida();  // Agrega esta línea para mostrar bienvenida al iniciar
 
             // Inicializar modal
             const modalCerrarSesion = new bootstrap.Modal(document.getElementById('modalCerrarSesion'));
@@ -232,23 +249,21 @@
                 cerrarSesion();
             });
 
-            // Logo - pantalla de bienvenida (mantiene el evento click)
+            // Logo - pantalla de bienvenida
             document.getElementById('logoLink').addEventListener('click', (e) => {
                 e.preventDefault();
-                mostrarBienvenida();  // Reutiliza la función
+                mostrarBienvenida();
             });
         });
 
-        // ===== FUNCIONES AUXILIARES =====
-        // Agrega esta función nueva
         function mostrarBienvenida() {
             $('#contenido').html(`
-        <div class="text-center mt-5">
-            <i class="bi bi-box-seam text-primary" style="font-size: 5rem;"></i>
-            <h2 class="mt-3">Bienvenido al Sistema de Inventario</h2>
-            <p class="text-muted">Selecciona una opción del menú para comenzar</p>
-        </div>
-    `);
+                            <div class="text-center mt-5">
+                                <i class="bi bi-box-seam text-primary" style="font-size: 5rem;"></i>
+                                <h2 class="mt-3">Bienvenido al Sistema de Inventario</h2>
+                                <p class="text-muted">Selecciona una opción del menú para comenzar</p>
+                            </div>
+                        `);
         }
 
         function verificarSesion() {
@@ -262,7 +277,6 @@
             const nombreCompleto = localStorage.getItem('empleadoNombre') || 'Usuario';
             const rol = localStorage.getItem('empleadoRolNombre') || 'Sin rol';
 
-            // Extraer primer nombre y primer apellido
             const partes = nombreCompleto.trim().split(' ');
             const nombreCorto = partes.length >= 2
                 ? `${partes[0]} ${partes[partes.length - 2]}`
@@ -287,15 +301,6 @@
                 .then(resp => resp.text())
                 .then(vista => {
                     $('#contenido').html(vista);
-
-                    // Inicializar dashboard
-                    if (form === 'dashboard') {
-                        setTimeout(() => {
-                            if (typeof window.inicializarDashboard === 'function') {
-                                window.inicializarDashboard();
-                            }
-                        }, 100);
-                    }
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -303,7 +308,6 @@
                 });
         }
 
-        // ===== FUNCIONES AUXILIARES =====
         function obtenerEmpleadoId() {
             return localStorage.getItem('empleadoId');
         }
@@ -315,7 +319,6 @@
         function obtenerEmpleadoRol() {
             return localStorage.getItem('empleadoRol');
         }
-
     </script>
 </body>
-</html>
+</html>  

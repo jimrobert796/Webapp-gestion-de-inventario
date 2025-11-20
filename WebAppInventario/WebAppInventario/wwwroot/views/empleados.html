@@ -7,11 +7,306 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
 
     <style>
+        :root {
+            --ferreteria-primary: #2C3E50;
+            --ferreteria-accent: #E67E22;
+            --ferreteria-light: #ECF0F1;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        h1, h2, h3, h4, h5, h6,
+        .card-header,
+        .modal-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        /* ========== PERSONALIZACIÓN DE BOTONES ========== */
+        .btn {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            padding: 10px 20px;
+        }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            }
+
+            .btn:active {
+                transform: translateY(0);
+                box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            }
+
+        /* Botón Primario - Nuevo Empleado */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-primary:hover {
+                background: linear-gradient(135deg, #34495E, var(--ferreteria-primary));
+                box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
+            }
+
+        /* Botón Warning - Editar */
+        .btn-warning {
+            background: linear-gradient(135deg, #E67E22, #D35400);
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-warning:hover {
+                background: linear-gradient(135deg, #D35400, #E67E22);
+                color: white;
+                box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
+            }
+
+        /* Botón Danger - Eliminar */
+        .btn-danger {
+            background: linear-gradient(135deg, #E74C3C, #C0392B);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-danger:hover {
+                background: linear-gradient(135deg, #C0392B, #E74C3C);
+                box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+            }
+
+        /* Botón Success - Guardar/Éxito */
+        .btn-success {
+            background: linear-gradient(135deg, #27AE60, #229954);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-success:hover {
+                background: linear-gradient(135deg, #229954, #27AE60);
+                box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+            }
+
+        /* Botón Secondary - Cancelar */
+        .btn-secondary {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-secondary:hover {
+                background: linear-gradient(135deg, #7f8c8d, #95a5a6);
+                box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+            }
+
+        /* Botón Outline - Buscar/Limpiar */
+        .btn-outline-secondary {
+            border: 2px solid #6c757d;
+            color: #6c757d;
+            background: transparent;
+            font-weight: 500;
+        }
+
+            .btn-outline-secondary:hover {
+                background: #6c757d;
+                color: white;
+                border-color: #6c757d;
+            }
+
+        /* Efecto de ripple en los botones */
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+
+        /* Iconos dentro de botones */
+        .btn i {
+            margin-right: 5px;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover i {
+            transform: scale(1.1);
+        }
+
+        /* Estados deshabilitados */
+        .btn:disabled {
+            opacity: 0.6;
+            transform: none !important;
+            box-shadow: none !important;
+            cursor: not-allowed;
+        }
+
+            .btn:disabled:hover {
+                transform: none !important;
+                box-shadow: none !important;
+            }
+
+        /* ========== ESTILOS PARA LA TABLA ========== */
         .table-scroll {
-            max-height: 400px; /* Altura máxima de la tabla (ajusta según necesites, ej. 500px para más filas) */
-            overflow-y: auto; /* Scroll vertical interno */
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+            .table-scroll thead th {
+                position: sticky;
+                top: 0;
+                background: linear-gradient(135deg, var(--ferreteria-primary), #34495E);
+                color: white;
+                z-index: 100;
+                border-bottom: 2px solid #dee2e6;
+                padding: 12px 8px;
+                font-family: 'Montserrat', sans-serif;
+                font-weight: 600;
+            }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(44, 62, 80, 0.05);
+            transform: scale(1.01);
+            transition: all 0.2s ease;
+        }
+
+        .table-primary {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.1), rgba(52, 73, 94, 0.05)) !important;
+            border-left: 4px solid var(--ferreteria-primary);
+        }
+
+        /* ========== ESTILOS PARA TARJETAS Y MODALES ========== */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+            .card:hover {
+                box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+            }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 15px 20px;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
+        }
+
+        .border.rounded {
+            border: 2px solid #e9ecef !important;
+            transition: all 0.3s ease;
+        }
+
+            .border.rounded:hover {
+                border-color: var(--ferreteria-primary) !important;
+                box-shadow: 0 2px 8px rgba(44, 62, 80, 0.1);
+            }
+
+        /* ========== ESTILOS PARA FORMULARIOS ========== */
+        .form-control, .form-select {
+            border-radius: 6px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: var(--ferreteria-primary);
+                box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.25);
+            }
+
+        .form-label {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            color: #e9ecef !important;
+            margin-bottom: 8px;
+        }
+
+        .input-group-text {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E);
+            border: none;
+            color: white;
+            font-weight: 500;
+        }
+
+        /* ========== BADGES Y ETIQUETAS ========== */
+        .badge {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            border-radius: 6px;
+        }
+
+        /* ========== ESTADOS DE EMPLEADO ========== */
+        .empleado-activo {
+            background: linear-gradient(135deg, #D1F2EB, #A3E4D7);
+            border-left: 4px solid #27AE60;
+        }
+
+        .empleado-inactivo {
+            background: linear-gradient(135deg, #F8D7DA, #F5B7B1);
+            border-left: 4px solid #E74C3C;
+        }
+
+        /* ========== BADGES DE ROL ========== */
+        .badge-admin {
+            background: linear-gradient(135deg, #E74C3C, #C0392B);
+        }
+
+        .badge-bodega {
+            background: linear-gradient(135deg, #3498DB, #2980B9);
+        }
+
+        .badge-cajero {
+            background: linear-gradient(135deg, #27AE60, #229954);
+        }
+
+        /* Solo el título del modal de clientes */
+        #modalEmpleado .modal-header .modal-title {
+            color: #ffffff !important;
         }
     </style>
 
@@ -23,7 +318,7 @@
         <div class="card shadow">
             <!-- Encabezado de la tarjeta -->
             <div class="card-header bg-primary text-white">
-                <h2 class="mb-0">Gestión de Empleados</h2>
+                <h2 class="mb-0"><i class="bi bi-people me-2"></i>Gestión de Empleados</h2>
             </div>
 
             <!-- Cuerpo de la tarjeta -->
@@ -32,9 +327,15 @@
                 <div class="row mb-3 align-items-center">
                     <!-- Botones CRUD al lado izquierdo -->
                     <div class="col-md-6">
-                        <button id="btnNuevo" class="btn btn-primary">Nuevo Empleado</button>
-                        <button id="btnEditar" class="btn btn-warning" disabled>Editar</button>
-                        <button id="btnEliminar" class="btn btn-danger" disabled>Eliminar</button>
+                        <button id="btnNuevo" class="btn btn-primary">
+                            <i class="bi bi-person-plus"></i> Nuevo Empleado
+                        </button>
+                        <button id="btnEditar" class="btn btn-warning" disabled>
+                            <i class="bi bi-pencil-square"></i> Editar
+                        </button>
+                        <button id="btnEliminar" class="btn btn-danger" disabled>
+                            <i class="bi bi-trash"></i> Eliminar
+                        </button>
                     </div>
 
                     <!-- Buscador al lado derecho -->
@@ -103,7 +404,7 @@
                 <!-- Encabezado del modal -->
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title" id="modalTitulo">
-                        <i class="bi bi-person-badge"></i> Nuevo Empleado
+                        <i class="bi bi-person-badge me-2"></i>Nuevo Empleado
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
@@ -117,14 +418,14 @@
                         <!-- Sección Información del Empleado -->
                         <div class="border rounded p-3">
                             <h6 class="text-primary mb-3">
-                                <i class="bi bi-person"></i> Información del Empleado
+                                <i class="bi bi-person me-2"></i> Información del Empleado
                             </h6>
 
                             <!-- Primera fila: Rol y Nombre -->
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="rol" class="form-label">
-                                        <i class="bi bi-shield-check"></i> Rol
+                                        <i class="bi bi-shield-check me-1"></i> Rol
                                     </label>
                                     <select id="rol" class="form-select" required>
                                         <option value="">Seleccione un rol</option>
@@ -135,9 +436,9 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="nombre" class="form-label">
-                                        <i class="bi bi-person-fill"></i> Nombre Completo
+                                        <i class="bi bi-person-fill me-1"></i> Nombre Completo
                                     </label>
-                                    <input type="text" class="form-control" id="nombre" required placeholder="Ingrese el nombre">
+                                    <input type="text" class="form-control" id="nombre" required placeholder="Ingrese el nombre completo">
                                 </div>
                             </div>
 
@@ -145,25 +446,26 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="credencial" class="form-label">
-                                        <i class="bi bi-key"></i> Credencial
-                                    </label><!-- Credencial solamente vista -->
+                                        <i class="bi bi-key me-1"></i> Credencial
+                                    </label>
                                     <input type="text" class="form-control" id="credencial" required readonly>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="contrasena" class="form-label">
-                                        <i class="bi bi-lock"></i> Contraseña
+                                        <i class="bi bi-lock me-1"></i> Contraseña
                                     </label>
                                     <div class="input-group">
-                                        <!-- Contraseña con lo basico para lo seguro -->
                                         <input type="password" class="form-control" id="contrasena"
-                                               minlength="8" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&amp;#]).{8,}$" 
+                                               minlength="8" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&amp;#]).{8,}$"
                                                title="Debe tener al menos 8 caracteres, incluyendo mayúscula, minúscula, número y símbolo (@$!%*?&#)"
                                                placeholder="Ingrese la contraseña">
-
-                                        <!-- Botón para mostrar/ocultar contraseña -->
                                         <button class="btn btn-outline-secondary" type="button" id="btnTogglePassword">
                                             <i class="bi bi-eye" id="iconoPassword"></i>
                                         </button>
+                                    </div>
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Mínimo 8 caracteres con mayúscula, minúscula, número y símbolo
                                     </div>
                                 </div>
                             </div>
@@ -172,15 +474,16 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="telefono" class="form-label">
-                                        <i class="bi bi-telephone"></i> Teléfono
+                                        <i class="bi bi-telephone me-1"></i> Teléfono
                                     </label>
-                                    <input type="tel" class="form-control" id="telefono"  required pattern="\d{4}-\d{4}" placeholder="Ingrese en este formato XXXX-XXXX">
+                                    <input type="tel" class="form-control" id="telefono" required pattern="\d{4}-\d{4}" placeholder="Formato: XXXX-XXXX">
+                                    <div class="form-text">Formato requerido: XXXX-XXXX</div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="email" class="form-label">
-                                        <i class="bi bi-envelope"></i> Email
+                                        <i class="bi bi-envelope me-1"></i> Email
                                     </label>
-                                    <input type="email" class="form-control" id="email" required placeholder="Ejemplo@gmail.com">
+                                    <input type="email" class="form-control" id="email" required placeholder="ejemplo@gmail.com">
                                 </div>
                             </div>
 
@@ -188,15 +491,16 @@
                             <div class="row">
                                 <div class="col-md-8 mb-3">
                                     <label for="direccion" class="form-label">
-                                        <i class="bi bi-geo-alt"></i> Dirección
+                                        <i class="bi bi-geo-alt me-1"></i> Dirección
                                     </label>
-                                    <input type="text" class="form-control" id="direccion" required placeholder="Ingrese la direccion">
+                                    <input type="text" class="form-control" id="direccion" required placeholder="Ingrese la dirección completa">
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label for="fechaNacimiento" class="form-label">
-                                        <i class="bi bi-calendar-event"></i> Fecha Nacimiento
+                                        <i class="bi bi-calendar-event me-1"></i> Fecha Nacimiento
                                     </label>
                                     <input type="date" class="form-control" id="fechaNacimiento" required>
+                                    <div class="form-text">Debe ser mayor de edad</div>
                                 </div>
                             </div>
                         </div>
@@ -206,10 +510,90 @@
                 <!-- Pie del modal con botones -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="bi bi-x-circle"></i> Cancelar
+                        <i class="bi bi-x-circle me-1"></i> Cancelar
                     </button>
                     <button type="button" class="btn btn-primary" id="btnGuardar">
-                        <i class="bi bi-check-circle"></i> Guardar
+                        <i class="bi bi-check-circle me-1"></i> Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL DE CONFIRMACIÓN DE ELIMINACIÓN ========== -->
+    <div class="modal fade" id="modalEliminar" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">
+                        <i class="bi bi-exclamation-triangle me-2"></i>Confirmar Eliminación
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center py-2">
+                        <i class="bi bi-person-x text-danger" style="font-size: 3rem;"></i>
+                        <p class="mt-3 mb-2 fs-5">¿Está seguro de eliminar al empleado?</p>
+                        <p class="text-muted mb-0">Empleado: <strong id="nombreEmpleadoEliminar" class="text-danger"></strong></p>
+                        <small class="text-muted">Esta acción no se puede deshacer</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i> Cancelar
+                    </button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">
+                        <i class="bi bi-trash me-1"></i> Sí, Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL DE ÉXITO ========== -->
+    <div class="modal fade" id="modalExito" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">
+                        <i class="bi bi-check-circle me-2"></i>Éxito
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center py-2">
+                        <i class="bi bi-check2-circle text-success" style="font-size: 3rem;"></i>
+                        <p class="mt-3 mb-0 fs-5" id="mensajeExito"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">
+                        <i class="bi bi-check-lg me-1"></i> Aceptar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL DE ERROR ========== -->
+    <div class="modal fade" id="modalError" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">
+                        <i class="bi bi-x-circle me-2"></i>Error
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center py-2">
+                        <i class="bi bi-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+                        <p class="mt-3 mb-0 fs-5" id="mensajeError"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg me-1"></i> Cerrar
                     </button>
                 </div>
             </div>
@@ -298,13 +682,13 @@
             function buscarEmpleados(textoBusqueda = '', idRol = '') {
                 // MOSTRAR LOADING AL INICIAR BÚSQUEDA
                 $('#tablaEmpleados tbody').html(`
-        <tr>
-            <td colspan="8" class="text-center text-muted py-4">
-                <div class="spinner-border spinner-border-sm" role="status"></div>
-                <span class="ms-2">Buscando empleados...</span>
-            </td>
-        </tr>
-    `);
+            <tr>
+                <td colspan="8" class="text-center text-muted py-4">
+                    <div class="spinner-border spinner-border-sm" role="status"></div>
+                    <span class="ms-2">Buscando empleados...</span>
+                </td>
+            </tr>
+        `);
 
                 // Limpiar timer anterior para debounce
                 clearTimeout(debounceTimer);
@@ -360,6 +744,7 @@
                 }, 300);  // Debounce de 300ms
             }
             // ========== FUNCIÓN PARA RENDERIZAR LA TABLA ==========
+            // ========== FUNCIÓN PARA RENDERIZAR LA TABLA ==========
             function renderTabla() {
                 let tbody = $("#tablaEmpleados tbody");
                 tbody.empty(); // Limpiar el contenido actual de la tabla
@@ -368,14 +753,16 @@
                 if (empleadosFiltrados.length === 0) {
                     let mensaje = "No se encontraron empleados con ese criterio de búsqueda";
                     tbody.append(`
-                                                <tr>
-                                                    <td colspan="7" class="text-center text-muted">
-                                                        ${mensaje}
-                                                    </td>
-                                                </tr>
-                                            `);
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+                            <i class="bi bi-search display-4 d-block mb-2"></i>
+                            ${mensaje}
+                        </td>
+                    </tr>
+                `);
                     return;
                 }
+
                 // ======== FUNCION PARA CALCULAR EDAD DE EMPELADO ===========
                 function calcularEdad(fechaNacimiento) {
                     const hoy = new Date();
@@ -391,22 +778,51 @@
                     return edad;
                 }
 
-
-
                 // Recorrer el array de empleados y crear filas
                 empleadosFiltrados.forEach((emp, i) => {
+                    // Determinar clase de badge según el rol
+                    let badgeClass = '';
+                    switch (emp.idRol) {
+                        case 1: badgeClass = 'badge-admin'; break;
+                        case 2: badgeClass = 'badge-bodega'; break;
+                        case 3: badgeClass = 'badge-cajero'; break;
+                        default: badgeClass = 'bg-secondary';
+                    }
+
                     tbody.append(`
-                                                <tr data-index="${i}">
-                                                    <td>${emp.rolNombre}</td>
-                                                    <td>${emp.nombre}</td>
-                                                    <td>${emp.credencial}</td>
-                                                    <td>${emp.telefono}</td>
-                                                    <td>${emp.email}</td>
-                                                    <td>${emp.direccion}</td>
-                                                    <td>${calcularEdad(emp.fechaNacimiento)}</td>
-                                                    <td>${new Date(emp.ultimaActualizacion).toLocaleString()}</td>
-                                                </tr>
-                                            `);
+                    <tr data-index="${i}">
+                        <td>
+                            <span class="badge ${badgeClass}">${emp.rolNombre}</span>
+                        </td>
+                        <td>
+                            <strong>${emp.nombre}</strong>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary">${emp.credencial}</span>
+                        </td>
+                        <td>
+                            <i class="bi bi-telephone me-1 text-muted"></i>
+                            ${emp.telefono}
+                        </td>
+                        <td>
+                            <i class="bi bi-envelope me-1 text-muted"></i>
+                            ${emp.email}
+                        </td>
+                        <td>
+                            <i class="bi bi-geo-alt me-1 text-muted"></i>
+                            ${emp.direccion}
+                        </td>
+                        <td>
+                            <span class="badge bg-info">${calcularEdad(emp.fechaNacimiento)} años</span>
+                        </td>
+                        <td>
+                            <small class="text-muted">
+                                ${new Date(emp.ultimaActualizacion).toLocaleDateString()}<br>
+                                ${new Date(emp.ultimaActualizacion).toLocaleTimeString()}
+                            </small>
+                        </td>
+                    </tr>
+                `);
                 });
 
                 // Agregar evento click a cada fila de la tabla
@@ -451,7 +867,7 @@
                     url: "/api/Empleados/nueva-credencial",
                     method: "GET",
                     success: function (data) {
-                        $("#credencial").val(data);  // data es directamente el string de la credencial, por ej. "USR000010" 
+                        $("#credencial").val(data);  // data es directamente el string de la credencial, por ej. "USR000010"
                     },
                     error: function (err) {
                         console.error("Error obteniendo nueva credencial:", err);
@@ -461,8 +877,9 @@
                     }
                 });
                 // Configurar el título y botón para "Nuevo"
-                $("#modalTitulo").text("Nuevo Empleado");
-                $("#btnGuardar").text("Guardar").removeClass("btn-warning").addClass("btn-primary");
+                $("#modalTitulo").html('<i class="bi bi-person-plus me-2"></i> Nuevo Empleado');
+                $("#btnGuardar").html('<i class="bi bi-check-circle me-1"></i> Guardar').removeClass("btn-warning").addClass("btn-primary");
+                
                 modalEmpleado.show();  // Mostrar el modal
             }
 
@@ -490,9 +907,9 @@
                 // Configurar la fecha máxima para mayor de edad
                 $("#fechaNacimiento").attr("max", calcularFechaMaxima());
 
-                // Configurar el título y botón para "Editar"
-                $("#modalTitulo").text("Editar Empleado");
-                $("#btnGuardar").text("Guardar Cambios").removeClass("btn-primary").addClass("btn-warning");
+                // Configurar el título y botón para "Nuevo"
+                $("#modalTitulo").html('<i class="bi bi-person-plus me-2"></i> Nuevo Empleado');
+                $("#btnGuardar").html('<i class="bi bi-check-circle me-1"></i> Guardar').removeClass("btn-warning").addClass("btn-primary");
                 modalEmpleado.show();  // Mostrar el modal
             }
 
@@ -690,7 +1107,7 @@
                 });
 
 
-                // ===== FIX PARA ARIA-HIDDEN WARNING ===== 
+                // ===== FIX PARA ARIA-HIDDEN WARNING =====
                 $('.modal').on('hide.bs.modal', function () {
                     $(this).find('*').blur();
                 });

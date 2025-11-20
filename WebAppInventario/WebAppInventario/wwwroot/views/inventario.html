@@ -8,22 +8,194 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+
     <!-- Estilos personalizados para scroll interno en la tabla -->
     <style>
+        :root {
+            --ferreteria-primary: #2C3E50;
+            --ferreteria-accent: #E67E22;
+            --ferreteria-light: #ECF0F1;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        h1, h2, h3, h4, h5, h6,
+        .card-header,
+        .modal-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        /* ========== PERSONALIZACIÓN DE BOTONES ========== */
+        .btn {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            padding: 8px 16px;
+        }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            }
+
+            .btn:active {
+                transform: translateY(0);
+                box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            }
+
+        /* Botón Outline - Buscar/Limpiar */
+        .btn-outline-secondary {
+            border: 2px solid #6c757d;
+            color: #6c757d;
+            background: transparent;
+            font-weight: 500;
+        }
+
+            .btn-outline-secondary:hover {
+                background: #6c757d;
+                color: white;
+                border-color: #6c757d;
+            }
+
+        /* Efecto de ripple en los botones */
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+
+        /* Iconos dentro de botones */
+        .btn i {
+            margin-right: 5px;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover i {
+            transform: scale(1.1);
+        }
+
+        /* ========== ESTILOS PARA LA TABLA ========== */
         .table-scroll {
-            max-height: 300px;
+            max-height: 500px;
             overflow-y: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
             .table-scroll thead th {
                 position: sticky;
                 top: 0;
-                background-color: #212529;
+                background: linear-gradient(135deg, var(--ferreteria-primary), #34495E);
+                color: white;
                 z-index: 100;
                 border-bottom: 2px solid #dee2e6;
-                color: white;
                 padding: 12px 8px;
+                font-family: 'Montserrat', sans-serif;
+                font-weight: 600;
             }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(44, 62, 80, 0.05);
+            transform: scale(1.01);
+            transition: all 0.2s ease;
+        }
+
+        /* ========== ESTILOS PARA TARJETAS ========== */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+            .card:hover {
+                box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+            }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 15px 20px;
+        }
+
+        /* ========== ESTILOS PARA FORMULARIOS ========== */
+        .form-control {
+            border-radius: 6px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+            .form-control:focus {
+                border-color: var(--ferreteria-primary);
+                box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.25);
+            }
+
+        .input-group-text {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E);
+            border: none;
+            color: white;
+            font-weight: 500;
+        }
+
+        /* ========== BADGES Y ETIQUETAS ========== */
+        .badge {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            border-radius: 6px;
+        }
+
+        /* ========== ESTADOS DE INVENTARIO ========== */
+        .stock-bajo {
+            background: linear-gradient(135deg, #FFF3CD, #FFEAA7);
+            border-left: 4px solid #F39C12;
+        }
+
+        .stock-critico {
+            background: linear-gradient(135deg, #F8D7DA, #F5B7B1);
+            border-left: 4px solid #E74C3C;
+        }
+
+        .stock-optimo {
+            background: linear-gradient(135deg, #D1F2EB, #A3E4D7);
+            border-left: 4px solid #27AE60;
+        }
     </style>
 </head>
 <body>
@@ -33,7 +205,7 @@
         <div class="card shadow">
             <!-- Encabezado de la tarjeta -->
             <div class="card-header bg-primary text-white">
-                <h2 class="mb-0">Búsqueda de Inventario</h2>
+                <h2 class="mb-0"><i class="bi bi-clipboard-data me-2"></i>Búsqueda de Inventario</h2>
             </div>
 
             <!-- Cuerpo de la tarjeta -->
@@ -271,14 +443,16 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Error</h5>
+                    <h5 class="modal-title"><i class="bi bi-x-circle me-2"></i>Error</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <p class="mb-0" id="mensajeError"></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg"></i> Cerrar
+                    </button>
                 </div>
             </div>
         </div>
@@ -298,13 +472,13 @@
             function buscarInventarios(textoBusqueda = '', categoriaId = '', proveedorId = '', stock = '') {
                 // MOSTRAR LOADING AL INICIAR BÚSQUEDA
                 $('#tablaInventario tbody').html(`
-                    <tr>
-                        <td colspan="8" class="text-center text-muted py-4">
-                            <div class="spinner-border spinner-border-sm" role="status"></div>
-                            <span class="ms-2">Buscando productos en inventario...</span>
-                        </td>
-                    </tr>
-                `);
+                        <tr>
+                            <td colspan="8" class="text-center text-muted py-4">
+                                <div class="spinner-border spinner-border-sm" role="status"></div>
+                                <span class="ms-2">Buscando productos en inventario...</span>
+                            </td>
+                        </tr>
+                    `);
 
                 clearTimeout(debounceTimer);
 
@@ -312,7 +486,7 @@
                     // Construir URL con parámetros
                     let params = new URLSearchParams();
 
-                    
+
 
                     if (textoBusqueda) params.append('buscar', textoBusqueda);
                     if (categoriaId) params.append('categoriaId', categoriaId);
@@ -321,7 +495,7 @@
 
                     const url = `/api/Inventario/filtrar-anidado?${params.toString()}`;
 
-                    
+
 
                     $.ajax({
                         url: url,
@@ -376,7 +550,7 @@
                 // Realizar búsqueda vacía para cargar todos los datos
                 buscarInventarios('', '', '', '');
 
-                
+
             }
 
 
@@ -433,12 +607,12 @@
 
                 if (inventariosFiltrados.length === 0) {
                     tbody.append(`
-            <tr>
-                <td colspan="8" class="text-center text-muted">
-                    No se encontraron productos
-                </td>
-            </tr>
-        `);
+                            <tr>
+                                <td colspan="8" class="text-center text-muted">
+                                    No se encontraron productos
+                                </td>
+                            </tr>
+                        `);
                     return;
                 }
 
@@ -448,18 +622,45 @@
 
                 // Renderizar filas
                 inventariosFiltrados.forEach((inv, index) => {
+                    // Determinar clase de stock según cantidad
+                    let stockClass = '';
+                    if (inv.cantidad <= 20) {
+                        stockClass = 'stock-critico';
+                    } else if (inv.cantidad <= 100) {
+                        stockClass = 'stock-bajo';
+                    } else {
+                        stockClass = 'stock-optimo';
+                    }
+
                     tbody.append(`
-            <tr data-index="${index}">
-                <td>${inv.productoNombre}</td>
-                <td>${inv.productoCodigo}</td>
-                <td>${inv.productoproveedor}</td>
-                <td>${inv.productocategoria}</td>
-                <td>$${inv.precio.toFixed(2)}</td>
-                <td>$${(inv.precio * 1.13).toFixed(2) }</td>
-                <td>$${inv.costo.toFixed(2)}</td>
-                <td>${inv.cantidad}</td>
-            </tr>
-        `);
+                                        <tr data-index="${index}" class="${stockClass}">
+                                            <td>
+                                                <strong>${inv.productoNombre}</strong>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-primary">${inv.productoCodigo}</span>
+                                            </td>
+                                            <td>${inv.productoproveedor}</td>
+                                            <td>
+                                                <span class="badge bg-secondary">${inv.productocategoria}</span>
+                                            </td>
+                                            <td>
+                                                <strong class="text-success">$${inv.precio.toFixed(2)}</strong>
+                                            </td>
+                                            <td>
+                                                <strong class="text-primary">$${(inv.precio * 1.13).toFixed(2)}</strong>
+                                                <br>
+                                                <small class="text-muted">con IVA</small>
+                                            </td>
+                                            <td class="text-muted">$${inv.costo.toFixed(2)}</td>
+                                            <td>
+                                                <span class="badge ${inv.cantidad <= 20 ? 'bg-danger' : inv.cantidad <= 100 ? 'bg-warning' : 'bg-success'}">
+                                                    ${inv.cantidad} unidades
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        `);
+
                 });
 
                 // Evento de clic para selección (igual que facturas)
@@ -490,7 +691,7 @@
                     mostrarDetalleProducto();
                 });
             }
-            
+
             // ========== FUNCIÓN PARA MOSTRAR DETALLE DEL PRODUCTO ==========
             // ========== FUNCIÓN PARA MOSTRAR DETALLE DEL PRODUCTO ==========
             function mostrarDetalleProducto() {
