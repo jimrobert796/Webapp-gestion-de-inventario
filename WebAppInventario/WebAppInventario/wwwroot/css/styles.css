@@ -16,7 +16,8 @@
 body {
     min-height: 100vh;
     margin: 0;
-    background-color: var(--bs-body-bg);
+    /* background-color: var(--bs-body-bg); */
+    background: linear-gradient(145deg, #1a1d21, #212529) !important;
     font-family: 'Inter', sans-serif;
     line-height: 1.6;
 }
