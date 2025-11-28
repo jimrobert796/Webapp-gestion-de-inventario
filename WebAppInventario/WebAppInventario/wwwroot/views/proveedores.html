@@ -514,6 +514,18 @@
 
             // ========== FUNCIÓN PARA BUSCAR PROVEEDORES DESDE LA API ==========
             function buscarProveedores(textoBusqueda = '') {
+                // MOSTRAR LOADING AL INICIAR BÚSQUEDA
+                $('#tablaProveedores tbody').html(`
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+                            <div class="spinner-border spinner-border-sm" role="status"></div>
+                            <span class="ms-2">Buscando empleados...</span>
+                        </td>
+                    </tr>
+                `);
+
+
+
                 // Limpiar timer anterior para debounce
                 clearTimeout(debounceTimer);
                 // Esperar 300ms antes de hacer la llamada (evita llamadas excesivas)
