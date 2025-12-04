@@ -6,6 +6,7 @@
     <title>Sistema de Devoluciones</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         .table-scroll {
             max-height: 400px;
@@ -27,6 +28,327 @@
 
         .producto-seleccionado {
             border-left: 4px solid #0d6efd;
+        }
+
+        /* ========== NUEVOS ESTILOS - SISTEMA CONSISTENTE ========== */
+        :root {
+            --ferreteria-primary: #2C3E50;
+            --ferreteria-accent: #E67E22;
+            --ferreteria-light: #ECF0F1;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        h1, h2, h3, h4, h5, h6,
+        .card-header,
+        .modal-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        /* ========== BOTONES MEJORADOS ========== */
+        .btn {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            padding: 10px 20px;
+        }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            }
+
+            .btn:active {
+                transform: translateY(0);
+                box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            }
+
+        /* Botón Primario */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-primary:hover {
+                background: linear-gradient(135deg, #34495E, var(--ferreteria-primary));
+                box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
+            }
+
+        /* Botón Warning - Para el header de devoluciones */
+        .btn-warning {
+            background: linear-gradient(135deg, #E67E22, #D35400);
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-warning:hover {
+                background: linear-gradient(135deg, #D35400, #E67E22);
+                color: white;
+                box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
+            }
+
+        /* Botón Success */
+        .btn-success {
+            background: linear-gradient(135deg, #27AE60, #229954);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-success:hover {
+                background: linear-gradient(135deg, #229954, #27AE60);
+                box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+            }
+
+        /* Botón Danger */
+        .btn-danger {
+            background: linear-gradient(135deg, #E74C3C, #C0392B);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-danger:hover {
+                background: linear-gradient(135deg, #C0392B, #E74C3C);
+                box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+            }
+
+        /* Botón Info */
+        .btn-info {
+            background: linear-gradient(135deg, #3498DB, #2980B9);
+            border: none;
+            font-weight: 600;
+            color: white;
+        }
+
+            .btn-info:hover {
+                background: linear-gradient(135deg, #2980B9, #3498DB);
+                color: white;
+                box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+            }
+
+        /* Botón Outline - Buscar/Limpiar */
+        .btn-outline-secondary {
+            border: 2px solid #6c757d;
+            color: #6c757d;
+            background: transparent;
+            font-weight: 500;
+        }
+
+            .btn-outline-secondary:hover {
+                background: #6c757d;
+                color: white;
+                border-color: #6c757d;
+            }
+
+        /* ========== EFECTO RIPPLE EN BOTONES ========== */
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+
+        /* ========== ICONOS DENTRO DE BOTONES ========== */
+        .btn i {
+            margin-right: 5px;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover i {
+            transform: scale(1.1);
+        }
+
+        /* ========== TARJETAS Y MODALES MEJORADOS ========== */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+            .card:hover {
+                box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+            }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 15px 20px;
+            border: none;
+        }
+
+            /* Header especial para devoluciones (manteniendo el amarillo) */
+            .card-header.bg-warning {
+                background: linear-gradient(135deg, #E67E22, #D35400) !important;
+                color: white !important;
+            }
+
+        /* Header especial para modal de información */
+        .modal-header.bg-info {
+            background: linear-gradient(135deg, #3498DB, #2980B9) !important;
+            color: white !important;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
+        }
+
+        #modalNueva .modal-header .modal-title {
+            color: #ffffff !important;
+        }
+
+        #modalExito .modal-header .modal-title {
+            color: #ffffff !important;
+        }
+
+        #modalError .modal-header .modal-title {
+            color: #ffffff !important;
+        }
+
+        #modalDetalle .modal-header .modal-title {
+            color: #ffffff !important;
+        }
+        #modalConfirmacion .modal-header .modal-title {
+            color: #ffffff !important;
+        }
+
+
+        /* ========== TABLAS MEJORADAS ========== */
+        .table-scroll {
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+            .table-scroll thead th {
+                position: sticky;
+                top: 0;
+                background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
+                color: white;
+                z-index: 100;
+                border-bottom: 2px solid #dee2e6;
+                padding: 12px 8px;
+                font-family: 'Montserrat', sans-serif;
+                font-weight: 600;
+            }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(44, 62, 80, 0.05);
+            transform: scale(1.01);
+            transition: all 0.2s ease;
+        }
+
+        .table-primary {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.1), rgba(52, 73, 94, 0.05)) !important;
+            border-left: 4px solid var(--ferreteria-primary);
+        }
+
+        /* ========== FORMULARIOS MEJORADOS ========== */
+        .form-control, .form-select {
+            border-radius: 6px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: var(--ferreteria-primary);
+                box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.25);
+            }
+
+        .form-label {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            color: var(--ferreteria-primary);
+            margin-bottom: 8px;
+        }
+
+        .input-group-text {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E);
+            border: none;
+            color: white;
+            font-weight: 500;
+        }
+
+            /* Input group especial para devoluciones */
+            .input-group-text.bg-warning {
+                background: linear-gradient(135deg, #E67E22, #D35400) !important;
+                color: white !important;
+            }
+
+        /* ========== BADGES MEJORADOS ========== */
+        .badge {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            border-radius: 6px;
+            padding: 6px 10px;
+        }
+
+        /* ========== ALERTS MEJORADOS ========== */
+        .alert {
+            border-radius: 8px;
+            border: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #27AE60, #229954);
+            color: white;
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, #E67E22, #D35400);
+            color: white;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #E74C3C, #C0392B);
+            color: white;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, #3498DB, #2980B9);
+            color: white;
+        }
+
+        /* ========== ESTADOS ESPECIALES PARA DEVOLUCIONES ========== */
+        .producto-seleccionado {
+            border-left: 4px solid #27AE60;
+            background: linear-gradient(135deg, #D1F2EB, #A3E4D7);
         }
     </style>
 </head>
@@ -79,7 +401,6 @@
                         </thead>
                         <tbody>
                             <tr>
-                                
                             </tr>
                         </tbody>
                     </table>
@@ -180,25 +501,25 @@
 
                     <!-- Producto Seleccionado -->
                     <div id="productoSeleccionado" class="card mb-4 d-none">
-                        <div class="card-header bg-success text-white">
+                        <div class="card-header bg-info text-white">
                             <h6 class="mb-0"><i class="bi bi-check-circle"></i> Producto Seleccionado</h6>
                         </div>
                         <div class="card-body producto-seleccionado">
                             <div class="row align-items-center">
-                                <div class="col-md-5">
+                                <div class="col-md-5 text-dark">
                                     <strong>Producto:</strong><br>
                                     <span id="productoNombre" class="fw-bold fs-5">-</span>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 text-dark">
                                     <strong>Precio:</strong><br>
                                     <span id="productoPrecio" class="fw-bold">-</span>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-3 text-dark">
                                     <label class="form-label fw-bold">Cantidad a Devolver:</label>
                                     <input type="number" id="cantidadDevolver" class="form-control" min="1" value="1" onchange="validarCantidad()">
-                                    <small class="text-muted" id="maxCantidad">Máximo: 0</small>
+                                    <small class="text-dark" id="maxCantidad">Máximo: 0</small>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 text-dark">
                                     <button class="btn btn-outline-danger btn-sm mt-3" onclick="deseleccionarProducto()">
                                         <i class="bi bi-x-circle"></i> Cambiar
                                     </button>
@@ -378,7 +699,7 @@
         </div>
     </div>
 
-  
+
     <script>
         // Variables globales (cambiadas a 'var' para evitar redeclaraciones al recargar)
         var facturaActual = null;
@@ -407,7 +728,7 @@
             modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
             modalError = new bootstrap.Modal(document.getElementById('modalError'));
             modalConfirmacion = new bootstrap.Modal(document.getElementById('modalConfirmacion'));  // ← AGREGAR
-        } 
+        }
 
         function configurarEventos() {
             $('#btnNueva').click(() => modalNueva.show());
@@ -437,11 +758,11 @@
                 actualizarResumen();
             });
 
-            $('#btnRefrescar').click(function() {
-            $('#inputBuscar').val('');
-            $('#inputFecha').val('');
-            filtrarDevoluciones(); // Limpiar filtros y recargar
-        });
+            $('#btnRefrescar').click(function () {
+                $('#inputBuscar').val('');
+                $('#inputFecha').val('');
+                filtrarDevoluciones(); // Limpiar filtros y recargar
+            });
         }
 
         function cargarDevoluciones() {
@@ -459,7 +780,7 @@
             });
         }
 
-        
+
 
 
         // TABLA DE VISTA AL INICIO
@@ -468,28 +789,26 @@
             tbody.empty();
 
             if (devoluciones.length === 0) {
-                let mensaje = "No se encontraron empleados con ese criterio de búsqueda";
-                tbody.append(`
-                            <tr>
-                                <td colspan="8" class="text-center text-muted py-4">
-                                    <i class="bi bi-search display-4 d-block mb-2"></i>
-                                    ${mensaje}
-                                </td>
-                            </tr>
-                        `);
+                tbody.html(`
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">
+                                             No se encontraron devoluciones con ese criterio de búsqueda
+                                        </td>
+                                    </tr>
+                                `);
                 return;
             }
 
             devoluciones.forEach(dev => {
                 const tr = $(`
-            <tr style="cursor: pointer;" data-id="${dev.idDevolucion}" onclick="seleccionarDevolucion(${dev.idDevolucion})">
-                <td><span class="badge bg-primary">${dev.numeroFactura || 'N/A'}</span></td>
-                <td>${dev.nombre || 'Empleado'}</td>
-                <td class="text-center"><span class="badge bg-secondary">${dev.cantidad || 0}</span></td>
-                <td>${new Date(dev.fechaDevolucion + 'T00:00:00').toLocaleDateString('es-SV')}</td>
-                <td class="text-end fw-bold text-primary">$${(dev.totalDevolucion || 0).toFixed(2)}</td>
-            </tr>
-        `);
+                <tr style="cursor: pointer;" data-id="${dev.idDevolucion}" onclick="seleccionarDevolucion(${dev.idDevolucion})">
+                    <td><span class="badge bg-primary">${dev.numeroFactura || 'N/A'}</span></td>
+                    <td>${dev.nombre || 'Empleado'}</td>
+                    <td class="text-center"><span class="badge bg-secondary">${dev.cantidad || 0}</span></td>
+                    <td>${new Date(dev.fechaDevolucion + 'T00:00:00').toLocaleDateString('es-SV')}</td>
+                    <td class="text-end fw-bold text-primary">$${(dev.totalDevolucion || 0).toFixed(2)}</td>
+                </tr>
+            `);
                 tbody.append(tr);
             });
         }
@@ -569,26 +888,26 @@
                 if (puedeDevolver) hayDisponibles = true;
 
                 const tr = `
-                                <tr>
-                                    <td>
-                                        <strong>${detalle.productoNombre || 'Producto'}</strong>
-                                        ${!puedeDevolver ? '<br><small class="text-danger">Sin disponibilidad</small>' : ''}
-                                    </td>
-                                    <td class="text-end">$${(detalle.precio || 0).toFixed(2)}</td>
-                                    <td class="text-center"><span class="badge bg-primary">${detalle.cantidad || 0}</span></td>
-                                    <td class="text-center"><span class="badge bg-warning">${devuelto}</span></td>
-                                    <td class="text-center">
-                                        <span class="badge ${puedeDevolver ? 'bg-success' : 'bg-danger'}">${disponible}</span>
-                                    </td>
-                                    <td class="text-center">
-                                        ${puedeDevolver
+                                    <tr>
+                                        <td>
+                                            <strong>${detalle.productoNombre || 'Producto'}</strong>
+                                            ${!puedeDevolver ? '<br><small class="text-danger">Sin disponibilidad</small>' : ''}
+                                        </td>
+                                        <td class="text-end">$${(detalle.precio || 0).toFixed(2)}</td>
+                                        <td class="text-center"><span class="badge bg-primary">${detalle.cantidad || 0}</span></td>
+                                        <td class="text-center"><span class="badge bg-warning">${devuelto}</span></td>
+                                        <td class="text-center">
+                                            <span class="badge ${puedeDevolver ? 'bg-success' : 'bg-danger'}">${disponible}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            ${puedeDevolver
                         ? `<button class="btn btn-sm btn-primary" onclick='seleccionarProducto(${JSON.stringify(detalle)}, ${disponible})'>
-                                                    <i class="bi bi-check-lg"></i> Seleccionar
-                                                </button>`
-                    : '<span class= "text-danger">Ya devueltos</span>'}
-                                    </td>
-                                </tr>
-                            `;
+                                                        <i class="bi bi-check-lg"></i> Seleccionar
+                                                    </button>`
+                        : '<span class= "text-danger">Ya devueltos</span>'}
+                                        </td>
+                                    </tr>
+                                `;
                 tbody.append(tr);
             });
 
@@ -796,11 +1115,11 @@
 
         function finalizarDevolucion(idDevolucion, total, cantidadItems) {
             $('#mensajeExito').html(`
-                            <div class="alert alert-success">
-                                <p class="mb-2"><strong>Cantidad:</strong> ${cantidadItems} items</p>
-                                <p class="mb-0"><strong>Total:</strong> ${total.toFixed(2)}</p>
-                            </div>
-                        `);
+                                <div class="alert alert-success">
+                                    <p class="mb-2"><strong>Cantidad:</strong> ${cantidadItems} items</p>
+                                    <p class="mb-0"><strong>Total:</strong> ${total.toFixed(2)}</p>
+                                </div>
+                            `);
             modalExito.show();
 
             setTimeout(() => {
@@ -856,15 +1175,15 @@
                                 : '<span class="badge bg-danger">No</span>';
 
                             const tr = `
-                                    <tr>
-                                        <td><strong>${detalle.productoNombre || 'N/A'}</strong></td>
-                                        <td class="text-center"><span class="badge bg-secondary">${detalle.cantidadDevuelta || 0}</span></td>
-                                        <td><span class="badge bg-warning text-dark">${detalle.motivo}</span></td>
-                                        <td><small>${detalle.descripcion.trim() || 'Sin Descripcion'}</small></td>
-                                        <td class="text-center">${badgeInventario}</td>
-                                        <td class="text-end fw-bold">${(detalle.subtotal || 0).toFixed(2)}</td>
-                                    </tr>
-                                `;
+                                        <tr>
+                                            <td><strong>${detalle.productoNombre || 'N/A'}</strong></td>
+                                            <td class="text-center"><span class="badge bg-secondary">${detalle.cantidadDevuelta || 0}</span></td>
+                                            <td><span class="badge bg-warning text-dark">${detalle.motivo}</span></td>
+                                            <td><small>${detalle.descripcion.trim() || 'Sin Descripcion'}</small></td>
+                                            <td class="text-center">${badgeInventario}</td>
+                                            <td class="text-end fw-bold">${(detalle.subtotal || 0).toFixed(2)}</td>
+                                        </tr>
+                                    `;
                             tbody.append(tr);
                         });
                     } else {
@@ -888,13 +1207,13 @@
 
             // MOSTRAR LOADING AL INICIAR BÚSQUEDA
             $('#tablaDevoluciones tbody').html(`
-                <tr>
-                    <td colspan="6" class="text-center text-muted py-4">
-                        <div class="spinner-border spinner-border-sm" role="status"></div>
-                        <span class="ms-2">Buscando devoluciones...</span>
-                    </td>
-                </tr>
-            `);
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            <div class="spinner-border spinner-border-sm" role="status"></div>
+                            <span class="ms-2">Buscando devoluciones...</span>
+                        </td>
+                    </tr>
+                `);
 
             $('#btnVerDetalle').prop('disabled', true);
 
@@ -902,67 +1221,67 @@
             clearTimeout(debounceTimer);
             // Esperar 300ms antes de hacer la llamada (evita llamadas excesivas)
             debounceTimer = setTimeout(() => {
-                    // Construir URL para el filtro anidado (siempre usar este endpoint)
-                    let url = '/api/Devoluciones/filtrar-anidado?';
-                    const params = [];
+                // Construir URL para el filtro anidado (siempre usar este endpoint)
+                let url = '/api/Devoluciones/filtrar-anidado?';
+                const params = [];
 
-                    if (busqueda) {
-                        params.push(`buscar=${encodeURIComponent(busqueda)}`);
+                if (busqueda) {
+                    params.push(`buscar=${encodeURIComponent(busqueda)}`);
+                }
+
+                if (fecha) {
+
+                    const hoy = new Date().toISOString().split('T')[0];
+                    if (fecha > hoy) {
+                        $("#mensajeError").text("No se pueden buscar facturas de fechas futuras.");
+                        let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                        modalError.show();
+                        $("#inputFecha").val(""); // Limpiar fecha inválida
                     }
 
-                    if (fecha) {
+                    params.push(`fecha=${encodeURIComponent(fecha)}`);
 
-                            const hoy = new Date().toISOString().split('T')[0];
-                            if (fecha > hoy) {
-                                $("#mensajeError").text("No se pueden buscar facturas de fechas futuras.");
-                                let modalError = new bootstrap.Modal(document.getElementById('modalError'));
-                                modalError.show();
-                                $("#inputFecha").val(""); // Limpiar fecha inválida
-                            }
+                }
 
-                        params.push(`fecha=${encodeURIComponent(fecha)}`);
+                // Si no hay filtros, el endpoint devolverá todas las devoluciones
+                url += params.length > 0 ? params.join('&') : 'buscar=&fecha=';
 
-                    }
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    success: function (devolucionesFiltradas) {
+                        todasDevoluciones = devolucionesFiltradas; // Mantener referencia global
 
-                    // Si no hay filtros, el endpoint devolverá todas las devoluciones
-                    url += params.length > 0 ? params.join('&') : 'buscar=&fecha=';
+                        // Verificar si hay resultados
+                        if (devolucionesFiltradas.length === 0) {
+                            const tbody = $('#tablaDevoluciones tbody');
+                            tbody.html(`
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-4">
+                                        ${params.length > 0
+                                    ? 'No se encontraron devoluciones con ese criterio de búsqueda'
+                                    : 'No hay devoluciones registradas'}
+                                    </td>
+                                </tr>
+                            `);
+                        } else {
+                            actualizarTabla(devolucionesFiltradas);
+                        }
+                    },
+                    error: function (err) {
+                        console.error('Error en búsqueda:', err);
 
-                    $.ajax({
-                        url: url,
-                        method: 'GET',
-                        success: function (devolucionesFiltradas) {
-                            todasDevoluciones = devolucionesFiltradas; // Mantener referencia global
-
-                            // Verificar si hay resultados
-                            if (devolucionesFiltradas.length === 0) {
-                                const tbody = $('#tablaDevoluciones tbody');
-                                let mensaje = "No se encontraron empleados con ese criterio de búsqueda";
-                                tbody.html(`
+                        const tbody = $('#tablaDevoluciones tbody');
+                        tbody.html(`
                             <tr>
                                 <td colspan="6" class="text-center text-muted py-4">
-                                    <i class="bi bi-search display-4 d-block mb-2"></i>
-                                    ${mensaje}
+                                    <i class="bi bi-exclamation-triangle fs-1 d-block mb-2"></i>
+                                    No se pudieron cargar los resultados
                                 </td>
                             </tr>
                         `);
-                            } else {
-                                actualizarTabla(devolucionesFiltradas);
-                            }
-                        },
-                        error: function (err) {
-                            console.error('Error en búsqueda:', err);
-
-                            const tbody = $('#tablaDevoluciones tbody');
-                            tbody.html(`
-                        <tr>
-                            <td colspan="6" class="text-center text-muted py-4">
-                                <i class="bi bi-exclamation-triangle fs-1 d-block mb-2"></i>
-                                No se pudieron cargar los resultados
-                            </td>
-                        </tr>
-                    `);
-                        } 
-                    });
+                    }
+                });
             }, 300);  // Debounce de 300ms
         }
 
@@ -1002,12 +1321,12 @@
                     tipo === 'info' ? 'bi-info-circle' : 'bi-exclamation-circle';
 
             const alerta = $(`
-                        <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
-                            <i class="bi ${icon} me-2"></i>
-                            ${mensaje}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    `);
+                            <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                                <i class="bi ${icon} me-2"></i>
+                                ${mensaje}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        `);
 
             $('#alertContainer').html(alerta);
 
@@ -1038,4 +1357,4 @@
     </script>
 
 </body>
-</html >
+</html>

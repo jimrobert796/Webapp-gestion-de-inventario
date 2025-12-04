@@ -7,12 +7,289 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
     <style>
-        .table-scroll {
-            max-height: 300px;
-            overflow-y: auto;
+        /* ========== NUEVOS ESTILOS - SISTEMA CONSISTENTE ========== */
+        :root {
+            --ferreteria-primary: #2C3E50;
+            --ferreteria-accent: #E67E22;
+            --ferreteria-light: #ECF0F1;
         }
 
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        h1, h2, h3, h4, h5, h6,
+        .card-header,
+        .modal-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        /* ========== BOTONES MEJORADOS ========== */
+        .btn {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            padding: 10px 20px;
+        }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            }
+
+            .btn:active {
+                transform: translateY(0);
+                box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            }
+
+        /* Botón Info - Para ver detalles */
+        .btn-info {
+            background: linear-gradient(135deg, #3498DB, #2980B9);
+            border: none;
+            font-weight: 600;
+            color: white;
+        }
+
+            .btn-info:hover {
+                background: linear-gradient(135deg, #2980B9, #3498DB);
+                color: white;
+                box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+            }
+
+        /* Botón Danger - Anular */
+        .btn-danger {
+            background: linear-gradient(135deg, #E74C3C, #C0392B);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-danger:hover {
+                background: linear-gradient(135deg, #C0392B, #E74C3C);
+                box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+            }
+
+        /* Botón Outline - Buscar/Limpiar */
+        .btn-outline-secondary {
+            border: 2px solid #6c757d;
+            color: #6c757d;
+            background: transparent;
+            font-weight: 500;
+        }
+
+            .btn-outline-secondary:hover {
+                background: #6c757d;
+                color: white;
+                border-color: #6c757d;
+            }
+
+        /* ========== EFECTO RIPPLE EN BOTONES ========== */
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+
+        /* ========== ICONOS DENTRO DE BOTONES ========== */
+        .btn i {
+            margin-right: 5px;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover i {
+            transform: scale(1.1);
+        }
+
+        /* ========== TARJETAS Y MODALES MEJORADOS ========== */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+            .card:hover {
+                box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+            }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 15px 20px;
+            border: none;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
+        }
+
+            /* Header especial para modal de información */
+            .modal-header.bg-info {
+                background: linear-gradient(135deg, #3498DB, #2980B9) !important;
+                color: white !important;
+            }
+
+            /* Header especial para modal de error */
+            .modal-header.bg-danger {
+                background: linear-gradient(135deg, #E74C3C, #C0392B) !important;
+                color: white !important;
+            }
+
+            /* Header especial para modal de advertencia */
+            .modal-header.bg-warning {
+                background: linear-gradient(135deg, #E67E22, #D35400) !important;
+                color: white !important;
+            }
+
+            /* Header especial para modal de éxito */
+            .modal-header.bg-success {
+                background: linear-gradient(135deg, #27AE60, #229954) !important;
+                color: white !important;
+            }
+
+        /* ========== TABLAS MEJORADAS ========== */
+        .table-scroll {
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+            .table-scroll thead th {
+                position: sticky;
+                top: 0;
+                background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
+                color: white;
+                z-index: 100;
+                border-bottom: 2px solid #dee2e6;
+                padding: 12px 8px;
+                font-family: 'Montserrat', sans-serif;
+                font-weight: 600;
+            }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(44, 62, 80, 0.05);
+            transform: scale(1.01);
+            transition: all 0.2s ease;
+        }
+
+        .table-primary {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.1), rgba(52, 73, 94, 0.05)) !important;
+            border-left: 4px solid var(--ferreteria-primary);
+        }
+
+        /* ========== FORMULARIOS MEJORADOS ========== */
+        .form-control, .form-select {
+            border-radius: 6px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: var(--ferreteria-primary);
+                box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.25);
+            }
+
+        .form-label {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            color: var(--ferreteria-primary);
+            margin-bottom: 8px;
+        }
+
+        .input-group-text {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E);
+            border: none;
+            color: white;
+            font-weight: 500;
+        }
+
+        /* ========== BADGES MEJORADOS ========== */
+        .badge {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            border-radius: 6px;
+            padding: 6px 10px;
+        }
+
+            .badge.bg-primary {
+                background: linear-gradient(135deg, #3498DB, #2980B9) !important;
+            }
+
+            .badge.bg-success {
+                background: linear-gradient(135deg, #27AE60, #229954) !important;
+            }
+
+            .badge.bg-danger {
+                background: linear-gradient(135deg, #E74C3C, #C0392B) !important;
+            }
+
+            .badge.bg-warning {
+                background: linear-gradient(135deg, #E67E22, #D35400) !important;
+            }
+
+            .badge.bg-secondary {
+                background: linear-gradient(135deg, #6c757d, #5a6268) !important;
+            }
+
+        /* ========== ALERTS MEJORADOS ========== */
+        .alert {
+            border-radius: 8px;
+            border: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, #3498DB, #2980B9);
+            color: white;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #E74C3C, #C0392B);
+            color: white;
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, #E67E22, #D35400);
+            color: white;
+        }
+
+        /* ========== ESTILOS ESPECÍFICOS PARA ESTA VISTA ========== */
         .estado-anulado {
             background-color: #f8d7da !important;
             text-decoration: line-through;
@@ -25,16 +302,22 @@
         .table-hover tbody tr:hover {
             cursor: pointer;
         }
+
+        /* ========== TARJETA DE ANULACIÓN MEJORADA ========== */
+        #seccionAnulacion .card-header {
+            background: linear-gradient(135deg, #E74C3C, #C0392B) !important;
+            color: white;
+        }
     </style>
 </head>
 <body>
     <!-- Contenedor principal -->
     <div class="container mt-4">
-        <!-- Tarjeta principal -->
+        <!-- Tarjeta principal mejorada -->
         <div class="card shadow">
-            <!-- Encabezado de la tarjeta -->
+            <!-- Encabezado de la tarjeta con icono -->
             <div class="card-header bg-primary text-white">
-                <h2 class="mb-0">Registro de Compras</h2>
+                <h2 class="mb-0"><i class="bi bi-receipt me-2"></i>Registro de Compras</h2>
             </div>
 
             <!-- Cuerpo de la tarjeta -->
@@ -44,10 +327,10 @@
                     <!-- Botones de acción al lado izquierdo -->
                     <div class="col-md-6">
                         <button id="btnVerDetalles" class="btn btn-info btn-action" disabled>
-                            <i class="bi bi-eye"></i> Ver Detalles
+                            <i class="bi bi-eye me-1"></i> Ver Detalles
                         </button>
                         <button id="btnAnular" class="btn btn-danger" disabled>
-                            <i class="bi bi-x-circle"></i> Anular Compra
+                            <i class="bi bi-x-circle me-1"></i> Anular Compra
                         </button>
                     </div>
 
@@ -68,7 +351,7 @@
                     </div>
                 </div>
 
-                <!-- Filtros compactos -->
+                <!-- Filtros compactos mejorados -->
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label class="form-label small">Fecha</label>
@@ -90,7 +373,7 @@
                     </div>
                 </div>
 
-                <!-- Tabla de compras con scroll -->
+                <!-- Tabla de compras con scroll mejorado -->
                 <div class="table-responsive table-scroll">
                     <table class="table table-striped table-hover" id="tablaCompras">
                         <thead class="table-dark">
@@ -119,13 +402,13 @@
         </div>
     </div>
 
-    <!-- ========== MODAL DETALLES COMPRA ========== -->
+    <!-- ========== MODAL DETALLES COMPRA MEJORADO ========== -->
     <div class="modal fade" id="modalDetalles" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-info text-white">
                     <h5 class="modal-title">
-                        <i class="bi bi-receipt"></i> Detalles de Compra
+                        <i class="bi bi-receipt me-2"></i> Detalles de Compra
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
@@ -148,11 +431,11 @@
                         </div>
                     </div>
 
-                    <!-- 🔥 NUEVA SECCIÓN: Información de Anulación -->
+                    <!-- 🔥 NUEVA SECCIÓN: Información de Anulación mejorada -->
                     <div id="seccionAnulacion" class="card border-danger mt-4" style="display: none;">
                         <div class="card-header bg-danger text-white">
                             <h6 class="mb-0">
-                                <i class="bi bi-exclamation-triangle"></i> Información de Anulación
+                                <i class="bi bi-exclamation-triangle me-2"></i> Información de Anulación
                             </h6>
                         </div>
                         <div class="card-body">
@@ -173,12 +456,13 @@
                         </div>
                     </div>
 
-
                     <!-- Productos -->
-                    <h6 class="mt-3 border-bottom pb-2">Productos Comprados:</h6>
+                    <h6 class="mt-3 border-bottom pb-2">
+                        <i class="bi bi-box-seam me-2"></i>Productos Comprados:
+                    </h6>
                     <div class="table-responsive">
                         <table class="table table-sm table-bordered" id="tablaDetallesModal">
-                            <thead class="table-light">
+                            <thead class="table-dark">
                                 <tr>
                                     <th>Producto</th>
                                     <th width="15%" class="text-center">Cantidad</th>
@@ -208,26 +492,28 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i> Cerrar
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ========== MODAL ANULAR COMPRA ========== -->
+    <!-- ========== MODAL ANULAR COMPRA MEJORADO ========== -->
     <div class="modal fade" id="modalAnular" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header bg-warning text-dark">
+                <div class="modal-header bg-warning text-white">
                     <h5 class="modal-title">
-                        <i class="bi bi-exclamation-triangle"></i> Anular Compra
+                        <i class="bi bi-exclamation-triangle me-2"></i> Anular Compra
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <p>¿Está seguro que desea anular la compra <strong id="compraAnularNumero" class="text-danger"></strong>?</p>
                     <div class="alert alert-danger">
-                        <i class="bi bi-info-circle"></i>
+                        <i class="bi bi-info-circle me-2"></i>
                         <strong>Advertencia:</strong> Esta acción revertirá el stock en inventario y no se podrá deshacer.
                     </div>
                     <div class="mb-3">
@@ -236,52 +522,60 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i> Cancelar
+                    </button>
                     <button type="button" class="btn btn-danger" id="btnConfirmarAnular">
-                        <i class="bi bi-x-circle"></i> Anular Compra
+                        <i class="bi bi-x-circle me-1"></i> Anular Compra
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ========== MODAL DE ÉXITO ========== -->
+    <!-- ========== MODAL DE ÉXITO MEJORADO ========== -->
     <div class="modal fade" id="modalExito" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">Éxito</h5>
+                    <h5 class="modal-title">
+                        <i class="bi bi-check-circle me-2"></i>Éxito
+                    </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <p class="mb-0" id="mensajeExito"></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Aceptar</button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">
+                        <i class="bi bi-check-circle me-1"></i> Aceptar
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ========== MODAL DE ERROR ========== -->
+    <!-- ========== MODAL DE ERROR MEJORADO ========== -->
     <div class="modal fade" id="modalError" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Error</h5>
+                    <h5 class="modal-title">
+                        <i class="bi bi-exclamation-triangle me-2"></i>Error
+                    </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <p class="mb-0" id="mensajeError"></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i> Cerrar
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- ========== JAVASCRIPT ========== -->
     <script>
         (function () {
             // ========== VARIABLES GLOBALES ==========
@@ -294,13 +588,13 @@
 
             function cargarCompras() {
                 $('#tablaCompras tbody').html(`
-                            <tr>
-                                <td colspan="7" class="text-center text-muted py-4">
-                                    <div class="spinner-border spinner-border-sm" role="status"></div>
-                                    <span class="ms-2">Cargando compras...</span>
-                                </td>
-                            </tr>
-                        `);
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-4">
+                                        <div class="spinner-border spinner-border-sm" role="status"></div>
+                                        <span class="ms-2">Cargando compras...</span>
+                                    </td>
+                                </tr>
+                            `);
 
                 $.ajax({
                     url: '/api/Compras/buscar-anidado',
@@ -341,13 +635,13 @@
                 if (listaCompras.length === 0) {
                     let mensaje = "No se encontraron compras con ese criterio de búsqueda";
                     tbody.html(`
-                                <tr>
-                                    <td colspan="7" class="text-center text-muted py-4">
-                                    <i class="bi bi-search display-4 d-block mb-2"></i>
-                                         ${mensaje}
-                                    </td>
-                                </tr>
-                            `);
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted py-4">
+                                        <i class="bi bi-search display-4 d-block mb-2"></i>
+                                             ${mensaje}
+                                        </td>
+                                    </tr>
+                                `);
                     return;
                 }
 
@@ -359,16 +653,16 @@
                         '<span class="badge bg-success badge-estado">Activo</span>';
 
                     tbody.append(`
-                                <tr class="${claseFila}" data-index="${index}">
-                                    <td class="fw-bold">${compra.numeroCompra}</td>
-                                    <td><small>${formatearFecha(compra.fechaCompra)}<br>${compra.horaCompra}</small></td>
-                                    <td>${compra.nombreProveedor || 'N/A'}</td>
-                                    <td class="text-center">${compra.cantidad || 0}</td>
-                                    <td class="text-end fw-bold">$${parseFloat(compra.total).toFixed(2)}</td>
-                                    <td><span class="badge bg-secondary">${compra.metodoPago}</span></td>
-                                    <td>${badgeEstado}</td>
-                                </tr>
-                            `);
+                                    <tr class="${claseFila}" data-index="${index}">
+                                        <td class="fw-bold">${compra.numeroCompra}</td>
+                                        <td><small>${formatearFecha(compra.fechaCompra)}<br>${compra.horaCompra}</small></td>
+                                        <td>${compra.nombreProveedor || 'N/A'}</td>
+                                        <td class="text-center">${compra.cantidad || 0}</td>
+                                        <td class="text-end fw-bold">$${parseFloat(compra.total).toFixed(2)}</td>
+                                        <td><span class="badge bg-secondary">${compra.metodoPago}</span></td>
+                                        <td>${badgeEstado}</td>
+                                    </tr>
+                                `);
                 });
 
                 // Agregar evento click a cada fila
@@ -387,7 +681,7 @@
                     const esAnulado = compraSeleccionada.estado.trim() === 'Anulado';
                     $("#btnVerDetalles").prop("disabled", false);
                     $("#btnAnular").prop("disabled", esAnulado);
-                    
+
                 });
             }
 
@@ -442,25 +736,25 @@
 
                         detalles.forEach(detalle => {
                             tbody.append(`
-                                        <tr>
-                                            <td>${detalle.productoNombre || 'Producto no encontrado'}</td>
-                                            <td class="text-center">${detalle.cantidad}</td>
-                                            <td class="text-end">$${parseFloat(detalle.costo).toFixed(2)}</td>
-                                            <td class="text-end">$${parseFloat(detalle.precio).toFixed(2)}</td>
-                                            <td class="text-end">$${parseFloat(detalle.costoAnterior).toFixed(2)}</td>
-                                            <td class="text-end">$${parseFloat(detalle.precioAnterior).toFixed(2)}</td>
-                                            <td class="text-end fw-bold">$${parseFloat(detalle.subtotal).toFixed(2)}</td>
-                                        </tr>
-                                    `);
+                                            <tr>
+                                                <td>${detalle.productoNombre || 'Producto no encontrado'}</td>
+                                                <td class="text-center">${detalle.cantidad}</td>
+                                                <td class="text-end">$${parseFloat(detalle.costo).toFixed(2)}</td>
+                                                <td class="text-end">$${parseFloat(detalle.precio).toFixed(2)}</td>
+                                                <td class="text-end">$${parseFloat(detalle.costoAnterior).toFixed(2)}</td>
+                                                <td class="text-end">$${parseFloat(detalle.precioAnterior).toFixed(2)}</td>
+                                                <td class="text-end fw-bold">$${parseFloat(detalle.subtotal).toFixed(2)}</td>
+                                            </tr>
+                                        `);
                         });
                     },
                     error: function (err) {
                         console.error('Error cargando detalles:', err);
                         $('#tablaDetallesModal tbody').html(`
-                                    <tr>
-                                        <td colspan="4" class="text-center text-muted">Error al cargar los detalles</td>
-                                    </tr>
-                                `);
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted">Error al cargar los detalles</td>
+                                        </tr>
+                                    `);
                     }
                 });
             }
@@ -531,15 +825,15 @@
 
                 // ⬇️⬇️⬇️ AQUÍ VA EL LOADING ⬇️⬇️⬇️
                 $('#tablaCompras tbody').html(`
-                    <tr>
-                        <td colspan="7" class="text-center text-muted py-4">
-                            <div class="spinner-border spinner-border-sm" role="status"></div>
-                            <span class="ms-2">Buscando compras...</span>
-                        </td>
-                    </tr>
-                `);
-                 clearTimeout(debounceTimer);
- // Esperar 300ms antes de hacer la llamada (evita llamadas excesivas)
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                <div class="spinner-border spinner-border-sm" role="status"></div>
+                                <span class="ms-2">Buscando compras...</span>
+                            </td>
+                        </tr>
+                    `);
+                clearTimeout(debounceTimer);
+                // Esperar 300ms antes de hacer la llamada (evita llamadas excesivas)
                 debounceTimer = setTimeout(() => {
                     // 🔥 CONSTRUIR URL CON FILTROS ANIDADOS
                     let url = '/api/Compras/buscar-anidado?';
@@ -594,10 +888,10 @@
                         cargarCompras();
                     }
 
-                },300);  // Debounce de 300ms
-               
+                }, 300);  // Debounce de 300ms
+
             }
-            
+
             function actualizarContadores() {
                 const total = compras.length;
                 const activas = compras.filter(c => c.estado === 'activo').length;
@@ -625,7 +919,7 @@
                 $('#badgeAnuladas').text('Anuladas: ' + anuladas);
                 $('#badgeMonto').text('Monto: $' + montoTotal.toFixed(2));
             }
-            
+
             function formatearFecha(fecha) {
                 return new Date(fecha + 'T00:00:00').toLocaleDateString('es-SV');
             }

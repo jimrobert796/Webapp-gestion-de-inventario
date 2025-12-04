@@ -1,25 +1,334 @@
 ﻿<!DOCTYPE html>
-<html> 
+<html>
 <head>
     <meta charset="utf-8" />
     <title>Cajero</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- === NUEVO: AGREGAR TUS FUENTES === -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
     <style>
-        /* Layout para ocupar toda la pantalla sin scroll */
+        /* === NUEVO: VARIABLES DE COLOR DE TU PALETA === */
+        :root {
+            --ferreteria-primary: #2C3E50;
+            --ferreteria-accent: #E67E22;
+            --ferreteria-light: #ECF0F1;
+        }
+
+        /* === NUEVO: TIPOGRAFÍA COMO EN TUS OTRAS VISTAS === */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        h1, h2, h3, h4, h5, h6,
+        .card-header,
+        .modal-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        /* === NUEVO: ESTILOS DE BOTONES CON GRADIENTES === */
+        .btn {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            padding: 6px 12px;
+        }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            }
+
+            .btn:active {
+                transform: translateY(0);
+                box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            }
+
+        /* Botón Primario - Agregar */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-primary:hover {
+                background: linear-gradient(135deg, #34495E, var(--ferreteria-primary));
+                box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
+            }
+
+        /* Botón Success - Pagar */
+        .btn-success {
+            background: linear-gradient(135deg, #27AE60, #229954);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-success:hover {
+                background: linear-gradient(135deg, #229954, #27AE60);
+                box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+            }
+
+        /* Botón Secondary - Limpiar */
+        .btn-secondary {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-secondary:hover {
+                background: linear-gradient(135deg, #7f8c8d, #95a5a6);
+                box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+            }
+
+        /* Botón Warning - Editar */
+        .btn-warning {
+            background: linear-gradient(135deg, #E67E22, #D35400);
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-warning:hover {
+                background: linear-gradient(135deg, #D35400, #E67E22);
+                color: white;
+                box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
+            }
+
+        /* Botón Danger - Eliminar */
+        .btn-danger {
+            background: linear-gradient(135deg, #E74C3C, #C0392B);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-danger:hover {
+                background: linear-gradient(135deg, #C0392B, #E74C3C);
+                box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+            }
+
+        /* Botón Outline - Para acciones en tabla */
+        .btn-outline-warning, .btn-outline-danger {
+            border-width: 2px;
+            border-radius: 6px;
+        }
+
+            .btn-outline-warning:hover {
+                background: linear-gradient(135deg, #E67E22, #D35400);
+                color: white;
+            }
+
+            .btn-outline-danger:hover {
+                background: linear-gradient(135deg, #E74C3C, #C0392B);
+                color: white;
+            }
+
+        /* === NUEVO: Efecto de ripple en los botones === */
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+
+        /* Iconos dentro de botones */
+        .btn i {
+            margin-right: 4px;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover i {
+            transform: scale(1.1);
+        }
+
+        /* === NUEVO: MEJORAR TARJETAS === */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+            .card:hover {
+                box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+            }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
+            border-radius: 10px 10px 0 0 !important;
+            padding: 8px 12px;
+            flex-shrink: 0;
+        }
+
+
+        /* === NUEVO: MEJORAR MODALES === */
+        .modal-header {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
+        }
+
+        #modalEditarProducto .modal-header {
+            background: linear-gradient(135deg, #E67E22, #D35400) !important;
+        }
+
+        #modalEliminarProducto .modal-header {
+            background: linear-gradient(135deg, #E74C3C, #C0392B) !important;
+        }
+
+        #modalConfirmacionCompra .modal-header {
+            background: linear-gradient(135deg, #27AE60, #229954) !important;
+        }
+
+        #modalError .modal-header .modal-title {
+            color: #ffffff !important;
+        }
+
+        #modalConfirmarLimpiar .modal-header {
+            background: linear-gradient(135deg, #E67E22, #D35400) !important;
+        }
+
+        #modalExito .modal-header {
+            background: linear-gradient(135deg, #34495E) !important;
+            color: #ffffff !important;
+        }
+
+
+
+        /* === NUEVO: MEJORAR FORMULARIOS === */
+        .form-control, .form-select {
+            border-radius: 6px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: var(--ferreteria-primary);
+                box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.25);
+            }
+
+        .form-label {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 4px;
+            font-size: 0.75rem;
+        }
+
+        /* === NUEVO: MEJORAR TABLAS === */
+        .table-container {
+            max-height: 180px;
+            overflow-y: auto;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+            .table-container thead th {
+                position: sticky;
+                top: 0;
+                background: linear-gradient(135deg, var(--ferreteria-primary), #34495E);
+                color: white;
+                z-index: 100;
+                border-bottom: 2px solid #dee2e6;
+                padding: 6px 8px;
+                font-family: 'Montserrat', sans-serif;
+                font-weight: 600;
+                font-size: 0.7rem;
+            }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(44, 62, 80, 0.05);
+        }
+
+        /* === NUEVO: MEJORAR INFO BOXES === */
+        .modal-producto-info {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.05), rgba(52, 73, 94, 0.03));
+            border-left: 4px solid var(--ferreteria-primary);
+        }
+
+            .modal-producto-info .producto-nombre {
+                font-family: 'Montserrat', sans-serif;
+                font-weight: 600;
+                color: var(--ferreteria-primary);
+            }
+
+        /* === NUEVO: MEJORAR ALERTS === */
+        .alert {
+            border-radius: 6px;
+            border: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(41, 128, 185, 0.05));
+            border-left: 4px solid #3498db;
+        }
+
+        /* === NUEVO: MEJORAR TOTALES BOX === */
+        .totales-box {
+            padding: 0.5rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.05), rgba(52, 73, 94, 0.03));
+            border: 2px solid #e9ecef;
+        }
+
+            .totales-box span {
+                color: #e0e0e0;
+            }
+
+            .totales-box h6,
+            .totales-box div {
+                color: #e0e0e0;
+            }
+
+            .totales-box .text-white {
+                color: #27ae60 !important;
+            }
+
+        /* === ESTILOS EXISTENTES QUE MANTENGO (con mejoras) === */
         html, body {
             height: 100%;
             margin: 0;
             overflow: hidden;
-        }
-
-        totales-box span {
-            color: #e0e0e0; /* gris claro legible */
-        }
-
-        .totales-box h6,
-        .totales-box div {
-            color: #e0e0e0;
         }
 
         .container-fluid {
@@ -30,11 +339,12 @@
 
         .header-info {
             flex-shrink: 0;
-            background: var(--bs-primary-bg-subtle);
-            padding: 0.2rem 0.4rem;
-            border-radius: 0.2rem;
-            margin-bottom: 0.3rem;
-            font-size: 0.7rem;
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.1), rgba(52, 73, 94, 0.05));
+            padding: 0.3rem 0.5rem;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            border: 1px solid rgba(44, 62, 80, 0.1);
         }
 
         .contenido-principal {
@@ -46,88 +356,30 @@
             height: 100%;
         }
 
-        .card {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 0 8px rgba(0,0,0,0.1);
-        }
-
-        .card-header {
-            flex-shrink: 0;
-            padding: 0.2rem 0.4rem;
-        }
-
-            .card-header h6 {
-                font-size: 0.75rem;
-            }
-
         .card-body {
             flex: 1;
-            padding: 0.4rem !important;
+            padding: 0.5rem !important;
             overflow-y: auto;
-        }
-
-        .table-container {
-            max-height: 180px;
-            overflow-y: auto;
-        }
-
-        .form-label {
-            margin-bottom: 0.05rem;
-            font-size: 0.7rem;
-            font-weight: 600;
         }
 
         .mb-compact {
-            margin-bottom: 0.2rem !important;
+            margin-bottom: 0.3rem !important;
         }
-
-        .totales-box {
-            padding: 0.4rem;
-            border-radius: 0.2rem;
-            margin-top: 0.2rem;
-            font-size: 0.7rem;
-        }
-
-            .totales-box .row {
-                margin-bottom: 0.05rem;
-            }
-
-            .totales-box h6 {
-                font-size: 0.85rem;
-            }
 
         hr.compact {
-            margin: 0.2rem 0;
+            margin: 0.3rem 0;
+            opacity: 0.3;
         }
 
         .table-sm {
-            font-size: 0.65rem;
+            font-size: 0.7rem;
         }
 
         .btn-sm {
-            padding: 0.15rem 0.3rem;
-            font-size: 0.65rem;
+            padding: 0.2rem 0.4rem;
+            font-size: 0.7rem;
+            border-radius: 6px;
         }
-
-        /* Estilos para los modales */
-        .modal-producto-info {
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-            .modal-producto-info .producto-nombre {
-                font-size: 1.1rem;
-                font-weight: 600;
-                color: var(--bs-primary);
-            }
-
-            .modal-producto-info .producto-detalle {
-                font-size: 0.9rem;
-                color: var(--bs-secondary);
-            }
 
         /* Responsive */
         @media (max-width: 768px) {
@@ -143,25 +395,25 @@
 </head>
 <body>
     <div class="container-fluid">
-        <!-- Header Info Compacto -->
+        <!-- === NUEVO: HEADER INFO MEJORADO === -->
         <div class="header-info">
             <div class="row text-center">
-                <div class="col-3"><strong>Cajero:</strong> <span id="cajeroNombre">Cargando...</span></div>
-                <div class="col-3"><strong>Factura:</strong> <span id="facturaNumero">--</span></div>
-                <div class="col-3"><strong>Fecha:</strong> <span id="fechaActual">--</span></div>
-                <div class="col-3"><strong>Hora:</strong> <span id="horaActual">--</span></div>
+                <div class="col-3"><strong>Cajero:</strong> <span id="cajeroNombre" class="fw-semibold">Cargando...</span></div>
+                <div class="col-3"><strong>Factura:</strong> <span id="facturaNumero" class="fw-bold text-primary">--</span></div>
+                <div class="col-3"><strong>Fecha:</strong> <span id="fechaActual" class="fw-semibold">--</span></div>
+                <div class="col-3"><strong>Hora:</strong> <span id="horaActual" class="fw-semibold">--</span></div>
             </div>
         </div>
 
         <!-- Contenido Principal -->
         <div class="contenido-principal">
-            <div class="row row-contenido g-1">
+            <div class="row row-contenido g-2">
                 <!-- Panel Izquierdo: Formulario -->
-
                 <div class="col-md-5">
+                    <!-- === NUEVO: TARJETA MEJORADA === -->
                     <div class="card">
                         <div class="card-header bg-primary text-white">
-                            <h6 class="mb-0"><i class="bi bi-cart-plus"></i> Nueva Venta</h6>
+                            <h6 class="mb-0"><i class="bi bi-cart-plus me-1"></i> Nueva Venta</h6>
                         </div>
                         <div class="card-body">
                             <form id="formAgregarProducto">
@@ -223,14 +475,11 @@
                                     </div>
                                 </div>
 
-                                <!-- Botón Agregar -->
-                                <button id="btnAgregar" class="btn btn-primary btn-sm w-100 mb-1">
+                                <!-- === NUEVO: BOTÓN MEJORADO === -->
+                                <button id="btnAgregar" class="btn btn-primary btn-sm w-100 mb-2">
                                     <i class="bi bi-plus-circle"></i> Agregar
                                 </button>
                             </form>
-
-
-
 
                             <hr class="compact">
 
@@ -263,11 +512,13 @@
 
                 <!-- Panel Derecho: Tabla -->
                 <div class="col-md-7">
+                    <!-- === NUEVO: TARJETA MEJORADA === -->
                     <div class="card">
                         <div class="card-header bg-success text-white">
-                            <h6 class="mb-0"><i class="bi bi-receipt"></i> Detalle de la Venta</h6>
+                            <h6 class="mb-0"><i class="bi bi-receipt me-1"></i> Detalle de la Venta</h6>
                         </div>
                         <div class="card-body">
+                            <!-- === NUEVO: TABLA MEJORADA CON SCROLL === -->
                             <div class="table-container">
                                 <table class="table table-sm table-striped table-hover mb-0" id="tablaDetalles">
                                     <thead class="table-dark sticky-top">
@@ -286,14 +537,12 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <!-- Totales -->
+                            <!-- === NUEVO: TOTALES BOX MEJORADO === -->
                             <div class="totales-box">
-                                
-                                
                                 <hr class="my-1">
                                 <div class="row">
                                     <div class="col-7 text-end"><h6 class="mb-0">TOTAL:</h6></div>
-                                    <div class="col-5 text-end"><h6 class="mb-0 text-white">$<span id="totalFactura">0.00</span></h6></div>
+                                    <div class="col-5 text-end"><h6 class="mb-0" style="color: #27ae60 !important;">$<span id="totalFactura">0.00</span></h6></div>
                                 </div>
                             </div>
                         </div>
@@ -303,7 +552,7 @@
         </div>
     </div>
 
-    <!-- Modal de Edición de Producto -->
+    <!-- === NUEVO: MODAL DE EDICIÓN MEJORADO === -->
     <div class="modal fade" id="modalEditarProducto" tabindex="-1" aria-labelledby="modalEditarProductoLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -362,7 +611,7 @@
         </div>
     </div>
 
-    <!-- Modal de Eliminación de Producto -->
+    <!-- === NUEVO: MODAL DE ELIMINACIÓN MEJORADO === -->
     <div class="modal fade" id="modalEliminarProducto" tabindex="-1" aria-labelledby="modalEliminarProductoLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -407,7 +656,7 @@
         </div>
     </div>
 
-    <!-- Modal de Confirmación de Compra -->
+    <!-- === NUEVO: MODAL DE CONFIRMACIÓN DE COMPRA MEJORADO === -->
     <div class="modal fade" id="modalConfirmacionCompra" tabindex="-1" aria-labelledby="modalConfirmacionCompraLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -425,7 +674,7 @@
                             <p><strong>Factura:</strong> <span id="confFacturaNumero">--</span></p>
                             <p><strong>Cliente:</strong> <span id="confCliente">--</span></p>
                             <p><strong>Tipo de Pago:</strong> <span id="confTipoPago">--</span></p>
-                            
+
                         </div>
                         <div class="col-md-6">
                             <br /> <!--Salto de linea solo estetico-->
@@ -467,7 +716,8 @@
             </div>
         </div>
     </div>
-    <!-- Modal de Error -->
+
+    <!-- === NUEVO: MODAL DE ERROR MEJORADO === -->
     <div class="modal fade" id="modalError" tabindex="-1" aria-labelledby="modalErrorLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -479,7 +729,7 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p id="errorMensaje">Ha ocurrido un error.</p>
+                    <p id="errorMensaje" class="mb-0">Ha ocurrido un error.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -488,7 +738,27 @@
         </div>
     </div>
 
-    <!-- Modal de Confirmación de Limpieza -->
+    <div class="modal fade" id="modalExito" tabindex="-1" aria-labelledby="modalExitoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="modalExitoLabel">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        Éxito
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="exitoMensaje" class="mb-0">Operación completada con éxito.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- === NUEVO: MODAL DE CONFIRMACIÓN DE LIMPIEZA MEJORADO === -->
     <div class="modal fade" id="modalConfirmarLimpiar" tabindex="-1" aria-labelledby="modalConfirmarLimpiarLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -520,9 +790,7 @@
         </div>
     </div>
 
-
-
-    <!--<script src="/js/cajero.js"></script>--->
+    <!-- NOTA: EL JAVASCRIPT SE MANTIENE IGUAL - SOLO CAMBIOS VISUALES -->
     <script>
         (function () {
 
@@ -565,7 +833,7 @@
                 modalConfirmacionCompra = new bootstrap.Modal(document.getElementById('modalConfirmacionCompra'));
                 modalError = new bootstrap.Modal(document.getElementById('modalError'));
                 modalConfirmarLimpiar = new bootstrap.Modal(document.getElementById('modalConfirmarLimpiar'));
-
+                modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
             }
 
             function configurarEventListeners() {
@@ -731,12 +999,12 @@
                 } else {
                     clientes.forEach(cliente => {
                         select.append(`
-                            <option value="${cliente.id}" 
-                                    data-email="${cliente.email}" 
-                                    data-direccion="${cliente.direccion || ''}"> <!-- ← AGREGAR AQUÍ -->
-                                ${cliente.nombre}
-                            </option>
-                        `);
+                                                <option value="${cliente.id}"
+                                                        data-email="${cliente.email}"
+                                                        data-direccion="${cliente.direccion || ''}"> <!-- ← AGREGAR AQUÍ -->
+                                                    ${cliente.nombre}
+                                                </option>
+                                            `);
                     });
                 }
             }
@@ -888,23 +1156,23 @@
                         const subtotalConIVA = detalle.subtotal * 1.13;
 
                         tbody.append(`
-                        <tr>
-                            <td>${detalle.productoNombre}</td>
-                            <td class="text-end">$${precioConIVA.toFixed(2)}</td>
-                            <td class="text-center">${detalle.cantidad}</td>
-                            <td class="text-end">$${subtotalConIVA.toFixed(2)}</td>
-                            <td class="text-center">
-                                <div class="btn-group" role="group">
-                                    <button class="btn btn-outline-warning btn-sm" onclick="abrirModalEditar(${index})">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
-                                    <button class="btn btn-outline-danger btn-sm" onclick="abrirModalEliminar(${index})">
-                                        <i class="bi bi-trash3"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    `);
+                                            <tr>
+                                                <td>${detalle.productoNombre}</td>
+                                                <td class="text-end">$${precioConIVA.toFixed(2)}</td>
+                                                <td class="text-center">${detalle.cantidad}</td>
+                                                <td class="text-end">$${subtotalConIVA.toFixed(2)}</td>
+                                                <td class="text-center">
+                                                    <div class="btn-group" role="group">
+                                                        <button class="btn btn-outline-warning btn-sm" onclick="abrirModalEditar(${index})">
+                                                            <i class="bi bi-pencil-square"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-danger btn-sm" onclick="abrirModalEliminar(${index})">
+                                                            <i class="bi bi-trash3"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        `);
                     });
                     $('#btnPagar').prop('disabled', false);
                 }
@@ -1047,13 +1315,13 @@
                     const subtotalConIVA = detalle.subtotal * 1.13;
 
                     tbody.append(`
-                    <tr>
-                        <td>${detalle.productoNombre}</td>
-                        <td class="text-end">$${precioConIVA.toFixed(2)}</td>
-                        <td class="text-center">${detalle.cantidad}</td>
-                        <td class="text-end">$${subtotalConIVA.toFixed(2)}</td>
-                    </tr>
-                `);
+                                        <tr>
+                                            <td>${detalle.productoNombre}</td>
+                                            <td class="text-end">$${precioConIVA.toFixed(2)}</td>
+                                            <td class="text-center">${detalle.cantidad}</td>
+                                            <td class="text-end">$${subtotalConIVA.toFixed(2)}</td>
+                                        </tr>
+                                    `);
                 });
             }
 
@@ -1231,7 +1499,7 @@
                 modalConfirmarLimpiar.show();
             }
 
-            
+
 
             function limpiarTodo() {
                 detallesVenta = [];
@@ -1256,10 +1524,6 @@
                 modalError.show();
             }
         })();
-
-
-
-        ////
     </script>
 </body>
 </html>
