@@ -221,6 +221,9 @@
             background: linear-gradient(135deg, #3498DB, #2980B9) !important;
             color: white !important;
         }
+        .modal-header.bg-info .modal-title {
+            color: white !important;
+        }
 
         .modal-header {
             background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
@@ -237,10 +240,7 @@
         #modalError .modal-header .modal-title {
             color: #ffffff !important;
         }
-
-        #modalDetalle .modal-header .modal-title {
-            color: #ffffff !important;
-        }
+        
         #modalConfirmacion .modal-header .modal-title {
             color: #ffffff !important;
         }
@@ -593,7 +593,7 @@
             <div class="modal-content">
                 <div class="modal-header bg-info text-white">
                     <h5 class="modal-title">
-                        <i class="bi bi-info-circle"></i> Detalle de Devolución #<span id="detalleNumero"></span>
+                        <i class="bi bi-info-circle"></i> Detalle de Devolución <span id="detalleNumero"></span>
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
@@ -789,13 +789,15 @@
             tbody.empty();
 
             if (devoluciones.length === 0) {
-                tbody.html(`
-                                    <tr>
-                                        <td colspan="6" class="text-center text-muted py-4">
-                                             No se encontraron devoluciones con ese criterio de búsqueda
-                                        </td>
-                                    </tr>
-                                `);
+                let mensaje = "No se encontraron empleados con ese criterio de búsqueda";
+                tbody.append(`
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-4">
+                                    <i class="bi bi-search display-4 d-block mb-2"></i>
+                                    ${mensaje}
+                                </td>
+                            </tr>
+                        `);
                 return;
             }
 
@@ -1155,7 +1157,7 @@
                     const empleadoNombre = (devolucionSeleccionada.nombre ||
                         detalles[0]?.empleadoNombre ||
                         'N/A').trim();
-                    $('#detalleNumero').text(String(devolucionSeleccionada.idDevolucion).padStart(3, '0'));
+                    //$('#detalleNumero').text(String(devolucionSeleccionada.idDevolucion).padStart(3, '0'));
                     $('#detalleFactura').text(devolucionSeleccionada.numeroFactura || 'N/A');
                     $('#detalleCliente').text(clienteNombre);
                     $('#detalleFecha').text(new Date(devolucionSeleccionada.fechaDevolucion + 'T00:00:00').toLocaleDateString('es-SV') + ' ' + (devolucionSeleccionada.horaDevolucion || ''));
@@ -1255,13 +1257,12 @@
                         // Verificar si hay resultados
                         if (devolucionesFiltradas.length === 0) {
                             const tbody = $('#tablaDevoluciones tbody');
+                            let mensaje = "No se encontraron devoluciones con ese criterio de búsqueda";
                             tbody.html(`
                                 <tr>
                                     <td colspan="6" class="text-center text-muted py-4">
-                                        ${params.length > 0
-                                    ? 'No se encontraron devoluciones con ese criterio de búsqueda'
-                                    : 'No hay devoluciones registradas'}
-                                    </td>
+                                        <i class="bi bi-search display-4 d-block mb-2"></i>
+                                    ${mensaje}
                                 </tr>
                             `);
                         } else {

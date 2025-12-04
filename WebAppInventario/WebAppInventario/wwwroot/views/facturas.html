@@ -192,6 +192,10 @@
                 color: white !important;
             }
 
+            .modal-header.bg-info .modal-title {
+                color: white !important;
+            }
+
             /* Header especial para modal de error */
             .modal-header.bg-danger {
                 background: linear-gradient(135deg, #E74C3C, #C0392B) !important;
@@ -527,10 +531,12 @@
                 tbody.empty();
 
                 if (facturasFiltradas.length === 0) {
+                    let mensaje = "No se encontraron facturas con ese criterio de búsqueda";
                     tbody.append(`
                             <tr>
                                 <td colspan="4" class="text-center text-muted">
-                                    No se encontraron facturas con ese criterio de búsqueda
+                                 <i class="bi bi-search display-4 d-block mb-2"></i>
+                                 ${mensaje}
                                 </td>
                             </tr>
                         `);
@@ -539,13 +545,23 @@
 
                 facturasFiltradas.forEach((fact, i) => {
                     let fechaHora = `${new Date(fact.fecha + 'T00:00:00').toLocaleDateString('es-SV')} ${fact.hora}`;
-
+                    let fecha = fact.hora;
                     tbody.append(`
                             <tr data-index="${i}">
-                                <td>${fact.numeroFactura}</td>
-                                <td>${fechaHora}</td>
-                                <td>${fact.clienteNombre}</td>
-                                <td>$${fact.total.toFixed(2)}</td>
+                                <td>
+                                 <span class="badge bg-primary">
+                                ${fact.numeroFactura}
+                                 </span>
+                                </td>
+                                <td>
+                                    <small class="text-muted">
+                                     ${new Date(fact.fecha + 'T00:00:00').toLocaleDateString('es-SV')}<br>
+                                     ${(fact.hora)}
+                                    </small>
+                                </td>
+                                <td><strong>${fact.clienteNombre}</strong>
+                                </td>
+                                <td class="text-end fw-bold text-primary">$${fact.total.toFixed(2)}</td>
                             </tr>
                         `);
                 });

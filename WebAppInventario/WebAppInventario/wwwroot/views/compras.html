@@ -180,6 +180,12 @@
         }
 
         /* === NUEVO: MEJORAR MODALES === */
+
+        /* === MODAL DE CONFIRMACIÓN DE COMPRA === */
+        #modalConfirmacionCompra .modal-header {
+            background: linear-gradient(135deg, #27AE60, #229954) !important;
+        }
+
         .modal-header {
             background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
         }
@@ -203,6 +209,20 @@
         #modalExito .modal-header .modal-title {
             color: #ffffff !important;
         }
+
+        #modalConfirmacionCompra .modal-header .modal-title {
+            color: #ffffff !important;
+        }
+
+        #modalEditarCompra .modal-header .modal-title {
+            color: #ffffff !important;
+        }
+
+        #modalEliminarCompra .modal-header .modal-title {
+            color: #ffffff !important;
+        }
+
+
 
         /* === NUEVO: MEJORAR FORMULARIOS === */
         .form-control, .form-select {
@@ -744,6 +764,68 @@
         </div>
     </div>
 
+
+    <!-- === MODAL DE CONFIRMACIÓN DE COMPRA MEJORADO === -->
+    <div class="modal fade" id="modalConfirmacionCompra" tabindex="-1" aria-labelledby="modalConfirmacionCompraLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="modalConfirmacionCompraLabel">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        Confirmar Compra
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="bi bi-info-circle me-1"></i> Información de la Compra</h6>
+                            <p><strong>Compra Nº:</strong> <span id="confCompraNumero">--</span></p>
+                            <p><strong>Proveedor:</strong> <span id="confProveedor">--</span></p>
+                            <p><strong>Tipo de Pago:</strong> <span id="confTipoPago">--</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <br>
+                            <p><strong>Fecha:</strong> <span id="confFecha">--</span></p>
+                            <p><strong>Hora:</strong> <span id="confHora">--</span></p>
+                            <p><strong>Subtotal:</strong> $<span id="confSubtotal">0.00</span></p>
+                            <p><strong>IVA (13%):</strong> $<span id="confIva">0.00</span></p>
+                            <p><strong>Total:</strong> <span class="fs-5 text-success">$<span id="confTotal">0.00</span></span></p>
+                        </div>
+                    </div>
+                    <hr>
+                    <h6><i class="bi bi-box me-1"></i> Productos</h6>
+                    <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th class="text-end">Costo</th>
+                                    <th class="text-center">Cant.</th>
+                                    <th class="text-end">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="confProductosTabla">
+                                <!-- Productos se agregarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-success" id="btnConfirmarProcesarCompra">
+                        <i class="bi bi-check-circle me-1"></i>
+                        Confirmar Compra
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- === NUEVO: MODAL DE CONFIRMACIÓN DE LIMPIEZA MEJORADO === -->
     <div class="modal fade" id="modalConfirmarLimpiarCompra" tabindex="-1" aria-labelledby="modalConfirmarLimpiarCompraLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -832,6 +914,7 @@
             let modalEditarCompra;
             let modalEliminarCompra;
             let modalConfirmarLimpiarCompra;
+            let modalConfirmacionCompra; // NUEVA VARIABLE
 
             // Función de inicialización principal
             function inicializarCompra() {
@@ -855,6 +938,7 @@
                 modalErrorCompra = new bootstrap.Modal(document.getElementById('modalErrorCompra'));
                 modalEditarCompra = new bootstrap.Modal(document.getElementById('modalEditarCompra'));
                 modalEliminarCompra = new bootstrap.Modal(document.getElementById('modalEliminarCompra'));
+                modalConfirmacionCompra = new bootstrap.Modal(document.getElementById('modalConfirmacionCompra'));
                 modalConfirmarLimpiarCompra = new bootstrap.Modal(document.getElementById('modalConfirmarLimpiarCompra'));
             }
 
@@ -871,10 +955,13 @@
                 });
 
                 // Los demás eventos se mantienen igual
-                $('#btnComprar').off('click').on('click', validarCompra);
+                // CAMBIO: Modificar el evento del botón comprar
+                $('#btnComprar').off('click').on('click', mostrarConfirmacionCompra); // Cambiado de validarCompra a mostrarConfirmacionCompra
                 $('#btnLimpiarCompra').off('click').on('click', mostrarConfirmacionLimpiarCompra);
                 $('#productoCompra').off('change').on('change', cambioProductoCompra);
                 $('#proveedor').off('change').on('change', cambioProveedor);
+                // NUEVO: Evento para confirmar la compra desde el modal
+                $('#btnConfirmarProcesarCompra').off('click').on('click', validarCompra); // Llama a la función original validarCompra
                 $('#btnConfirmarEdicionCompra').off('click').on('click', confirmarEdicionCompra);
                 $('#btnConfirmarEliminacionCompra').off('click').on('click', confirmarEliminacionCompra);
                 $('#btnConfirmarLimpiarCompra').off('click').on('click', confirmarLimpiarCompra);
@@ -992,41 +1079,41 @@
 
                 // Crear modal de confirmación dinámico
                 const modalHTML = `
-                        <div class="modal fade" id="modalCambioProveedor" tabindex="-1">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header bg-warning text-dark">
-                                        <h5 class="modal-title">
-                                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                            Cambiar Proveedor
-                                        </h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="text-center py-3">
-                                            <i class="bi bi-arrow-left-right text-warning" style="font-size: 3rem;"></i>
-                                            <p class="mt-3 mb-2 fs-5">¿Cambiar de proveedor?</p>
-                                            <p class="text-muted">
-                                                Ya tienes productos agregados de otro proveedor.
-                                                Si cambias a <strong>${nuevoProveedorNombre}</strong>,
-                                                se limpiarán todos los productos actuales.
-                                            </p>
+                            <div class="modal fade" id="modalCambioProveedor" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-warning text-dark">
+                                            <h5 class="modal-title">
+                                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                                Cambiar Proveedor
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                         </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                            <i class="bi bi-x-circle me-1"></i>
-                                            Cancelar
-                                        </button>
-                                        <button type="button" class="btn btn-warning" id="btnConfirmarCambioProveedor">
-                                            <i class="bi bi-check-circle me-1"></i>
-                                            Sí, Cambiar Proveedor
-                                        </button>
+                                        <div class="modal-body">
+                                            <div class="text-center py-3">
+                                                <i class="bi bi-arrow-left-right text-warning" style="font-size: 3rem;"></i>
+                                                <p class="mt-3 mb-2 fs-5">¿Cambiar de proveedor?</p>
+                                                <p class="text-muted">
+                                                    Ya tienes productos agregados de otro proveedor.
+                                                    Si cambias a <strong>${nuevoProveedorNombre}</strong>,
+                                                    se limpiarán todos los productos actuales.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                <i class="bi bi-x-circle me-1"></i>
+                                                Cancelar
+                                            </button>
+                                            <button type="button" class="btn btn-warning" id="btnConfirmarCambioProveedor">
+                                                <i class="bi bi-check-circle me-1"></i>
+                                                Sí, Cambiar Proveedor
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        `;
 
                 // Remover modal anterior si existe
                 $('#modalCambioProveedor').remove();
@@ -1142,10 +1229,10 @@
                 } else {
                     productos.forEach(prod => {
                         select.append(`<option value="${prod.id}"
-                                data-precio="${prod.precioVenta}"
-                                data-precio-actual="${prod.precioActual}"
-                                data-costo-actual="${prod.costoActual}"
-                                data-cantidad-actual="${prod.cantidadActual}">${prod.nombre}</option>`);
+                                    data-precio="${prod.precioVenta}"
+                                    data-precio-actual="${prod.precioActual}"
+                                    data-costo-actual="${prod.costoActual}"
+                                    data-cantidad-actual="${prod.cantidadActual}">${prod.nombre}</option>`);
                     });
                 }
             }
@@ -1181,29 +1268,29 @@
                 // ✅ NUEVO: Actualizar información de precio actual
                 if (precioVenta > 0) {
                     $('#infoPrecioActual').html(`
-                        <i class="bi bi-info-circle me-1"></i>Precio actual: <strong class="text-primary">$${precioVenta.toFixed(2)}</strong>
-                    `);
+                            <i class="bi bi-info-circle me-1"></i>Precio actual: <strong class="text-primary">$${precioVenta.toFixed(2)}</strong>
+                        `);
                 } else {
                     $('#infoPrecioActual').html(`
-                        <i class="bi bi-info-circle me-1"></i>Precio actual: <span class="text-muted">Sin precio</span>
-                    `);
+                            <i class="bi bi-info-circle me-1"></i>Precio actual: <span class="text-muted">Sin precio</span>
+                        `);
                 }
 
                 // NUEVO: Actualizar información de costo actual
                 if (costoActual > 0) {
                     $('#infoCostoActual').html(`
-                        <i class="bi bi-info-circle me-1"></i>Costo actual: <strong class="text-success">$${costoActual.toFixed(2)}</strong>
-                    `);
+                            <i class="bi bi-info-circle me-1"></i>Costo actual: <strong class="text-success">$${costoActual.toFixed(2)}</strong>
+                        `);
                 } else {
                     $('#infoCostoActual').html(`
-                        <i class="bi bi-info-circle me-1"></i>Costo actual: <span class="text-muted">Sin costo</span>
-                    `);
+                            <i class="bi bi-info-circle me-1"></i>Costo actual: <span class="text-muted">Sin costo</span>
+                        `);
                 }
 
                 // NUEVO: Actualizar información de stock
                 $('#infoStockCompra').html(`
-                    <i class="bi bi-box me-1"></i>Stock actual: <strong>${cantidadActual}</strong> | Máximo: <strong class="text-warning">${maximoPermitido}</strong>
-                `);
+                        <i class="bi bi-box me-1"></i>Stock actual: <strong>${cantidadActual}</strong> | Máximo: <strong class="text-warning">${maximoPermitido}</strong>
+                    `);
 
                 // Limpiar los campos de entrada
                 $('#precioCompra').val('');
@@ -1314,24 +1401,24 @@
                 } else {
                     detallesCompra.forEach((detalle, index) => {
                         tbody.append(`
-                                <tr>
-                                    <td>${detalle.productoNombre}</td>
-                                    <td class="text-end">$${detalle.precioVenta.toFixed(2)}</td>
-                                    <td class="text-end">$${detalle.costo.toFixed(2)}</td>
-                                    <td class="text-center">${detalle.cantidad}</td>
-                                    <td class="text-end">$${detalle.subtotal.toFixed(2)}</td>
-                                    <td class="text-center">
-                                        <div class="btn-group" role="group">
-                                            <button class="btn btn-outline-warning btn-sm editar-producto-compra" data-index="${index}">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </button>
-                                            <button class="btn btn-outline-danger btn-sm eliminar-producto-compra" data-index="${index}">
-                                                <i class="bi bi-trash3"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            `);
+                                    <tr>
+                                        <td>${detalle.productoNombre}</td>
+                                        <td class="text-end">$${detalle.precioVenta.toFixed(2)}</td>
+                                        <td class="text-end">$${detalle.costo.toFixed(2)}</td>
+                                        <td class="text-center">${detalle.cantidad}</td>
+                                        <td class="text-end">$${detalle.subtotal.toFixed(2)}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group" role="group">
+                                                <button class="btn btn-outline-warning btn-sm editar-producto-compra" data-index="${index}">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </button>
+                                                <button class="btn btn-outline-danger btn-sm eliminar-producto-compra" data-index="${index}">
+                                                    <i class="bi bi-trash3"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `);
                     });
                     $('#btnComprar').prop('disabled', false);
 
@@ -1383,6 +1470,65 @@
                 actualizarSubtotalEdicionCompra();
                 modalEditarCompra.show();
             }
+
+            function mostrarConfirmacionCompra() {
+                const proveedorId = $('#proveedor').val();
+                const tipoPago = $('#tipoPagoCompra').val();
+                const proveedorNombre = $('#proveedor option:selected').text();
+
+                // Validaciones básicas
+                if (!proveedorId) {
+                    mostrarModalErrorCompra('Debe seleccionar un proveedor');
+                    return;
+                }
+
+                if (!tipoPago) {
+                    mostrarModalErrorCompra('Debe seleccionar un tipo de pago');
+                    return;
+                }
+
+                if (detallesCompra.length === 0) {
+                    mostrarModalErrorCompra('Debe agregar al menos un producto');
+                    return;
+                }
+
+                // Calcular totales
+                const subtotal = detallesCompra.reduce((sum, d) => sum + d.subtotal, 0);
+                const iva = subtotal * 0.13;
+                const total = subtotal + iva;
+
+                // Actualizar información en el modal
+                $('#confCompraNumero').text(numeroCompraActual);
+                $('#confProveedor').text(proveedorNombre);
+                $('#confTipoPago').text(tipoPago.charAt(0).toUpperCase() + tipoPago.slice(1));
+
+                const ahora = new Date();
+                $('#confFecha').text(ahora.toLocaleDateString('es-SV'));
+                $('#confHora').text(ahora.toLocaleTimeString('es-SV'));
+
+                $('#confSubtotal').text(subtotal.toFixed(2));
+                $('#confIva').text(iva.toFixed(2));
+                $('#confTotal').text(total.toFixed(2));
+
+                // Llenar tabla de productos
+                const productosTabla = $('#confProductosTabla');
+                productosTabla.empty();
+
+                detallesCompra.forEach(detalle => {
+                    productosTabla.append(`
+            <tr>
+                <td>${detalle.productoNombre}</td>
+                <td class="text-end">$${detalle.costo.toFixed(2)}</td>
+                <td class="text-center">${detalle.cantidad}</td>
+                <td class="text-end">$${detalle.subtotal.toFixed(2)}</td>
+            </tr>
+        `);
+                });
+
+                // Mostrar el modal
+                modalConfirmacionCompra.show();
+            }
+
 
             // Agregar esta función global (junto a validarCantidadMaxima)
             window.validarCantidadMaximaEdicion = function (input) {
@@ -1479,6 +1625,8 @@
             function validarCompra() {
                 const proveedorId = $('#proveedor').val();
                 const tipoPago = $('#tipoPagoCompra').val();
+
+                modalConfirmacionCompra.hide();
 
                 if (!proveedorId) {
                     mostrarModalErrorCompra('Debe seleccionar un proveedor');

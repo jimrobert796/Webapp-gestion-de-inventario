@@ -439,7 +439,7 @@
 
             mensaje.innerHTML = `
         <div class="easter-title">
-            🛠️ Mensaje del Desarrollador
+            🛠️ Mensaje del Team Blackberry
         </div>
 
         <div class="easter-tools">
@@ -454,13 +454,13 @@
 
         <div class="easter-signature">
             "La calidad no es un acto, es un hábito"<br>
-            <strong>- Ferretería Maestro</strong>
+            <strong>- Ferretería el Maestro</strong>
         </div>
 `;
 
             document.body.appendChild(mensaje);
 
-            // Auto-eliminar después de 4 segundos
+            // Auto-eliminar después de 8 segundos
             setTimeout(() => {
                 mensaje.style.transition = 'all 0.30s ease';
                 mensaje.style.opacity = '0';
@@ -471,7 +471,7 @@
                         mensaje.parentNode.removeChild(mensaje);
                     }
                 }, 500);
-            }, 4000);
+            }, 8000);
         }
 
         // Inicializar Easter Egg de Mensaje

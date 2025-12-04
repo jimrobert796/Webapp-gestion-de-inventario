@@ -614,16 +614,20 @@
                                         ${!cli.estado ? '<br><small class="badge bg-danger">Inactivo</small>' : ''}
                                     </td>
                                     <td>
-                                        <i class="bi bi-envelope me-1 text-muted"></i>
-                                        ${cli.email}
+                                         <span class="badge bg-info">
+                                            <i class="bi bi-envelope me-1 text-muted"></i>
+                                            ${cli.email}
+                                         </span>
                                     </td>
                                     <td>
                                         <i class="bi bi-geo-alt me-1 text-muted"></i>
                                         ${cli.direccion}
                                     </td>
                                     <td>
-                                        <i class="bi bi-telephone me-1 text-muted"></i>
-                                        ${cli.telefono}
+                                        <span class="badge bg-primary">
+                                            <i class="bi bi-telephone me-1 text-muted"></i>
+                                            ${cli.telefono}
+                                        </span>
                                     </td>
                                     <td>
                                         <small class="text-muted">

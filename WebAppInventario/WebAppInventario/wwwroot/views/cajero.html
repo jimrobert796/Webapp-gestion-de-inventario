@@ -225,6 +225,18 @@
             color: #ffffff !important;
         }
 
+        #modalConfirmacionCompra .modal-header .modal-title {
+            color: #ffffff !important;
+        }
+
+        #modalEditarProducto .modal-header .modal-title {
+            color: #ffffff !important;
+        }
+
+        #modalEliminarProducto .modal-header .modal-title {
+            color: #ffffff !important;
+        }
+
 
 
         /* === NUEVO: MEJORAR FORMULARIOS === */
@@ -670,7 +682,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <h6>Información de la Venta</h6>
+                            <h6><i class="bi bi-info-circle me-1"></i>Información de la Venta</h6>
                             <p><strong>Factura:</strong> <span id="confFacturaNumero">--</span></p>
                             <p><strong>Cliente:</strong> <span id="confCliente">--</span></p>
                             <p><strong>Tipo de Pago:</strong> <span id="confTipoPago">--</span></p>
@@ -682,11 +694,11 @@
                             <p><strong>Hora:</strong> <span id="confHora">--</span></p>
                             <!--p><strong>Subtotal:</strong> $<span id="confSubtotal">0.00</span></p>-->
                             <!--<p><strong>IVA (13%):</strong> $<span id="confIva">0.00</span></p>-->
-                            <p><strong>Total:</strong> $<span id="confTotal">0.00</span></p>
+                            <p><strong>Total:</strong> <span class="fs-5 text-success">$<span id="confTotal">0.00</span></span></p>
                         </div>
                     </div>
                     <hr>
-                    <h6>Productos</h6>
+                    <h6><i class="bi bi-box me-1"></i>Productos</h6>
                     <div class="table-responsive">
                         <table class="table table-sm">
                             <thead>
@@ -1288,7 +1300,16 @@
 
 
             function llenarModalConfirmacion() {
-                const clienteNombre = $('#cliente option:selected').text() || 'Sin cliente';
+
+                // Determinar nombre del cliente
+                let clienteNombre = 'No aplica';
+                const clienteOption = $('#cliente option:selected');
+
+                // Verificar que sea una opción válida (no el placeholder)
+                if (clienteOption.val() && clienteOption.val() !== "") {
+                    clienteNombre = clienteOption.text();
+                }
+
                 const tipoPago = $('#tipoPago option:selected').text();
                 const ahora = new Date();
 

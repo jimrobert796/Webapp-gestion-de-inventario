@@ -45,6 +45,20 @@
             padding: 8px 16px;
         }
 
+        /* Botón Info - Para ver detalles */
+        .btn-info {
+            background: linear-gradient(135deg, #3498DB, #2980B9);
+            border: none;
+            font-weight: 600;
+            color: white;
+        }
+
+            .btn-info:hover {
+                background: linear-gradient(135deg, #2980B9, #3498DB);
+                color: white;
+                box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+            }
+
             .btn:hover {
                 transform: translateY(-2px);
                 box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -152,6 +166,16 @@
             background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
             border-radius: 12px 12px 0 0 !important;
             padding: 15px 20px;
+        }
+
+        /* Header especial para modal de información */
+        .modal-header.bg-info {
+            background: linear-gradient(135deg, #3498DB, #2980B9) !important;
+            color: white !important;
+        }
+
+        .modal-header.bg-info .modal-title{
+            color: white !important;
         }
 
         /* ========== ESTILOS PARA FORMULARIOS ========== */
