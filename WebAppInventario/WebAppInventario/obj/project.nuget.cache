@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "7VYEPNNG4lw=",
+  "dgSpecHash": "SgorXKJ9IkE=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Baal8\\Desktop\\prototipo\\WebAppInventario\\WebAppInventario\\WebAppInventario.csproj",
+  "projectFilePath": "C:\\Users\\Baal8\\Desktop\\prototipo_ACT\\WebAppInventario\\WebAppInventario\\WebAppInventario.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Baal8\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\Baal8\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

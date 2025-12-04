@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Baal8\\Desktop\\prototipo\\WebAppInventario\\WebAppInventario\\WebAppInventario.csproj": {}
+    "C:\\Users\\Baal8\\Desktop\\prototipo_ACT\\WebAppInventario\\WebAppInventario\\WebAppInventario.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Baal8\\Desktop\\prototipo\\WebAppInventario\\WebAppInventario\\WebAppInventario.csproj": {
+    "C:\\Users\\Baal8\\Desktop\\prototipo_ACT\\WebAppInventario\\WebAppInventario\\WebAppInventario.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Baal8\\Desktop\\prototipo\\WebAppInventario\\WebAppInventario\\WebAppInventario.csproj",
+        "projectUniqueName": "C:\\Users\\Baal8\\Desktop\\prototipo_ACT\\WebAppInventario\\WebAppInventario\\WebAppInventario.csproj",
         "projectName": "WebAppInventario",
-        "projectPath": "C:\\Users\\Baal8\\Desktop\\prototipo\\WebAppInventario\\WebAppInventario\\WebAppInventario.csproj",
+        "projectPath": "C:\\Users\\Baal8\\Desktop\\prototipo_ACT\\WebAppInventario\\WebAppInventario\\WebAppInventario.csproj",
         "packagesPath": "C:\\Users\\Baal8\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Baal8\\Desktop\\prototipo\\WebAppInventario\\WebAppInventario\\obj\\",
+        "outputPath": "C:\\Users\\Baal8\\Desktop\\prototipo_ACT\\WebAppInventario\\WebAppInventario\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
