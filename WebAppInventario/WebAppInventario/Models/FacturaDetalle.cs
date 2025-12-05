@@ -14,5 +14,6 @@ namespace WebAppInventario.Models
 
         public Factura? Facturas { get; set; }
         public Inventario? inventario { get; set; }  // Corregido
+        public ICollection<DevolucionDetalle>? DevolucionDetalle { get; set; }
     }
 }

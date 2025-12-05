@@ -1,0 +1,733 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Gestión de Categorías - Ferretería PRO</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --ferreteria-primary: #2C3E50;
+            --ferreteria-accent: #E67E22;
+            --ferreteria-light: #ECF0F1;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        h1, h2, h3, h4, h5, h6,
+        .card-header,
+        .modal-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        /* ========== PERSONALIZACIÓN DE BOTONES ========== */
+        .btn {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            padding: 10px 20px;
+        }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            }
+
+            .btn:active {
+                transform: translateY(0);
+                box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            }
+
+        /* Botón Primario */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-primary:hover {
+                background: linear-gradient(135deg, #34495E, var(--ferreteria-primary));
+                box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
+            }
+
+        /* Botón Warning */
+        .btn-warning {
+            background: linear-gradient(135deg, #E67E22, #D35400);
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-warning:hover {
+                background: linear-gradient(135deg, #D35400, #E67E22);
+                color: white;
+                box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
+            }
+
+        /* Botón Danger */
+        .btn-danger {
+            background: linear-gradient(135deg, #E74C3C, #C0392B);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-danger:hover {
+                background: linear-gradient(135deg, #C0392B, #E74C3C);
+                box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+            }
+
+        /* Botón Success */
+        .btn-success {
+            background: linear-gradient(135deg, #27AE60, #229954);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-success:hover {
+                background: linear-gradient(135deg, #229954, #27AE60);
+                box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+            }
+
+        /* Botón Secondary */
+        .btn-secondary {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-secondary:hover {
+                background: linear-gradient(135deg, #7f8c8d, #95a5a6);
+                box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+            }
+
+        /* Botón Outline */
+        .btn-outline-secondary {
+            border: 2px solid #6c757d;
+            color: #6c757d;
+            background: transparent;
+            font-weight: 500;
+        }
+
+            .btn-outline-secondary:hover {
+                background: #6c757d;
+                color: white;
+                border-color: #6c757d;
+            }
+
+        /* Efecto de ripple */
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+
+        /* Iconos dentro de botones */
+        .btn i {
+            margin-right: 5px;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover i {
+            transform: scale(1.1);
+        }
+
+        /* Estados deshabilitados */
+        .btn:disabled {
+            opacity: 0.6;
+            transform: none !important;
+            box-shadow: none !important;
+            cursor: not-allowed;
+        }
+
+            .btn:disabled:hover {
+                transform: none !important;
+                box-shadow: none !important;
+            }
+
+        /* ========== ESTILOS PARA LA TABLA ========== */
+        .table-scroll {
+            max-height: 400px;
+            overflow-y: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+            .table-scroll thead th {
+                position: sticky;
+                top: 0;
+                background: linear-gradient(135deg, var(--ferreteria-primary), #34495E);
+                color: white;
+                z-index: 100;
+                border-bottom: 2px solid #dee2e6;
+                padding: 12px 8px;
+                font-family: 'Montserrat', sans-serif;
+                font-weight: 600;
+            }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(44, 62, 80, 0.05);
+            transform: scale(1.01);
+            transition: all 0.2s ease;
+        }
+
+        .table-primary {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.1), rgba(52, 73, 94, 0.05)) !important;
+            border-left: 4px solid var(--ferreteria-primary);
+        }
+
+        /* ========== ESTILOS PARA TARJETAS Y MODALES ========== */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+            .card:hover {
+                box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+            }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 15px 20px;
+        }
+
+        /* COLORES DE TARJETAS MODALES */
+        #modalEliminarCategoria .modal-header {
+            background: linear-gradient(135deg, #E74C3C, #C0392B) !important;
+        }
+
+        #modalExito .modal-header {
+            background: linear-gradient(135deg, #27AE60, #229954) !important;
+        }
+
+        #modalCategoria .modal-header {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
+        }
+
+
+        /* ========== ESTILOS PARA FORMULARIOS ========== */
+        .form-control, .form-select {
+            border-radius: 6px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: var(--ferreteria-primary);
+                box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.25);
+            }
+
+        .form-label {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            color: #e9ecef !important;
+            margin-bottom: 8px;
+        }
+
+        .input-group-text {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E);
+            border: none;
+            color: white;
+            font-weight: 500;
+        }
+
+        /* ========== BADGES Y ETIQUETAS ========== */
+        .badge {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            border-radius: 6px;
+        }
+
+        /* Solo el título del modal de clientes */
+        #modalCategoria .modal-header .modal-title {
+            color: #ffffff !important;
+        }
+
+        /* Solo el título del modal de clientes */
+        #modalExito .modal-header .modal-title {
+            color: #ffffff !important;
+        }
+
+        /* Solo el título del modal de clientes */
+        #modalEliminarCategoria .modal-header .modal-title {
+            color: #ffffff !important;
+        }
+
+        /* Solo el título del modal de clientes */
+        #modalError .modal-header .modal-title {
+            color: #ffffff !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Contenedor principal -->
+    <div class="container mt-4">
+        <!-- ========== SECCIÓN DE GESTIÓN DE CATEGORÍAS ========== -->
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0"><i class="bi bi-tags me-2"></i>Gestión de Categorías</h2>
+            </div>
+            <div class="card-body">
+                <!-- Botones de acción y búsqueda -->
+                <div class="row mb-3 align-items-center">
+                    <div class="col-md-6">
+                        <button id="btnNuevaCategoria" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Nueva Categoría
+                        </button>
+                        <button id="btnEditarCategoria" class="btn btn-warning" disabled>
+                            <i class="bi bi-pencil-square"></i> Editar
+                        </button>
+                        <button id="btnEliminarCategoria" class="btn btn-danger" disabled>
+                            <i class="bi bi-trash"></i> Eliminar
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" class="form-control" id="inputBuscarCategoria" placeholder="Buscar por nombre de categoría...">
+                            <button class="btn btn-outline-secondary" type="button" id="btnLimpiarBusquedaCategoria" title="Limpiar búsqueda">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de categorías -->
+                <div class="table-responsive table-scroll">
+                    <table class="table table-striped table-hover" id="tablaCategorias">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Ultima Actualizacion</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL PARA AGREGAR/EDITAR CATEGORÍA ========== -->
+    <div class="modal fade" id="modalCategoria" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="modalTituloCategoria">
+                        <i class="bi bi-tags"></i> Nueva Categoría
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formCategoria">
+                        <input type="hidden" id="idCategoria">
+                        <div class="mb-3">
+                            <label for="nombreCategoria" class="form-label">
+                                <i class="bi bi-tag"></i> Nombre de la Categoría
+                            </label>
+                            <input type="text" class="form-control" id="nombreCategoria" required placeholder="Ingrese el nombre">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                    <button type="button" class="btn btn-primary" id="btnGuardarCategoria">
+                        <i class="bi bi-check-circle"></i> Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL DE CONFIRMACIÓN DE ELIMINACIÓN DE CATEGORÍA ========== -->
+    <div class="modal fade" id="modalEliminarCategoria" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">¿Desea eliminar la categoría <strong id="nombreCategoriaEliminar"></strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmarEliminarCategoria">
+                        <i class="bi bi-trash"></i> Sí, Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODALES DE ÉXITO Y ERROR ========== -->
+    <div class="modal fade" id="modalExito" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="bi bi-check-circle me-2"></i>Éxito</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0" id="mensajeExito"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">
+                        <i class="bi bi-check-lg"></i> Aceptar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalError" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="bi bi-x-circle me-2"></i>Error</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0" id="mensajeError"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg"></i> Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== JAVASCRIPT PRINCIPAL ========== -->
+    <script>
+        (function () {
+            // ========== VARIABLES GLOBALES ==========
+            let categoriasFiltradas = [];
+            let filaSeleccionadaCategoria = null;
+            let modoEdicionCategoria = false;
+            let modalCategoria;
+            let debounceTimerCategoria;
+
+            // ========== FUNCIÓN PARA BUSCAR CATEGORÍAS ==========
+            function buscarCategorias(textoBusqueda = '') {
+
+                // MOSTRAR LOADING AL INICIAR BÚSQUEDA
+                $('#tablaCategorias tbody').html(`
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+                            <div class="spinner-border spinner-border-sm" role="status"></div>
+                            <span class="ms-2">Buscando categorias...</span>
+                        </td>
+                    </tr>
+                `);
+
+
+                clearTimeout(debounceTimerCategoria);
+                debounceTimerCategoria = setTimeout(() => {
+                    $.ajax({
+                        url: `/api/Categorias/buscar?buscar=${encodeURIComponent(textoBusqueda)}`,
+                        method: "GET",
+                        success: function (data) {
+                            categoriasFiltradas = data.map(cat => ({
+                                idCategoria: cat.idCategoria,
+                                nombre: cat.nombre.trim(),
+                                ultimaActualizacion: cat.ultimaActualizacion,
+                                estado: cat.estado
+                            }));
+                            renderTablaCategorias();
+                            filaSeleccionadaCategoria = null;
+                            $("#btnEditarCategoria, #btnEliminarCategoria").prop("disabled", true);
+                        },
+                        error: function (err) {
+                            console.error("Error buscando categorías:", err);
+                            $("#mensajeError").text("Error al buscar categorías. Intente nuevamente.");
+                            let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                            modalError.show();
+                        }
+                    });
+                }, 300);
+            }
+
+            // ========== FUNCIÓN PARA RENDERIZAR LA TABLA ==========
+            function renderTablaCategorias() {
+                let tbody = $("#tablaCategorias tbody");
+                tbody.empty();
+
+                if (categoriasFiltradas.length === 0) {
+                    let mensaje = "No se encontraron categorias con ese criterio de búsqueda";
+                    tbody.append(`
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted py-4">
+                                        <i class="bi bi-search display-4 d-block mb-2"></i>
+                                        ${mensaje}
+                                    </td>
+                                </tr>
+                            `);
+                    return;
+                }
+
+                categoriasFiltradas.forEach((cat, i) => {
+                    tbody.append(`
+                                <tr data-index="${i}">
+                                    <td>
+                                        <strong>${cat.nombre}</strong>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            ${new Date(cat.ultimaActualizacion).toLocaleDateString()}<br>
+                                            ${new Date(cat.ultimaActualizacion).toLocaleTimeString()}
+                                        </small>
+                                    </td>
+                                </tr>
+                            `);
+                });
+
+                $("#tablaCategorias tbody tr").click(function () {
+                    if ($(this).find('td').length === 1) return;
+                    $("#tablaCategorias tbody tr").removeClass("table-primary");
+                    $(this).addClass("table-primary");
+                    filaSeleccionadaCategoria = $(this).data("index");
+                    $("#btnEditarCategoria, #btnEliminarCategoria").prop("disabled", false);
+                });
+            }
+
+            // ========== FUNCIÓN PARA ABRIR MODAL NUEVA CATEGORÍA ==========
+            function abrirModalNuevaCategoria() {
+                modoEdicionCategoria = false;
+                $("#formCategoria")[0].reset();
+                $("#idCategoria").val("");
+                $("#modalTituloCategoria").html('<i class="bi bi-plus-circle"></i> Nueva Categoría');
+                $("#btnGuardarCategoria").html('<i class="bi bi-check-circle"></i> Guardar').removeClass("btn-warning").addClass("btn-primary");
+                modalCategoria.show();
+            }
+
+            // ========== FUNCIÓN PARA ABRIR MODAL EDITAR CATEGORÍA ==========
+            function abrirModalEditarCategoria() {
+                if (filaSeleccionadaCategoria === null) {
+                    $("#mensajeError").text("Seleccione una categoría para editar");
+                    let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                    modalError.show();
+                    return;
+                }
+                modoEdicionCategoria = true;
+                let cat = categoriasFiltradas[filaSeleccionadaCategoria];
+                $("#idCategoria").val(cat.idCategoria);
+                $("#nombreCategoria").val(cat.nombre);
+                $("#modalTituloCategoria").html('<i class="bi bi-pencil-square"></i> Editar Categoría');
+                $("#btnGuardarCategoria").html('<i class="bi bi-check-circle"></i> Guardar Cambios').removeClass("btn-primary").addClass("btn-warning");
+                modalCategoria.show();
+            }
+
+            // ========== FUNCIÓN PARA GUARDAR CATEGORÍA ==========
+            function guardarCategoria() {
+                if (!$("#formCategoria")[0].checkValidity()) {
+                    $("#formCategoria")[0].reportValidity();
+                    return;
+                }
+
+                if (modoEdicionCategoria) {
+                    // ===== MODO EDICIÓN (PUT) =====
+                    let cat = categoriasFiltradas[filaSeleccionadaCategoria];
+                    let datos = {
+                        idCategoria: cat.idCategoria,
+                        nombre: $("#nombreCategoria").val(),
+                        ultimaActualizacion: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, -1),
+                        estado: true
+                    };
+
+                    $.ajax({
+                        url: `/api/Categorias/${datos.idCategoria}`,
+                        method: "PUT",
+                        contentType: "application/json",
+                        data: JSON.stringify(datos),
+                        success: function () {
+                            modalCategoria.hide();
+                            $("#mensajeExito").text("La categoría fue actualizada exitosamente.");
+                            let modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
+                            modalExito.show();
+                            buscarCategorias($("#inputBuscarCategoria").val());
+                            filaSeleccionadaCategoria = null;
+                            $("#btnEditarCategoria, #btnEliminarCategoria").prop("disabled", true);
+                        },
+                        error: function (err) {
+                            console.error(err);
+                            modalCategoria.hide();
+                            $("#mensajeError").text("No se pudo actualizar la categoría. Intente nuevamente.");
+                            let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                            modalError.show();
+                        }
+                    });
+                } else {
+                    // ===== MODO AGREGAR (POST) =====
+                    let datos = {
+                        idCategoria: 0,
+                        nombre: $("#nombreCategoria").val(),
+                        ultimaActualizacion: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, -1),
+                        estado: true
+                    };
+
+                    $.ajax({
+                        url: "/api/Categorias",
+                        method: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(datos),
+                        success: function () {
+                            modalCategoria.hide();
+                            $("#mensajeExito").text("La categoría fue agregada exitosamente.");
+                            let modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
+                            modalExito.show();
+                            buscarCategorias($("#inputBuscarCategoria").val());
+                        },
+                        error: function (err) {
+                            console.error(err);
+                            modalCategoria.hide();
+                            $("#mensajeError").text("No se pudo agregar la categoría. Intente nuevamente.");
+                            let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                            modalError.show();
+                        }
+                    });
+                }
+            }
+
+            // ========== FUNCIÓN PARA ELIMINAR CATEGORÍA ==========
+            function eliminarCategoria() {
+                if (filaSeleccionadaCategoria === null) {
+                    $("#mensajeError").text("Seleccione una categoría para eliminar");
+                    let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                    modalError.show();
+                    return;
+                }
+                let cat = categoriasFiltradas[filaSeleccionadaCategoria];
+                $("#nombreCategoriaEliminar").text(cat.nombre);
+                let modalEliminar = new bootstrap.Modal(document.getElementById('modalEliminarCategoria'));
+                modalEliminar.show();
+            }
+
+            // ========== FUNCIÓN PARA CONFIRMAR ELIMINACIÓN ==========
+            function confirmarEliminacionCategoria() {
+                let cat = categoriasFiltradas[filaSeleccionadaCategoria];
+                let modalEliminar = bootstrap.Modal.getInstance(document.getElementById('modalEliminarCategoria'));
+
+                // Cambiar estado a false (eliminación lógica)
+                let datos = {
+                    idCategoria: cat.idCategoria,
+                    nombre: cat.nombre,
+                    ultimaActualizacion: cat.ultimaActualizacion,
+                    estado: false
+                };
+
+                $.ajax({
+                    url: `/api/Categorias/${cat.idCategoria}`,
+                    method: "PUT",
+                    contentType: "application/json",
+                    data: JSON.stringify(datos),
+                    success: function () {
+                        modalEliminar.hide();
+                        $("#mensajeExito").text("La categoría fue eliminada exitosamente.");
+                        let modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
+                        modalExito.show();
+                        buscarCategorias($("#inputBuscarCategoria").val());
+                        filaSeleccionadaCategoria = null;
+                        $("#btnEditarCategoria, #btnEliminarCategoria").prop("disabled", true);
+                    },
+                    error: function (err) {
+                        console.error(err);
+                        modalEliminar.hide();
+                        $("#mensajeError").text("No se pudo eliminar la categoría. Intente nuevamente.");
+                        let modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                        modalError.show();
+                    }
+                });
+            }
+
+            // ========== INICIALIZACIÓN ==========
+            $(document).ready(function () {
+                modalCategoria = new bootstrap.Modal(document.getElementById('modalCategoria'));
+                buscarCategorias('');
+
+                // ===== EVENTOS =====
+                $("#btnNuevaCategoria").click(abrirModalNuevaCategoria);
+                $("#btnEditarCategoria").click(abrirModalEditarCategoria);
+                $("#btnEliminarCategoria").click(eliminarCategoria);
+                $("#btnGuardarCategoria").click(guardarCategoria);
+                $("#btnConfirmarEliminarCategoria").click(confirmarEliminacionCategoria);
+
+                // Búsqueda en tiempo real
+                $("#inputBuscarCategoria").on("input", function () {
+                    buscarCategorias($(this).val());
+                });
+
+                // Limpiar búsqueda
+                $("#btnLimpiarBusquedaCategoria").click(function () {
+                    $("#inputBuscarCategoria").val("");
+                    buscarCategorias("");
+                    filaSeleccionadaCategoria = null;
+                    $("#btnEditarCategoria, #btnEliminarCategoria").prop("disabled", true);
+                });
+
+                // Limpiar formulario al cerrar modal
+                $('#modalCategoria').on('hidden.bs.modal', function () {
+                    $("#formCategoria")[0].reset();
+                });
+
+                // ===== FIX PARA ARIA-HIDDEN WARNING =====
+                $('.modal').on('hide.bs.modal', function () {
+                    $(this).find('*').blur();
+                });
+
+                $('.modal').on('hidden.bs.modal', function () {
+                    if (document.activeElement && document.activeElement !== document.body) {
+                        document.activeElement.blur();
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

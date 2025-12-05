@@ -8,7 +8,7 @@ namespace WebAppInventario.Models
         public int idFactura { get; set; }
         public int idEmpleado { get; set; }
         public int? idCliente { get; set; }  
-        public int numeroFactura { get; set; }
+        public string numeroFactura { get; set; }
         public decimal subtotal { get; set; }
         public decimal total { get; set; }
 
@@ -20,6 +20,7 @@ namespace WebAppInventario.Models
 
         // Relaciones
         public ICollection<FacturaDetalle>? FacturaDetalles { get; set; }
+        public ICollection<Devolucion>? Devolucion { get; set; }
 
         public Cliente? Cliente { get; set; }
         public Empleado? Empleado { get; set; }

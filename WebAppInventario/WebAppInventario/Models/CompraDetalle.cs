@@ -13,6 +13,8 @@ namespace WebAppInventario.Models
         public decimal precio { get; set; }
         public decimal costo { get; set; }
         public decimal subtotal { get; set; }
+        public decimal costoAnterior { get; set; }
+        public decimal precioAnterior { get; set; }
 
 
         // Viajar a esos datos

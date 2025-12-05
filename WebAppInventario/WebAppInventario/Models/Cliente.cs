@@ -10,7 +10,7 @@ namespace WebAppInventario.Models
         public string email { get; set; }
         public string direccion { get; set; }
         public string telefono { get; set; }
-        public DateTime creaccion { get; set; }
+        public DateTime ultimaActualizacion { get; set; }
         public bool estado { get; set; } = true;
 
         

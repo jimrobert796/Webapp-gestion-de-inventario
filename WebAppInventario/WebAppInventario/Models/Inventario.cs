@@ -13,7 +13,7 @@ namespace WebAppInventario.Models
         public decimal costo { get; set; }
         public int cantidad { get; set; }
         public string ubicacion { get; set; }
-        public DateOnly ultimaActualizacion { get; set; }
+        public DateTime ultimaActualizacion { get; set; }
         public Producto? Producto { get; set; }  // Corregido
         public ICollection<CompraDetalle>? compraDetalles { get; set; }
         public ICollection<FacturaDetalle>? facturaDetalles { get; set; }

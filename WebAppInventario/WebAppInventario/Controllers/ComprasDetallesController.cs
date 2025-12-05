@@ -24,12 +24,14 @@ namespace WebAppInventario.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CompraDetalle>>> GetComprasDetalles()
         {
-            var detalles = await _context.ComprasDetalles
+                var detalles = await _context.ComprasDetalles
         .Include(cd => cd.Inventario)
             .ThenInclude(i => i.Producto)
                 .ThenInclude(p => p.Proveedor)
         .Include(cd => cd.Compra)
             .ThenInclude(c => c.Empleado)
+        .Include(cd => cd.Compra)
+            .ThenInclude(c => c.EmpleadoAnulacion) // 👈 este include es el nuevo
         .Select(cd => new
         {
             cd.idCompraDetalle,
@@ -38,16 +40,60 @@ namespace WebAppInventario.Controllers
             cd.Compra.numeroCompra,
             cd.cantidad,
             cd.precio,
+            cd.costo,
             cd.subtotal,
-            productoNombre = cd.Inventario.Producto != null ? cd.Inventario.Producto.nombre : "Sin producto",
+            cd.precioAnterior,
+            cd.costoAnterior,
+            productoNombre = cd.Inventario.Producto != null 
+                ? cd.Inventario.Producto.nombre 
+                : "Sin producto",
             proveedorNombre = cd.Inventario.Producto != null && cd.Inventario.Producto.Proveedor != null
-                             ? cd.Inventario.Producto.Proveedor.nombre
-                             : "Sin proveedor",
+                ? cd.Inventario.Producto.Proveedor.nombre 
+                : "Sin proveedor",
             empleadoNombre = cd.Compra != null && cd.Compra.Empleado != null
-                             ? cd.Compra.Empleado.nombre
-                             : "Sin empleado"
+                ? cd.Compra.Empleado.nombre 
+                : "Sin empleado",
+            empleadoAnulacionNombre = cd.Compra.EmpleadoAnulacion != null
+                ? cd.Compra.EmpleadoAnulacion.nombre 
+                : "No hay"
         })
         .ToListAsync();
+
+
+            return Ok(detalles);
+        }
+
+
+
+
+        // GET: api/ComprasDetalles/por-compra/{idCompra}
+        [HttpGet("por-compra/{idCompra}")]
+        public async Task<ActionResult<IEnumerable<object>>> GetDetallesPorCompra(int idCompra)
+        {
+            var detalles = await _context.ComprasDetalles
+                .Include(cd => cd.Inventario)
+                    .ThenInclude(i => i.Producto)
+                        .ThenInclude(p => p.Proveedor)
+                .Include(cd => cd.Compra)
+                    .ThenInclude(c => c.Empleado)
+                .Where(cd => cd.idCompra == idCompra) // 🔹 Filtra solo los detalles de esa compra
+                .Select(cd => new
+                {
+                    cd.idCompraDetalle,
+                    cd.idCompra,
+                    cd.idInventario,
+                    cd.Compra.numeroCompra,
+                    cd.cantidad,
+                    cd.precio,
+                    cd.costo,
+                    cd.subtotal,
+                    cd.precioAnterior,
+                    cd.costoAnterior,
+                    productoNombre = cd.Inventario.Producto != null ? cd.Inventario.Producto.nombre : "Sin producto",
+                    proveedorNombre = cd.Inventario.Producto.Proveedor.nombre,
+                    empleadoNombre = cd.Compra.Empleado.nombre
+                })
+                .ToListAsync();
 
             return Ok(detalles);
         }
@@ -75,6 +121,8 @@ namespace WebAppInventario.Controllers
             cd.cantidad,
             cd.precio,
             cd.subtotal,
+            cd.precioAnterior,
+            cd.costoAnterior,
             productoNombre = cd.Inventario.Producto != null ? cd.Inventario.Producto.nombre : "Sin producto",
             proveedorNombre = cd.Inventario.Producto != null && cd.Inventario.Producto.Proveedor != null
                              ? cd.Inventario.Producto.Proveedor.nombre

@@ -1,0 +1,1552 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Cajero</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- === NUEVO: AGREGAR TUS FUENTES === -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* === NUEVO: VARIABLES DE COLOR DE TU PALETA === */
+        :root {
+            --ferreteria-primary: #2C3E50;
+            --ferreteria-accent: #E67E22;
+            --ferreteria-light: #ECF0F1;
+        }
+
+        /* === NUEVO: TIPOGRAFÍA COMO EN TUS OTRAS VISTAS === */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        h1, h2, h3, h4, h5, h6,
+        .card-header,
+        .modal-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        /* === NUEVO: ESTILOS DE BOTONES CON GRADIENTES === */
+        .btn {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            padding: 6px 12px;
+        }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            }
+
+            .btn:active {
+                transform: translateY(0);
+                box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            }
+
+        /* Botón Primario - Agregar */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-primary:hover {
+                background: linear-gradient(135deg, #34495E, var(--ferreteria-primary));
+                box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
+            }
+
+        /* Botón Success - Pagar */
+        .btn-success {
+            background: linear-gradient(135deg, #27AE60, #229954);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-success:hover {
+                background: linear-gradient(135deg, #229954, #27AE60);
+                box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+            }
+
+        /* Botón Secondary - Limpiar */
+        .btn-secondary {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-secondary:hover {
+                background: linear-gradient(135deg, #7f8c8d, #95a5a6);
+                box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+            }
+
+        /* Botón Warning - Editar */
+        .btn-warning {
+            background: linear-gradient(135deg, #E67E22, #D35400);
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-warning:hover {
+                background: linear-gradient(135deg, #D35400, #E67E22);
+                color: white;
+                box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
+            }
+
+        /* Botón Danger - Eliminar */
+        .btn-danger {
+            background: linear-gradient(135deg, #E74C3C, #C0392B);
+            border: none;
+            font-weight: 600;
+        }
+
+            .btn-danger:hover {
+                background: linear-gradient(135deg, #C0392B, #E74C3C);
+                box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+            }
+
+        /* Botón Outline - Para acciones en tabla */
+        .btn-outline-warning, .btn-outline-danger {
+            border-width: 2px;
+            border-radius: 6px;
+        }
+
+            .btn-outline-warning:hover {
+                background: linear-gradient(135deg, #E67E22, #D35400);
+                color: white;
+            }
+
+            .btn-outline-danger:hover {
+                background: linear-gradient(135deg, #E74C3C, #C0392B);
+                color: white;
+            }
+
+        /* === NUEVO: Efecto de ripple en los botones === */
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+
+        /* Iconos dentro de botones */
+        .btn i {
+            margin-right: 4px;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover i {
+            transform: scale(1.1);
+        }
+
+        /* === NUEVO: MEJORAR TARJETAS === */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+            .card:hover {
+                box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+            }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
+            border-radius: 10px 10px 0 0 !important;
+            padding: 8px 12px;
+            flex-shrink: 0;
+        }
+
+
+        /* === NUEVO: MEJORAR MODALES === */
+        
+
+        #modalEditarProducto .modal-header {
+            background: linear-gradient(135deg, #E67E22, #D35400) !important;
+        }
+
+        #modalEliminarProducto .modal-header {
+            background: linear-gradient(135deg, #E74C3C, #C0392B) !important;
+        }
+
+        #modalConfirmacionCompra .modal-header {
+            background: linear-gradient(135deg, #27AE60, #229954) !important;
+        }
+
+        #modalError .modal-header {
+            background: linear-gradient(135deg, #E74C3C, #C0392B) !important;
+        }
+
+        #modalError .modal-header .modal-title {
+            color: #ffffff !important;
+        }
+
+        #modalConfirmarLimpiar .modal-header {
+            background: linear-gradient(135deg, #E67E22, #D35400) !important;
+        }
+
+        #modalExito .modal-header .modal-title {
+            background: linear-gradient(135deg, #27AE60, #229954) !important;
+            color: #ffffff !important;
+        }
+
+        #modalConfirmacionCompra .modal-header .modal-title {
+            color: #ffffff !important;
+        }
+
+        #modalEditarProducto .modal-header .modal-title {
+            color: #ffffff !important;
+        }
+
+        #modalEliminarProducto .modal-header .modal-title {
+            color: #ffffff !important;
+        }
+
+
+
+        /* === NUEVO: MEJORAR FORMULARIOS === */
+        .form-control, .form-select {
+            border-radius: 6px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: var(--ferreteria-primary);
+                box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.25);
+            }
+
+        .form-label {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 4px;
+            font-size: 0.75rem;
+        }
+
+        /* === NUEVO: MEJORAR TABLAS === */
+        .table-container {
+            max-height: 180px;
+            overflow-y: auto;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+            .table-container thead th {
+                position: sticky;
+                top: 0;
+                background: linear-gradient(135deg, var(--ferreteria-primary), #34495E);
+                color: white;
+                z-index: 100;
+                border-bottom: 2px solid #dee2e6;
+                padding: 6px 8px;
+                font-family: 'Montserrat', sans-serif;
+                font-weight: 600;
+                font-size: 0.7rem;
+            }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(44, 62, 80, 0.05);
+        }
+
+        /* === NUEVO: MEJORAR INFO BOXES === */
+        .modal-producto-info {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.05), rgba(52, 73, 94, 0.03));
+            border-left: 4px solid var(--ferreteria-primary);
+        }
+
+            .modal-producto-info .producto-nombre {
+                font-family: 'Montserrat', sans-serif;
+                font-weight: 600;
+                color: var(--ferreteria-primary);
+            }
+
+        /* === NUEVO: MEJORAR ALERTS === */
+        .alert {
+            border-radius: 6px;
+            border: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(41, 128, 185, 0.05));
+            border-left: 4px solid #3498db;
+        }
+
+        /* === NUEVO: MEJORAR TOTALES BOX === */
+        .totales-box {
+            padding: 0.5rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.05), rgba(52, 73, 94, 0.03));
+            border: 2px solid #e9ecef;
+        }
+
+            .totales-box span {
+                color: #e0e0e0;
+            }
+
+            .totales-box h6,
+            .totales-box div {
+                color: #e0e0e0;
+            }
+
+            .totales-box .text-white {
+                color: #27ae60 !important;
+            }
+
+        /* === ESTILOS EXISTENTES QUE MANTENGO (con mejoras) === */
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container-fluid {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-info {
+            flex-shrink: 0;
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.1), rgba(52, 73, 94, 0.05));
+            padding: 0.3rem 0.5rem;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            border: 1px solid rgba(44, 62, 80, 0.1);
+        }
+
+        .contenido-principal {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .row-contenido {
+            height: 100%;
+        }
+
+        .card-body {
+            flex: 1;
+            padding: 0.5rem !important;
+            overflow-y: auto;
+        }
+
+        .mb-compact {
+            margin-bottom: 0.3rem !important;
+        }
+
+        hr.compact {
+            margin: 0.3rem 0;
+            opacity: 0.3;
+        }
+
+        .table-sm {
+            font-size: 0.7rem;
+        }
+
+        .btn-sm {
+            padding: 0.2rem 0.4rem;
+            font-size: 0.7rem;
+            border-radius: 6px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .row-contenido {
+                flex-direction: column;
+            }
+
+            .col-md-5, .col-md-7 {
+                height: 50%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- === NUEVO: HEADER INFO MEJORADO === -->
+        <div class="header-info">
+            <div class="row text-center">
+                <div class="col-3"><strong>Cajero:</strong> <span id="cajeroNombre" class="fw-semibold">Cargando...</span></div>
+                <div class="col-3"><strong>Factura:</strong> <span id="facturaNumero" class="fw-bold text-primary">--</span></div>
+                <div class="col-3"><strong>Fecha:</strong> <span id="fechaActual" class="fw-semibold">--</span></div>
+                <div class="col-3"><strong>Hora:</strong> <span id="horaActual" class="fw-semibold">--</span></div>
+            </div>
+        </div>
+
+        <!-- Contenido Principal -->
+        <div class="contenido-principal">
+            <div class="row row-contenido g-2">
+                <!-- Panel Izquierdo: Formulario -->
+                <div class="col-md-5">
+                    <!-- === NUEVO: TARJETA MEJORADA === -->
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="mb-0"><i class="bi bi-cart-plus me-1"></i> Nueva Venta</h6>
+                        </div>
+                        <div class="card-body">
+                            <form id="formAgregarProducto">
+                                <!-- Búsqueda de Cliente -->
+                                <div class="mb-compact">
+                                    <label for="busquedaCliente" class="form-label">Buscar Cliente (Opcional)</label>
+                                    <input type="text" id="busquedaCliente" class="form-control form-control-sm" placeholder="Escribe nombre o email...">
+                                </div>
+
+                                <!-- Cliente -->
+                                <div class="mb-compact">
+                                    <label for="cliente" class="form-label">Cliente (Opcional)</label>
+                                    <select id="cliente" class="form-select form-select-sm">
+                                        <option value="">Seleccione un cliente...</option>
+                                    </select>
+                                </div>
+
+                                <!-- Email -->
+                                <div class="mb-compact">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" id="email" class="form-control form-control-sm" readonly>
+                                </div>
+
+                                <hr class="compact">
+
+                                <!-- Búsqueda de Producto -->
+                                <div class="mb-compact">
+                                    <label for="busquedaProducto" class="form-label">Buscar Producto</label>
+                                    <input type="text" id="busquedaProducto" class="form-control form-control-sm" placeholder="Escribe nombre de producto..." data-bs-toggle="tooltip" title="Busca productos por nombre">
+                                </div>
+
+                                <!-- Producto -->
+                                <div class="mb-compact">
+                                    <label for="producto" class="form-label">Producto</label>
+                                    <select id="producto" class="form-select form-select-sm" required>
+                                        <option value="">Seleccione un producto...</option>
+                                    </select>
+                                </div>
+
+                                <!-- Precio y Cantidad en fila -->
+                                <div class="row g-1 mb-compact">
+                                    <div class="col-6">
+                                        <label for="precio" class="form-label">Precio Unit.</label>
+                                        <input type="text" id="precio" class="form-control form-control-sm" readonly>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="cantidad" class="form-label">Cantidad</label>
+                                        <!--<input type="number" id="cantidad" class="form-control form-control-sm" value="1" min="1">-->
+                                        <input type="number"
+                                               id="cantidad"
+                                               class="form-control form-control-sm"
+                                               value="1"
+                                               min="1"
+                                               step="1"
+                                               required
+                                               onkeydown="if(['e','E','+','-','.'].includes(event.key)) event.preventDefault();"
+                                               oninput="validarCantidadMaximaEdicion(this)" />
+
+                                    </div>
+                                </div>
+
+                                <!-- === NUEVO: BOTÓN MEJORADO === -->
+                                <button id="btnAgregar" class="btn btn-primary btn-sm w-100 mb-2">
+                                    <i class="bi bi-plus-circle"></i> Agregar
+                                </button>
+                            </form>
+
+                            <hr class="compact">
+
+                            <!-- Tipo de Pago -->
+                            <div class="mb-compact">
+                                <label for="tipoPago" class="form-label">Tipo de Pago</label>
+                                <select id="tipoPago" class="form-select form-select-sm">
+                                    <option value="">Seleccione...</option>
+                                    <option value="efectivo">Efectivo</option>
+                                    <option value="tarjeta">Tarjeta</option>
+                                </select>
+                            </div>
+
+                            <!-- Botones -->
+                            <div class="row g-1">
+                                <div class="col-7">
+                                    <button type="submit" id="btnPagar" class="btn btn-success btn-sm w-100" disabled>
+                                        <i class="bi bi-cash-coin"></i> Pagar
+                                    </button>
+                                </div>
+                                <div class="col-5">
+                                    <button id="btnLimpiar" class="btn btn-secondary btn-sm w-100">
+                                        <i class="bi bi-arrow-clockwise"></i> Limpiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel Derecho: Tabla -->
+                <div class="col-md-7">
+                    <!-- === NUEVO: TARJETA MEJORADA === -->
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h6 class="mb-0"><i class="bi bi-receipt me-1"></i> Detalle de la Venta</h6>
+                        </div>
+                        <div class="card-body">
+                            <!-- === NUEVO: TABLA MEJORADA CON SCROLL === -->
+                            <div class="table-container">
+                                <table class="table table-sm table-striped table-hover mb-0" id="tablaDetalles">
+                                    <thead class="table-dark sticky-top">
+                                        <tr>
+                                            <th width="45%">Producto</th>
+                                            <th width="15%" class="text-end">Precio</th>
+                                            <th width="12%" class="text-center">Cant.</th>
+                                            <th width="18%" class="text-end">Subtotal</th>
+                                            <th width="10%" class="text-center">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted py-2">No hay productos</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- === NUEVO: TOTALES BOX MEJORADO === -->
+                            <div class="totales-box">
+                                <hr class="my-1">
+                                <div class="row">
+                                    <div class="col-7 text-end"><h6 class="mb-0">TOTAL:</h6></div>
+                                    <div class="col-5 text-end"><h6 class="mb-0" style="color: #27ae60 !important;">$<span id="totalFactura">0.00</span></h6></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- === NUEVO: MODAL DE EDICIÓN MEJORADO === -->
+    <div class="modal fade" id="modalEditarProducto" tabindex="-1" aria-labelledby="modalEditarProductoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="modalEditarProductoLabel">
+                        <i class="bi bi-pencil-square me-2"></i>
+                        Editar Cantidad
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class=" text-center modal-body">
+                    <div class="modal-producto-info">
+                        <div class="producto-nombre" id="editProductoNombre">Nombre del Producto</div>
+                        <div class="producto-detalle mt-2">
+                            <i class="bi bi-tag me-1"></i>
+                            Precio unitario: <strong>$<span id="editProductoPrecio">0.00</span></strong>
+                        </div>
+                        <div class="producto-detalle">
+                            <i class="bi bi-box me-1"></i>
+                            Cantidad actual: <strong><span id="editProductoCantidadActual">0</span></strong>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editCantidad" class="form-label fw-bold">Nueva Cantidad</label>
+                        <input type="number"
+                               id="editCantidad"
+                               name="editCantidad"
+                               class="form-control form-control-lg text-center"
+                               value="1"
+                               min="1"
+                               step="1"
+                               required
+                               onkeydown="if(['e','E','+','-','.'].includes(event.key)) event.preventDefault();"
+                               oninput="validarCantidadMaximaEdicion(this)" />
+
+                        <small class="text-muted">La cantidad debe ser mayor a 0</small>
+                    </div>
+
+                    <div class="alert alert-info mb-0">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Nuevo subtotal: <strong>$<span id="editNuevoSubtotal">0.00</span></strong>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-warning" id="btnConfirmarEdicion">
+                        <i class="bi bi-check-circle me-1"></i>
+                        Guardar Cambios
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- === NUEVO: MODAL DE ELIMINACIÓN MEJORADO === -->
+    <div class="modal fade" id="modalEliminarProducto" tabindex="-1" aria-labelledby="modalEliminarProductoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="modalEliminarProductoLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Confirmar Eliminación
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center py-3">
+                        <i class="bi bi-trash3 text-danger" style="font-size: 3rem;"></i>
+                        <p class="mt-3 mb-2 fs-5">¿Estás seguro de eliminar este producto?</p>
+
+                        <div class="modal-producto-info mt-3">
+                            <div class="producto-nombre" id="delProductoNombre">Nombre del Producto</div>
+                            <div class="producto-detalle mt-2">
+                                <i class="bi bi-box me-1"></i>
+                                Cantidad: <strong><span id="delProductoCantidad">0</span></strong>
+                            </div>
+                            <div class="producto-detalle">
+                                <i class="bi bi-currency-dollar me-1"></i>
+                                Subtotal: <strong>$<span id="delProductoSubtotal">0.00</span></strong>
+                            </div>
+                        </div>
+
+                        <p class="text-muted small mt-3 mb-0">Esta acción no se puede deshacer</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmarEliminacion">
+                        <i class="bi bi-trash3 me-1"></i>
+                        Sí, Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- === NUEVO: MODAL DE CONFIRMACIÓN DE COMPRA MEJORADO === -->
+    <div class="modal fade" id="modalConfirmacionCompra" tabindex="-1" aria-labelledby="modalConfirmacionCompraLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="modalConfirmacionCompraLabel">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        Confirmar Compra
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="bi bi-info-circle me-1"></i>Información de la Venta</h6>
+                            <p><strong>Factura:</strong> <span id="confFacturaNumero">--</span></p>
+                            <p><strong>Cliente:</strong> <span id="confCliente">--</span></p>
+                            <p><strong>Tipo de Pago:</strong> <span id="confTipoPago">--</span></p>
+
+                        </div>
+                        <div class="col-md-6">
+                            <br /> <!--Salto de linea solo estetico-->
+                            <p><strong>Fecha:</strong> <span id="confFecha">--</span></p>
+                            <p><strong>Hora:</strong> <span id="confHora">--</span></p>
+                            <!--p><strong>Subtotal:</strong> $<span id="confSubtotal">0.00</span></p>-->
+                            <!--<p><strong>IVA (13%):</strong> $<span id="confIva">0.00</span></p>-->
+                            <p><strong>Total:</strong> <span class="fs-5 text-success">$<span id="confTotal">0.00</span></span></p>
+                        </div>
+                    </div>
+                    <hr>
+                    <h6><i class="bi bi-box me-1"></i>Productos</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th class="text-end">Precio</th>
+                                    <th class="text-center">Cant.</th>
+                                    <th class="text-end">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="confProductosTabla">
+                                <!-- Productos se agregarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-success" id="btnConfirmarCompra">
+                        <i class="bi bi-cash-coin me-1"></i>
+                        Confirmar Pago
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- === NUEVO: MODAL DE ERROR MEJORADO === -->
+    <div class="modal fade" id="modalError" tabindex="-1" aria-labelledby="modalErrorLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="modalErrorLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Error
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="errorMensaje" class="mb-0">Ha ocurrido un error.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalExito" tabindex="-1" aria-labelledby="modalExitoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="modalExitoLabel">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        Éxito
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="exitoMensaje" class="mb-0">Operación completada con éxito.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- === NUEVO: MODAL DE CONFIRMACIÓN DE LIMPIEZA MEJORADO === -->
+    <div class="modal fade" id="modalConfirmarLimpiar" tabindex="-1" aria-labelledby="modalConfirmarLimpiarLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="modalConfirmarLimpiarLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Confirmar Limpieza
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center py-3">
+                        <i class="bi bi-arrow-clockwise text-warning" style="font-size: 3rem;"></i>
+                        <p class="mt-3 mb-2 fs-5">¿Estás seguro de limpiar toda la venta actual?</p>
+                        <p class="text-muted small mt-3 mb-0">Esta acción eliminará todos los productos agregados y no se puede deshacer</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-warning" id="btnConfirmarLimpiar">
+                        <i class="bi bi-arrow-clockwise me-1"></i>
+                        Sí, Limpiar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTA: EL JAVASCRIPT SE MANTIENE IGUAL - SOLO CAMBIOS VISUALES -->
+    <script>
+        (function () {
+
+            // Variables globales
+            let detallesVenta = [];
+            let numeroFacturaActual = '';
+            let debounceCliente, debounceProducto;
+            let indexEditar = -1;
+            let indexEliminar = -1;
+
+            // Inicializar modales
+            let modalEditarProducto, modalEliminarProducto, modalConfirmacionCompra, modalError;
+            let modalConfirmarLimpiar;
+
+            // Función de inicialización principal
+            function inicializar() {
+                inicializarCajero();
+                obtenerNumeroFactura();
+                cargarClientes();
+                cargarProductos();
+                actualizarFechaHora();
+                configurarEventListeners();
+                inicializarModales();
+
+                // Limpiar intervalo previo si existe
+                if (window.cajeroInterval) {
+                    clearInterval(window.cajeroInterval);
+                }
+                window.cajeroInterval = setInterval(actualizarFechaHora, 1000);
+
+
+
+
+            }
+
+            function inicializarModales() {
+                // Inicializar modales
+                modalEditarProducto = new bootstrap.Modal(document.getElementById('modalEditarProducto'));
+                modalEliminarProducto = new bootstrap.Modal(document.getElementById('modalEliminarProducto'));
+                modalConfirmacionCompra = new bootstrap.Modal(document.getElementById('modalConfirmacionCompra'));
+                modalError = new bootstrap.Modal(document.getElementById('modalError'));
+                modalConfirmarLimpiar = new bootstrap.Modal(document.getElementById('modalConfirmarLimpiar'));
+                modalExito = new bootstrap.Modal(document.getElementById('modalExito'));
+            }
+
+            function configurarEventListeners() {
+                // Eventos de búsqueda
+                $('#busquedaCliente').off('input').on('input', filtrarClientes);
+                $('#busquedaProducto').off('input').on('input', filtrarProductos);
+
+                // SOLO mantener el evento submit del formulario
+                $('#formAgregarProducto').off('submit').on('submit', function (e) {
+                    e.preventDefault();
+                    agregarProducto();
+                });
+
+                // Eventos de modales
+                $('#btnLimpiar').off('click').on('click', mostrarConfirmacionLimpiar);
+                $('#btnConfirmarLimpiar').off('click').on('click', confirmarLimpiar);
+
+
+                $('#editCantidad').off('input').on('input', actualizarNuevoSubtotal);
+                $('#btnConfirmarEdicion').off('click').on('click', confirmarEdicion);
+                $('#btnConfirmarEliminacion').off('click').on('click', confirmarEliminacion);
+                $('#btnConfirmarCompra').off('click').on('click', procesarPago);
+
+                // Eventos de botones principales - ELIMINAR la línea del btnAgregar
+                // $('#btnAgregar').off('click').on('click', agregarProducto); // <-- QUITAR ESTA LÍNEA
+                $('#btnPagar').off('click').on('click', validarPago);
+                //$('#btnLimpiar').off('click').on('click', confirmarLimpiar);
+
+                $('#btnConfirmarLimpiar').off('click').on('click', confirmarLimpiar);
+                // Eventos de selects
+                $('#cliente').off('change').on('change', cambioCliente);
+                $('#producto').off('change').on('change', cambioProducto);
+            }
+
+            // Ejecutar inicialización cuando el DOM esté listo
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', inicializar);
+            } else {
+                inicializar();
+            }
+
+            function inicializarCajero() {
+                const nombreEmpleado = localStorage.getItem('empleadoNombre') || 'Sin asignar';
+                const partes = nombreEmpleado.trim().split(' ');
+                const nombreCorto = partes.length >= 2 ? `${partes[0]} ${partes[partes.length - 2]}` : nombreEmpleado;
+                $('#cajeroNombre').text(nombreCorto);
+            }
+
+            function obtenerNumeroFactura() {
+                $.ajax({
+                    url: '/api/Facturas/nueva-factura',
+                    method: 'GET',
+                    success: function (numeroFactura) {
+                        numeroFacturaActual = numeroFactura;
+                        $('#facturaNumero').text(numeroFactura);
+                    },
+                    error: function (err) {
+                        console.error('Error obteniendo número de factura:', err);
+                        mostrarModalError('Error al obtener el número de factura. Intente recargar la página.');
+                    }
+                });
+            }
+
+            function actualizarFechaHora() {
+                const ahora = new Date();
+                $('#fechaActual').text(ahora.toLocaleDateString('es-SV'));
+                $('#horaActual').text(ahora.toLocaleTimeString('es-SV'));
+            }
+
+            function cargarClientes() {
+                $.ajax({
+                    url: '/api/Clientes/buscar?buscar=',
+                    method: 'GET',
+                    success: function (data) {
+                        const clientes = data.map(cliente => ({
+                            id: cliente.idCliente,
+                            nombre: cliente.nombre,
+                            email: cliente.email,
+                            direccion: cliente.direccion
+                        }));
+                        console.log(clientes);
+                        actualizarSelectClientes(clientes);
+                    },
+                    error: function (err) {
+                        console.error('Error cargando clientes:', err);
+                        mostrarModalError('Error al cargar clientes. Intente nuevamente.');
+                    }
+                });
+            }
+
+            function cargarProductos() {
+                $.ajax({
+                    url: '/api/Inventario/buscar-cajero?buscar=',
+                    method: 'GET',
+                    success: function (data) {
+                        const productos = data.map(inv => ({
+                            id: inv.idInventario,  // ID de inventario
+                            nombre: inv.productoNombre,
+                            precio: parseFloat(inv.precio),
+                            stock: parseInt(inv.cantidad)  // Asumiendo que la API devuelve 'cantidad' como stock
+                        }));
+                        actualizarSelectProductos(productos);
+                    },
+                    error: function (err) {
+                        console.error('Error cargando productos:', err);
+                        mostrarModalError('Error al cargar productos. Intente nuevamente.');
+                    }
+                });
+            }
+
+            function filtrarClientes() {
+                clearTimeout(debounceCliente);
+                debounceCliente = setTimeout(() => {
+                    const busqueda = $('#busquedaCliente').val();
+                    $.ajax({
+                        url: `/api/Clientes/buscar?buscar=${encodeURIComponent(busqueda)}`,
+                        method: 'GET',
+                        success: function (data) {
+                            const clientes = data.map(cliente => ({
+                                id: cliente.idCliente,
+                                nombre: cliente.nombre,
+                                email: cliente.email,
+                                direccion: cliente.direccion
+                            }));
+                            console.log(clientes);
+                            actualizarSelectClientes(clientes);
+                        },
+                        error: function (err) {
+                            console.error('Error filtrando clientes:', err);
+                        }
+                    });
+                }, 300);
+            }
+
+            function filtrarProductos() {
+                clearTimeout(debounceProducto);
+                debounceProducto = setTimeout(() => {
+                    const busqueda = $('#busquedaProducto').val();
+                    $.ajax({
+                        url: `/api/Inventario/buscar-cajero?buscar=${encodeURIComponent(busqueda)}`,
+                        method: 'GET',
+                        success: function (data) {
+                            const productos = data.map(inv => ({
+                                id: inv.idInventario,  // ID de inventario
+                                nombre: inv.productoNombre,
+                                precio: parseFloat(inv.precio),
+                                stock: parseInt(inv.cantidad)  // Asumiendo que la API devuelve 'cantidad' como stock
+                            }));
+                            actualizarSelectProductos(productos);
+                        },
+                        error: function (err) {
+                            console.error('Error filtrando productos:', err);
+                        }
+                    });
+                }, 300);
+            }
+
+            function actualizarSelectClientes(clientes) {
+                const select = $('#cliente');
+                select.empty().append('<option value="">Seleccione un cliente...</option>');
+                if (clientes.length === 0) {
+                    select.append('<option value="" disabled>No se encontraron resultados</option>');
+                } else {
+                    clientes.forEach(cliente => {
+                        select.append(`
+                                                <option value="${cliente.id}"
+                                                        data-email="${cliente.email}"
+                                                        data-direccion="${cliente.direccion || ''}"> <!-- ← AGREGAR AQUÍ -->
+                                                    ${cliente.nombre}
+                                                </option>
+                                            `);
+                    });
+                }
+            }
+
+            function actualizarSelectProductos(productos) {
+                const select = $('#producto');
+                select.empty().append('<option value="">Seleccione un producto...</option>');
+                if (productos.length === 0) {
+                    select.append('<option value="" disabled>No se encontraron resultados</option>');
+                } else {
+                    productos.forEach(producto => {
+                        select.append(`<option value="${producto.id}" data-precio="${producto.precio}" data-stock="${producto.stock}">${producto.nombre}</option>`);
+                    });
+                }
+            }
+
+            function cambioCliente() {
+                const email = $('#cliente').find(':selected').data('email') || '';
+                $('#email').val(email);
+            }
+
+            function cambioProducto() {
+                const precioSinIVA = $('#producto').find(':selected').data('precio') || 0;
+                const stock = $('#producto').find(':selected').data('stock') || 0;
+
+                // ✅ CALCULAR PRECIO CON IVA PARA MOSTRAR
+                const precioConIVA = precioSinIVA * 1.13;
+
+
+                $('#precio').val(precioConIVA > 0 ? `${precioConIVA.toFixed(2)}` : '');
+                // Establecer el max en el input cantidad basado en el stock
+                $('#cantidad').attr('max', stock);
+                $('#cantidad').val(1);
+            }
+
+            function agregarProducto() {
+                // Verificar si el formulario pasa las validaciones HTML
+                const formulario = document.getElementById('formAgregarProducto');
+
+                if (!formulario.checkValidity()) {
+                    // Si no pasa las validaciones, mostrar los mensajes nativos
+                    formulario.reportValidity();
+                    return; // No agregar el producto
+                }
+
+                const productoId = $('#producto').val();
+                const productoNombre = $('#producto option:selected').text();
+                const precio = parseFloat($('#producto option:selected').data('precio')) || 0;
+                const stock = parseInt($('#producto option:selected').data('stock')) || 0;
+                const cantidad = parseInt($('#cantidad').val()) || 1;
+
+                if (!productoId) {
+                    mostrarModalError('Debe seleccionar un producto');
+                    return;
+                }
+
+                if (cantidad <= 0) {
+                    mostrarModalError('La cantidad debe ser mayor a 0');
+                    return;
+                }
+
+                // Verificar stock disponible considerando productos ya agregados
+                const indiceExistente = detallesVenta.findIndex(d => d.productoId === productoId);
+                const cantidadYaAgregada = indiceExistente >= 0 ? detallesVenta[indiceExistente].cantidad : 0;
+                const cantidadTotal = cantidadYaAgregada + cantidad;
+
+                if (cantidadTotal > stock) {
+                    mostrarModalError(`No hay suficiente stock. Disponible: ${stock}, Intentando agregar: ${cantidad} (Total: ${cantidadTotal})`);
+                    return;
+                }
+
+                const subtotal = precio * cantidad;
+
+                if (indiceExistente >= 0) {
+                    detallesVenta[indiceExistente].cantidad += cantidad;
+                    detallesVenta[indiceExistente].subtotal = detallesVenta[indiceExistente].precio * detallesVenta[indiceExistente].cantidad;
+                } else {
+                    detallesVenta.push({
+                        productoId,
+                        productoNombre,
+                        precio,
+                        cantidad,
+                        subtotal,
+                        stock  // Agregar stock para referencia en edición
+                    });
+                }
+
+                actualizarTabla();
+                limpiarFormularioProducto();
+            }
+
+
+            // Agregar esta función global (junto a validarCantidadMaxima)
+            window.validarCantidadMaximaEdicion = function (input) {
+                const max = parseInt(input.getAttribute('max'));
+                const min = parseInt(input.getAttribute('min'));
+                const value = parseInt(input.value) || 0;
+
+                if (value > max) {
+                    input.value = max;
+                    mostrarModalError(`La cantidad máxima permitida es ${max} unidades`);
+                }
+
+                if (value < min) {
+                    input.value = "";
+                }
+            };
+
+
+
+            // Agregar esta función global (junto a validarCantidadMaxima)
+            window.validarCantidadMaximaEdicion = function (input) {
+                const max = parseInt(input.getAttribute('max')) || 500;
+                const min = parseInt(input.getAttribute('min')) || 1;
+                const value = parseInt(input.value) || 0;
+
+                if (value > max) {
+                    input.value = max;
+                    mostrarModalError(`La cantidad máxima permitida es ${max} unidades`);
+                }
+
+                if (value < min) {
+                    input.value = "";
+                }
+            };
+
+
+            function limpiarFormularioProducto() {
+                $('#producto').val('');
+                $('#precio').val('');
+                $('#cantidad').val(1);
+
+                // Limpiar estados de validación
+                $('#formAgregarProducto').removeClass('was-validated');
+                $('.form-control, .form-select').removeClass('is-valid is-invalid');
+            }
+
+            function actualizarTabla() {
+                const tbody = $('#tablaDetalles tbody');
+                tbody.empty();
+
+                if (detallesVenta.length === 0) {
+                    tbody.html('<tr><td colspan="5" class="text-center text-muted">No hay productos agregados</td></tr>');
+                    $('#btnPagar').prop('disabled', true);
+                } else {
+                    detallesVenta.forEach((detalle, index) => {
+                        // CALCULAR PRECIO Y SUBTOTAL CON IVA PARA MOSTRAR
+                        const precioConIVA = detalle.precio * 1.13;
+                        const subtotalConIVA = detalle.subtotal * 1.13;
+
+                        tbody.append(`
+                                            <tr>
+                                                <td>${detalle.productoNombre}</td>
+                                                <td class="text-end">$${precioConIVA.toFixed(2)}</td>
+                                                <td class="text-center">${detalle.cantidad}</td>
+                                                <td class="text-end">$${subtotalConIVA.toFixed(2)}</td>
+                                                <td class="text-center">
+                                                    <div class="btn-group" role="group">
+                                                        <button class="btn btn-outline-warning btn-sm" onclick="abrirModalEditar(${index})">
+                                                            <i class="bi bi-pencil-square"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-danger btn-sm" onclick="abrirModalEliminar(${index})">
+                                                            <i class="bi bi-trash3"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        `);
+                    });
+                    $('#btnPagar').prop('disabled', false);
+                }
+
+                calcularTotales();
+            }
+
+            function abrirModalEditar(index) {
+                indexEditar = index;
+                const detalle = detallesVenta[index];
+
+                $('#editProductoNombre').text(detalle.productoNombre);
+                //MOSTRAR PRECIO CON IVA EN EL MODAL
+                const precioConIVA = detalle.precio * 1.13;
+                $('#editProductoPrecio').text(precioConIVA.toFixed(2));
+                $('#editProductoCantidadActual').text(detalle.cantidad);
+                $('#editCantidad').val(detalle.cantidad).attr('max', detalle.stock);  // Establecer max basado en stock
+
+                actualizarNuevoSubtotal();
+                modalEditarProducto.show();
+            }
+
+            function actualizarNuevoSubtotal() {
+                const cantidad = parseInt($('#editCantidad').val()) || 0;
+                const precio = parseFloat($('#editProductoPrecio').text()) / 1.13 || 0; // Convertir de vuelta a SIN IVA para cálculo
+                const nuevoSubtotal = cantidad * precio;
+                const nuevoSubtotalConIVA = nuevoSubtotal * 1.13; // ✅ MOSTRAR CON IVA
+
+                $('#editNuevoSubtotal').text(nuevoSubtotalConIVA.toFixed(2));
+            }
+
+            function confirmarEdicion() {
+                const nuevaCantidad = parseInt($('#editCantidad').val());
+                const detalle = detallesVenta[indexEditar];
+
+                // Validar que no esté vacío y sea un número válido
+                if (isNaN(nuevaCantidad)) {
+                    mostrarModalError('La cantidad debe ser un número válido');
+                    $('#editCantidad').val(1);
+                    return;
+                }
+
+                if (nuevaCantidad <= 0) {
+                    mostrarModalError('La cantidad debe ser mayor a 0');
+                    return;
+                }
+
+                if (nuevaCantidad > detalle.stock) {
+                    mostrarModalError(`La cantidad no puede exceder el stock disponible: ${detalle.stock}`);
+                    return;
+                }
+
+                detallesVenta[indexEditar].cantidad = nuevaCantidad;
+                detallesVenta[indexEditar].subtotal = detallesVenta[indexEditar].precio * nuevaCantidad;
+
+                actualizarTabla();
+                modalEditarProducto.hide();
+            }
+
+            function abrirModalEliminar(index) {
+                indexEliminar = index;
+                const detalle = detallesVenta[index];
+
+                // CALCULAR SUBTOTAL CON IVA PARA MOSTRAR
+                const subtotalConIVA = detalle.subtotal * 1.13;
+
+                $('#delProductoNombre').text(detalle.productoNombre);
+                $('#delProductoCantidad').text(detalle.cantidad);
+                $('#delProductoSubtotal').text(subtotalConIVA.toFixed(2));
+
+                modalEliminarProducto.show();
+            }
+
+            function confirmarEliminacion() {
+                detallesVenta.splice(indexEliminar, 1);
+                actualizarTabla();
+                modalEliminarProducto.hide();
+            }
+
+            // Exponer funciones globalmente para los onclick
+            window.abrirModalEditar = abrirModalEditar;
+            window.abrirModalEliminar = abrirModalEliminar;
+
+            function calcularTotales() {
+                const subtotal = detallesVenta.reduce((sum, d) => sum + d.subtotal, 0);
+                const iva = subtotal * 0.13;
+                const total = subtotal + iva;
+
+                $('#subtotalFactura').text(subtotal.toFixed(2));
+                $('#ivaFactura').text(iva.toFixed(2));
+                $('#totalFactura').text(total.toFixed(2));
+            }
+
+            function validarPago() {
+                const tipoPago = $('#tipoPago').val();
+
+                if (!tipoPago) {
+                    mostrarModalError('Debe seleccionar un tipo de pago');
+                    return;
+                }
+
+                if (detallesVenta.length === 0) {
+                    mostrarModalError('Debe agregar al menos un producto');
+                    return;
+                }
+
+                // Llenar modal de confirmación
+                llenarModalConfirmacion();
+                modalConfirmacionCompra.show();
+            }
+
+
+
+
+            function llenarModalConfirmacion() {
+
+                // Determinar nombre del cliente
+                let clienteNombre = 'No aplica';
+                const clienteOption = $('#cliente option:selected');
+
+                // Verificar que sea una opción válida (no el placeholder)
+                if (clienteOption.val() && clienteOption.val() !== "") {
+                    clienteNombre = clienteOption.text();
+                }
+
+                const tipoPago = $('#tipoPago option:selected').text();
+                const ahora = new Date();
+
+                $('#confFacturaNumero').text(numeroFacturaActual);
+                $('#confCliente').text(clienteNombre);
+                $('#confTipoPago').text(tipoPago);
+                $('#confFecha').text(ahora.toLocaleDateString('es-SV'));
+                $('#confHora').text(ahora.toLocaleTimeString('es-SV'));
+
+                const subtotal = detallesVenta.reduce((sum, d) => sum + d.subtotal, 0);
+                const iva = subtotal * 0.13;
+                const total = subtotal + iva;
+
+                $('#confSubtotal').text(subtotal.toFixed(2));  // Subtotal SIN IVA (para desglose)
+                $('#confIva').text(iva.toFixed(2));            // IVA separado
+                $('#confTotal').text(total.toFixed(2));        // Total CON IVA
+
+                const tbody = $('#confProductosTabla');
+                tbody.empty();
+                detallesVenta.forEach(detalle => {
+
+                    // CALCULAR PRECIO Y SUBTOTAL CON IVA PARA MOSTRAR
+                    const precioConIVA = detalle.precio * 1.13;
+                    const subtotalConIVA = detalle.subtotal * 1.13;
+
+                    tbody.append(`
+                                        <tr>
+                                            <td>${detalle.productoNombre}</td>
+                                            <td class="text-end">$${precioConIVA.toFixed(2)}</td>
+                                            <td class="text-center">${detalle.cantidad}</td>
+                                            <td class="text-end">$${subtotalConIVA.toFixed(2)}</td>
+                                        </tr>
+                                    `);
+                });
+            }
+
+            function enviarFacturaFormatoExterno() {
+                // Solo enviar si hay un cliente seleccionado
+                const clienteId = $('#cliente').val();
+                if (!clienteId) {
+                    console.log('No se envió factura externa: Cliente no seleccionado');
+                    return; // Salir de la función si no hay cliente
+                }
+                const clienteSeleccionado = $('#cliente option:selected');
+                const clienteNombre = clienteSeleccionado.text();
+                const clienteEmail = clienteSeleccionado.data('email') || '';
+                const clienteDireccion = clienteSeleccionado.data('direccion') || ''; // ← ESTO ESTÁ BIEN
+
+                const subtotal = detallesVenta.reduce((sum, d) => sum + d.subtotal, 0);
+                const iva = subtotal * 0.13;
+                const total = subtotal + iva;
+
+                const facturaExterna = {
+                    "invoiceNumber": numeroFacturaActual,
+                    "customer": {
+                        "name": clienteNombre.trim(),
+                        "email": clienteEmail,
+                        "address": clienteDireccion.trim()
+                    },
+                    "items": detallesVenta.map(detalle => ({
+                        "description": detalle.productoNombre,
+                        "quantity": detalle.cantidad,
+                        "unitPrice": (detalle.precio * 1.13).toFixed(2) // OPCIONAL: CON IVA para mostrar
+                    })),
+                    "subtotal": subtotal,
+                    "taxAmount": iva,
+                    "grandTotal": total,
+                    "currency": "USD"
+                };
+
+                console.log('Enviando factura a sistema externo:', facturaExterna);
+
+                // Enviar a API externa
+                $.ajax({
+                    url: '/api/Invoicing/send',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(facturaExterna),
+                    success: function (response) {
+                        console.log('✅ Factura enviada exitosamente a sistema externo');
+                    },
+                    error: function (err) {
+                        console.warn('⚠️ Factura no se pudo enviar a sistema externo, pero el proceso continúa:', err);
+                        // No mostrar error al usuario para no interrumpir el flujo
+                    }
+                });
+            }
+
+
+
+            function procesarPago() {
+                modalConfirmacionCompra.hide();
+
+                const clienteId = $('#cliente').val();
+                const tipoPago = $('#tipoPago').val();
+
+                const subtotal = detallesVenta.reduce((sum, d) => sum + d.subtotal, 0);
+                const iva = subtotal * 0.13;
+                const total = subtotal + iva;
+
+                const factura = {
+                    idFactura: 0,
+                    idEmpleado: parseInt(localStorage.getItem('empleadoId')) || 0,
+                    idCliente: clienteId ? parseInt(clienteId) : null,
+                    numeroFactura: numeroFacturaActual.trim(),
+                    subtotal: subtotal,
+                    total: total,
+                    iva: iva,
+                    metodoPago: tipoPago.charAt(0).toUpperCase() + tipoPago.slice(1),
+                    fecha: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+                        .toISOString()
+                        .split("T")[0],
+                    hora: new Date().toTimeString().split(' ')[0]
+                };
+
+                // Enviar factura primero
+                $.ajax({
+                    url: '/api/Facturas',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(factura),
+                    success: function (responseFactura) {
+                        const idFacturaCreada = responseFactura.idFactura;
+                        console.log('Factura creada con ID:', idFacturaCreada);
+
+                        // ✅ SOLO ENVIAR A SISTEMA EXTERNO SI HAY CLIENTE
+                        if (clienteId) {
+                            enviarFacturaFormatoExterno();
+                        } else {
+                            console.log('📝 Factura guardada localmente (sin cliente)');
+                        }
+
+                        // Enviar cada detalle individualmente con el idFactura correcto
+                        let detallesEnviados = 0;
+                        const totalDetalles = detallesVenta.length;
+
+                        detallesVenta.forEach((detalle, index) => {
+                            const detalleFactura = {
+                                idFacturaDetalle: 0,
+                                idFactura: idFacturaCreada,  // Mismo ID de la factura creada
+                                idInventario: parseInt(detalle.productoId),  // Siempre ID de inventario
+                                cantidad: detalle.cantidad,
+                                precio: detalle.precio,
+                                subtotal: detalle.subtotal
+                            };
+
+                            $.ajax({
+                                url: '/api/FacturasDetalles',
+                                method: 'POST',
+                                contentType: 'application/json',
+                                data: JSON.stringify(detalleFactura),
+                                success: function () {
+                                    detallesEnviados++;
+                                    console.log(`Detalle ${detallesEnviados}/${totalDetalles} enviado`);
+
+                                    // Disminuir inventario
+                                    disminuirInventario(detalle.productoId, detalle.cantidad, () => {
+                                        if (detallesEnviados === totalDetalles) {
+                                            mostrarModalError('Pago procesado exitosamente!\nFactura Nº: ' + numeroFacturaActual, true); // Usar modal para éxito también, o alert
+                                            limpiarTodo();
+                                        }
+                                    });
+                                },
+                                error: function (err) {
+                                    console.error(`Error enviando detalle ${index + 1}:`, err);
+                                    mostrarModalError(`Error al procesar detalle del producto: ${detalle.productoNombre}`);
+                                }
+                            });
+                        });
+                    },
+                    error: function (err) {
+                        console.error('Error creando factura:', err);
+                        mostrarModalError('Error al procesar la factura. Intente nuevamente.');
+                    }
+                });
+            }
+
+            function disminuirInventario(idInventario, cantidadVendida, callback) {
+                $.ajax({
+                    url: `/api/Inventario/reducir-stock/${idInventario}?cantidad=${cantidadVendida}`,
+                    method: 'PUT',
+                    success: function (response) {
+                        if (response.mensaje === 'Stock reducido correctamente.') {
+                            console.log(`Inventario disminuido para ID ${idInventario} en ${cantidadVendida}. Cantidad restante: ${response.cantidad}`);
+                            if (callback) callback();
+                        } else {
+                            mostrarModalError(`Error al reducir stock: ${response.mensaje}`);
+                        }
+                    },
+                    error: function (err) {
+                        console.error(`Error disminuyendo inventario para ID ${idInventario}:`, err);
+                        mostrarModalError(`Error al actualizar inventario para el producto con ID ${idInventario}`);
+                    }
+                });
+            }
+
+            function confirmarLimpiar() {
+                limpiarTodo();
+                modalConfirmarLimpiar.hide();
+            }
+
+            function mostrarConfirmacionLimpiar() {
+                if (detallesVenta.length === 0) {
+                    mostrarModalError('No hay productos para limpiar');  // Usar la función existente
+                    return;
+                }
+
+                modalConfirmarLimpiar.show();
+            }
+
+
+
+            function limpiarTodo() {
+                detallesVenta = [];
+                $('#cliente').val('');
+                $('#email').val('');
+                $('#tipoPago').val('');
+                limpiarFormularioProducto();
+                actualizarTabla();
+                // Obtener nuevo número de factura
+                obtenerNumeroFactura();
+            }
+
+            function mostrarModalError(mensaje, esExito = false) {
+                $('#errorMensaje').text(mensaje);
+                if (esExito) {
+                    $('#modalErrorLabel').html('<i class="bi bi-check-circle-fill me-2"></i>Éxito');
+                    $('#modalError .modal-header').removeClass('bg-danger').addClass('bg-success');
+                } else {
+                    $('#modalErrorLabel').html('<i class="bi bi-exclamation-triangle-fill me-2"></i>Error');
+                    $('#modalError .modal-header').removeClass('bg-success').addClass('bg-danger');
+                }
+                modalError.show();
+            }
+        })();
+    </script>
+</body>
+</html>

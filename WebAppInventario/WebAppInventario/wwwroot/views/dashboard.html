@@ -1,0 +1,917 @@
+﻿<!DOCTYPE html>
+<html data-bs-theme="dark">
+<head>
+    <meta charset="utf-8" />
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        .header-info {
+            flex-shrink: 0;
+            background: var(--bs-primary-bg-subtle);
+            padding: 0.3rem;
+            border-radius: 0.3rem;
+            font-size: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dash-card {
+            padding: 0.8rem;
+            border-radius: 0.4rem;
+            background: rgba(255, 255, 255, 0.042);
+            box-shadow: 0 0 6px rgba(0,0,0,0.1);
+            height: 100%;
+            transition: transform 0.2s;
+        }
+
+            .dash-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            }
+
+        .dash-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #fffcfce3;
+            margin-bottom: 0.2rem;
+        }
+
+        .dash-value {
+            font-size: 1.6rem;
+            font-weight: bold;
+        }
+
+        .table-sm {
+            font-size: 0.75rem;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin: 0.4rem 0;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+
+        .quick-btn {
+            transition: all 0.2s;
+        }
+
+            .quick-btn:hover {
+                transform: scale(1.05);
+            }
+        /* Agregar estos estilos para corregir los círculos */
+        .badge.rounded-circle {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+            .badge.rounded-circle .bi {
+                font-size: 1rem;
+                line-height: 1;
+            }
+    </style>
+</head>
+
+<body>
+
+    <div class="container-fluid">
+
+        <!-- Encabezado -->
+        <div class="header-info">
+            <div class="row text-center">
+                <div class="col"><strong>Rol:</strong> <span id="rolEmpleado">rol</span></div>
+                <div class="col"><strong>Fecha:</strong> <span id="currentDate">--/--/--</span></div>
+                <div class="col"><strong>Hora:</strong> <span id="currentTime">--:--</span></div>
+            </div>
+        </div>
+
+        <!-- Contenido -->
+        <div class="contenido-principal">
+            <div class="row g-2">
+
+                <!-- INDICADORES -->
+                <div class="col-md-3 col-6">
+                    <div class="dash-card">
+                        <div class="dash-title">
+                            <i class="bi bi-box-seam-fill"></i> Productos Totales
+                        </div>
+                        <div id="kpiProductosTotales" class="dash-value text-primary">0</div>
+                        <small class="text-muted">Productos registrados</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="dash-card">
+                        <div class="dash-title">
+                            <i class="bi bi-currency-dollar"></i> Valor Inventario
+                        </div>
+                        <div id="kpiValorInventario" class="dash-value text-primary">0</div>
+                        <small class="text-muted">Inventario valorizado</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="dash-card">
+                        <div class="dash-title">
+                            <i class="bi bi-exclamation-octagon-fill"></i> Stock Bajo
+                        </div>
+                        <div id="kpiStockBajo" class="dash-value text-danger">0</div>
+                        <small class="text-muted">Productos por reabastecer</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="dash-card">
+                        <div class="dash-title">
+                            <i class="bi bi-receipt-cutoff"></i> Facturas (hoy)
+                        </div>
+                        <div id="kpiFacturasHoy" class="dash-value text-primary">0</div>
+                        <small class="text-muted">Facturas generadas hoy</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="dash-card">
+                        <div class="dash-title">
+                            <i class="bi bi-graph-up-arrow"></i> Ventas Hoy
+                        </div>
+                        <div id="kpiVentasHoy" class="dash-value text-success">$0.00</div>
+                        <small class="text-muted">Ingresos del día</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="dash-card">
+                        <div class="dash-title">
+                            <i class="bi bi-bag-check-fill"></i> Compras (mes)
+                        </div>
+                        <div id="kpiComprasMes" class="dash-value text-warning">$0.00</div>
+                        <small class="text-muted">Compras registradas este mes</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="dash-card">
+                        <div class="dash-title">
+                            <i class="bi bi-cart-check-fill"></i> Compras Realizadas (mes)
+                        </div>
+                        <div id="kpiComprasRealizadasMes" class="dash-value text-warning">$0.00</div>
+                        <small class="text-muted">Total gastado en proveedores</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="dash-card">
+                        <div class="dash-title">
+                            <i class="bi bi-arrow-return-left"></i> Devoluciones (mes)
+                        </div>
+                        <div id="kpiDevolucionesMes" class="dash-value text-danger">0</div>
+                        <small class="text-muted">Productos devueltos por clientes</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="dash-card">
+                        <div class="dash-title">
+                            <i class="bi bi-building-fill"></i> Proveedores
+                        </div>
+                        <div id="kpiProveedores" class="dash-value text-secondary">0</div>
+                        <small class="text-muted">Proveedores activos</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="dash-card">
+                        <div class="dash-title">
+                            <i class="bi bi-people-fill"></i> Clientes
+                        </div>
+                        <div id="kpiClientes" class="dash-value text-info">0</div>
+                        <small class="text-muted">Clientes registrados</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="dash-card">
+                        <div class="dash-title">
+                            <i class="bi bi-person-workspace"></i> Empleados
+                        </div>
+                        <div id="kpiEmpelados" class="dash-value text-info">0</div>
+                        <small class="text-muted">Personal activo</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="dash-card">
+                        <div class="dash-title">
+                            <i class="bi bi-tags-fill"></i>Categorias
+                        </div>
+                        <div id="kpiCategorias" class="dash-value text-secondary">0</div>
+                        <small class="text-muted">Categorias registradas</small>
+                    </div>
+                </div>
+
+
+
+                <!-- 🔥 CONTENEDOR GENERAL PARA ALINEAR TODO LO DEMÁS -->
+                <div class="col-12">
+                    <div class="row g-4 mt-1">
+
+                        <!-- ATAJOS RÁPIDOS -->
+                        <div class="col-12">
+                            <div class="card p-4 mb-4">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold">Atajos rápidos</h6>
+                                        <small class="text-muted">Acciones frecuentes para <span id="rolNombre" class="fw-bold text-primary">tu rol</span></small>
+                                    </div>
+                                    <div class="d-flex gap-2 flex-wrap" id="contenedorAtajos">
+                                        <!-- Los atajos se cargarán dinámicamente según el rol -->
+                                        <div class="text-muted small">Cargando atajos...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- GRÁFICA + TOP PRODUCTOS -->
+                        <div class="col-lg-7">
+                            <div class="card p-3 h-100">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="mb-0 fw-bold">Ventas del Mes</h6>
+                                    <div class="small text-muted">Actualizado: hoy</div>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="ventasChart"></canvas>
+                                </div>
+
+                                <div class="row mt-3 g-2">
+                                    <div class="col-6">
+                                        <div class="d-flex justify-content-between small">
+                                            <span>Ventas totales del mes:</span>
+                                            <span class="fw-bold" id="ventasTotalesMes">$0.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="d-flex justify-content-between small">
+                                            <span>Promedio diario:</span>
+                                            <span class="fw-bold" id="promedioDiario">$0.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TOP + COMPRAS -->
+                        <div class="col-lg-5">
+                            <div class="card p-3 h-100">
+                                <h6 class="fw-bold mb-3">Top productos / Últimas compras</h6>
+
+                                <small class="text-muted">Top 5 productos</small>
+                                <ul class="list-group list-group-flush mt-2" id="listaTopProductos">
+                                    <li class="list-group-item d-flex justify-content-between px-0">Martillo <span class="badge bg-light text-dark">120</span></li>
+                                    <li class="list-group-item d-flex justify-content-between px-0">Cinta métrica <span class="badge bg-light text-dark">94</span></li>
+                                    <li class="list-group-item d-flex justify-content-between px-0">Taladro <span class="badge bg-light text-dark">73</span></li>
+                                    <li class="list-group-item d-flex justify-content-between px-0">Tornillos <span class="badge bg-light text-dark">66</span></li>
+                                    <li class="list-group-item d-flex justify-content-between px-0">Destornillador <span class="badge bg-light text-dark">45</span></li>
+                                </ul>
+
+                                <small class="text-muted mt-3 d-block">Últimas compras</small>
+                                <table class="table table-sm mt-2 mb-0">
+                                    <thead>
+                                        <tr><th>Fecha</th><th>Proveedor</th><th class="text-end">Total</th></tr>
+                                    </thead>
+                                    <tbody id="tbodyUltimasCompras">
+                                        <tr><td>2025-11-01</td><td>Galvanissa</td><td class="text-end">$250.00</td></tr>
+                                        <tr><td>2025-11-02</td><td>Ferromax</td><td class="text-end">$480.00</td></tr>
+                                        <tr><td>2025-11-04</td><td>Construrama</td><td class="text-end">$140.00</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- FACTURAS + ACTIVIDAD -->
+                        <div class="col-lg-6">
+                            <div class="card p-3 h-100">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <h6 class="fw-bold">Últimas Facturas</h6>
+                                    <button class="small" id="verTodasFacturas" style="background:none;border:none;padding:0;color:#0d6efd;cursor:pointer;">
+                                        Ver todas
+                                    </button>
+
+                                </div>
+
+                                <table class="table table-sm mb-0">
+                                    <thead>
+                                        <tr><th>Fecha</th><th>Factura</th><th class="text-end">Total</th></tr>
+                                    </thead>
+                                    <tbody id="tbodyUltimasFacturas">
+                                        <tr><td>2025-11-05</td><td>FAC000002</td><td class="text-end">$35.50</td></tr>
+                                        <tr><td>2025-11-05</td><td>FAC000003</td><td class="text-end">$18.10</td></tr>
+                                        <tr><td>2025-11-06</td><td>FAC000004</td><td class="text-end">$89.99</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="card p-3 h-100">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <h6 class="fw-bold">Actividad reciente</h6>
+                                    <small class="text-muted">Últimas 24h</small>
+                                </div>
+
+                                <ul class="list-group list-group-flush" id="listaActividadReciente">
+                                    <li class="list-group-item">
+                                        <div class="d-flex gap-3">
+                                            <div class="badge bg-primary rounded-circle p-2"><i class="bi bi-bag-check"></i></div>
+                                            <div>
+                                                <div class="fw-bold">Compra recibida</div>
+                                                <div class="small text-muted">Proveedor: Ferromax — 2025-11-12</div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li class="list-group-item">
+                                        <div class="d-flex gap-3">
+                                            <div class="badge bg-warning rounded-circle p-2"><i class="bi bi-arrow-return-left"></i></div>
+                                            <div>
+                                                <div class="fw-bold">Devolución registrada</div>
+                                                <div class="small text-muted">Factura FAC000002 — 2025-11-12</div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li class="list-group-item">
+                                        <div class="d-flex gap-3">
+                                            <div class="badge bg-success rounded-circle p-2"><i class="bi bi-cart-check"></i></div>
+                                            <div>
+                                                <div class="fw-bold">Venta en caja</div>
+                                                <div class="small text-muted">FAC000004 — 2025-11-12</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- PIE -->
+                <div class="d-flex justify-content-between align-items-center small text-muted mt-3">
+                    <div>Última actualización: <strong id="lastUpdate">2025-11-12 18:20</strong></div>
+                    <div>Versión del sistema: <strong>v1.29.2</strong></div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        (function () {
+            'use strict';
+
+            let ventasChartInstance = null;
+            let chartJsLoaded = false;
+
+            // Función para cargar Chart.js dinámicamente
+            function cargarChartJS() {
+                return new Promise((resolve, reject) => {
+                    if (typeof Chart !== 'undefined') {
+                        chartJsLoaded = true;
+                        resolve();
+                        return;
+                    }
+
+                    const script = document.createElement('script');
+                    script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+                    script.onload = () => {
+                        chartJsLoaded = true;
+                        console.log('✅ Chart.js cargado correctamente');
+                        resolve();
+                    };
+                    script.onerror = () => {
+                        console.error('❌ Error cargando Chart.js');
+                        reject(new Error('No se pudo cargar Chart.js'));
+                    };
+                    document.head.appendChild(script);
+                });
+            }
+
+            // Cargar datos reales de las APIs
+            async function cargarDatosDashboard() {
+                try {
+                    const [kpis, ventasMensuales, topProductos, ultimasCompras, ultimasFacturas, actividadReciente] = await Promise.all([
+                        fetch('/api/dashboard/kpis').then(r => r.json()),
+                        fetch('/api/dashboard/ventas-mensuales').then(r => r.json()),
+                        fetch('/api/dashboard/top-productos').then(r => r.json()),
+                        fetch('/api/dashboard/ultimas-compras').then(r => r.json()),
+                        fetch('/api/dashboard/ultimas-facturas').then(r => r.json()),
+                        fetch('/api/dashboard/actividad-reciente').then(r => r.json()) // ← NUEVA
+                    ]);
+
+                    return {
+                        kpis,
+                        ventasMensuales,
+                        topProductos,
+                        ultimasCompras,
+                        ultimasFacturas,
+                        actividadReciente // ← NUEVA
+                    };
+                } catch (error) {
+                    console.error('❌ Error cargando datos del dashboard:', error);
+                    return null;
+                }
+            }
+
+            async function inicializarDashboard() {
+                console.log('🚀 Inicializando dashboard...');
+
+                try {
+                    // Cargar Chart.js primero
+                    await cargarChartJS();
+
+                    // Cargar datos reales de las APIs
+                    const datos = await cargarDatosDashboard();
+
+                    // Mostar la ultima actualizacion en tiempo en el fondo
+                    lastUpdateTime()
+
+
+                    // Configurar atajos según rol
+                    configurarAtajosPorRol(); // ← AÑADE ESTA LÍNEA
+
+
+                    updateDateTime();
+                    setInterval(updateDateTime, 1000);
+
+                    // USO: Llamar después del login o al cargar la página
+                    mostrarRolEmpleado();
+
+                    if (datos) {
+                        // Usar datos reales de la API
+                        updateKPIs(datos.kpis);
+                        createSalesChart(datos.ventasMensuales);
+                        actualizarTopProductos(datos.topProductos);
+                        actualizarUltimasCompras(datos.ultimasCompras);
+                        actualizarUltimasFacturas(datos.ultimasFacturas);
+                        actualizarActividadReciente(datos.actividadReciente); // ← NUEVA
+                    } else {
+                        // Usar datos por defecto si la API falla
+                        updateKPIs();
+                        createSalesChart();
+                    }
+
+                    verFacturas()
+
+                    console.log('✅ Dashboard inicializado correctamente');
+                } catch (error) {
+                    console.error('❌ Error inicializando dashboard:', error);
+                }
+            }
+            
+            function updateDateTime() {
+                const now = new Date();
+                const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
+                const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit'};
+
+                const currentDateElem = document.getElementById('currentDate');
+                const currentTimeElem = document.getElementById('currentTime');
+
+                if (currentDateElem) {
+                    currentDateElem.textContent = now.toLocaleDateString('es-ES', dateOptions);
+                }
+                if (currentTimeElem) {
+                    currentTimeElem.textContent = now.toLocaleTimeString('es-ES', timeOptions);
+                }
+                
+            }
+
+            // Encargada de mostar el tiempo de la ultima actualizacion del dashboard
+            function lastUpdateTime() {
+                const now = new Date();
+                const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                const lastUpdateElem = document.getElementById('lastUpdate');
+
+                if (lastUpdateElem) {
+                    lastUpdateElem.textContent = now.toLocaleDateString('es-CL') + ' ' + now.toLocaleTimeString('es-ES', timeOptions);
+                }
+              
+            }
+
+            // Actualizar la función mostrarRolEmpleado para que use los mismos colores
+            function mostrarRolEmpleado() {
+                try {
+                    const rolId = obtenerEmpleadoRol();
+                    const rolNombre = localStorage.getItem('empleadoRolNombre') || 'Sin rol';
+
+                    // Mostrar en el elemento con id 'rolEmpleado'
+                    const rolElement = document.getElementById('rolEmpleado');
+                    if (rolElement) {
+                        // Aplicar colores según el rol
+                        let colorClase = '';
+                        let icono = '';
+
+                        switch (rolId) {
+                            case '1': // Administrador
+                                colorClase = 'text-danger';
+                                icono = '<i class="bi bi-shield-fill me-1"></i>';
+                                break;
+                            case '2': // Bodeguero
+                                colorClase = 'text-primary';
+                                icono = '<i class="bi bi-box-seam-fill me-1"></i>';
+                                break;
+                            case '3': // Cajero
+                                colorClase = 'text-success';
+                                icono = '<i class="bi bi-cash me-1"></i>';
+                                break;
+                        }
+
+                        rolElement.innerHTML = `${icono} <span class="${colorClase} fw-bold">${rolNombre}</span>`;
+                    }
+
+                    return rolNombre;
+                } catch (error) {
+                    console.error('Error al obtener el rol del empleado:', error);
+                    return 'Error';
+                }
+            }
+
+            
+
+
+
+            function updateKPIs(kpiData = null) {
+                // Si no hay datos de la API, usar datos por defecto
+                const datos = kpiData || {
+                    productosTotales: 245,
+                    valorInventario: 4503.24,
+                    ventasHoy: 1250.75,
+                    comprasMes: 3850.20,
+                    comprasRealizadasMes: 18,
+                    categorias: 12,
+                    clientes: 128,
+                    empleados: 12,
+                    proveedores: 24,
+                    devolucionesMes: 8,
+                    stockBajo: 12,
+                    facturasHoy: 15,
+                    ventasTotalesMes: 15280.45,
+                    promedioDiario: 509.35
+                };
+
+                // Actualizar KPIs
+                const elementos = {
+                    'kpiProductosTotales': datos.productosTotales,
+                    'kpiValorInventario': '$' + datos.valorInventario.toFixed(2),
+                    'kpiVentasHoy': '$' + datos.ventasHoy.toFixed(2),
+                    'kpiComprasMes': '$' + datos.comprasMes.toFixed(2),
+                    'kpiCategorias': datos.categorias,
+                    'kpiComprasRealizadasMes': datos.comprasRealizadasMes,
+                    'kpiClientes': datos.clientes,
+                    'kpiEmpelados': datos.empleados,
+                    'kpiProveedores': datos.proveedores,
+                    'kpiDevolucionesMes': datos.devolucionesMes,
+                    'kpiStockBajo': datos.stockBajo,
+                    'kpiFacturasHoy': datos.facturasHoy
+                };
+
+                Object.keys(elementos).forEach(id => {
+                    const elemento = document.getElementById(id);
+                    if (elemento) {
+                        elemento.textContent = elementos[id];
+                    }
+                });
+
+                // Actualizar resumen de ventas
+                const ventasTotalesElem = document.getElementById('ventasTotalesMes');
+                const promedioDiarioElem = document.getElementById('promedioDiario');
+
+                if (ventasTotalesElem) ventasTotalesElem.textContent = '$' + datos.ventasTotalesMes.toFixed(2);
+                if (promedioDiarioElem) promedioDiarioElem.textContent = '$' + datos.promedioDiario.toFixed(2);
+            }
+
+            function createSalesChart(ventasMensuales = null) {
+                if (!chartJsLoaded) {
+                    console.error('Chart.js no está cargado');
+                    return;
+                }
+
+                const ctx = document.getElementById('ventasChart');
+
+                if (!ctx) {
+                    console.error('❌ Canvas "ventasChart" no encontrado');
+                    return;
+                }
+
+                // Destruir gráfica anterior si existe
+                if (ventasChartInstance) {
+                    ventasChartInstance.destroy();
+                }
+
+                // Usar datos reales o generar aleatorios
+                const labels = Array.from({ length: 30 }, (_, i) => (i + 1) + '/11');
+                const data = ventasMensuales
+                    ? ventasMensuales.map(v => v.ventas)
+                    : labels.map(() => Math.floor(Math.random() * 1000) + 200);
+
+                ventasChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels,
+                        datasets: [{
+                            label: 'Ventas diarias ($)',
+                            data,
+                            borderColor: '#0d6efd',
+                            backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            },
+                            x: {
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+
+                console.log('📊 Gráfica de ventas creada correctamente');
+            }
+
+            // Funciones para actualizar las listas con datos reales
+            function actualizarTopProductos(topProductos) {
+                if (!topProductos || !Array.isArray(topProductos)) {
+                    console.log('No hay datos de top productos');
+                    return;
+                }
+
+                const lista = document.getElementById('listaTopProductos'); // ← Cambiado
+                if (lista) {
+                    lista.innerHTML = '';
+                    topProductos.forEach(producto => {
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item d-flex justify-content-between px-0';
+                        li.innerHTML = `${producto.nombre} <span class="badge bg-light text-dark">${producto.ventas}</span>`;
+                        lista.appendChild(li);
+                    });
+                }
+            } 
+
+            function actualizarUltimasCompras(ultimasCompras) {
+                if (!ultimasCompras || !Array.isArray(ultimasCompras)) return;
+
+                const tbody = document.getElementById('tbodyUltimasCompras'); // ← Cambiado
+                if (tbody) {
+                    tbody.innerHTML = '';
+                    ultimasCompras.forEach(compra => {
+                        const fecha = new Date(compra.fecha + 'T00:00:00').toLocaleDateString('es-SV');
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                <td>${fecha}</td>
+                <td>${compra.proveedor}</td>
+                <td class="text-end">$${compra.total.toFixed(2)}</td>
+            `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            }
+
+            function actualizarUltimasFacturas(ultimasFacturas) {
+                if (!ultimasFacturas || !Array.isArray(ultimasFacturas)) return;
+
+                const tbody = document.getElementById('tbodyUltimasFacturas'); // ← Cambiado
+                if (tbody) {
+                    tbody.innerHTML = '';
+                    ultimasFacturas.forEach(factura => {
+                        const fecha = new Date(factura.fecha + 'T00:00:00').toLocaleDateString('es-SV');
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                <td>${fecha}</td>
+                <td>${factura.numeroFactura}</td>
+                <td class="text-end">$${factura.total.toFixed(2)}</td>
+            `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            }
+
+
+            function actualizarActividadReciente(actividadReciente) {
+                if (!actividadReciente || !Array.isArray(actividadReciente)) {
+                    console.log('No hay datos de actividad reciente');
+                    return;
+                }
+
+                const lista = document.getElementById('listaActividadReciente'); // ← Cambiado
+                if (lista) {
+                    lista.innerHTML = '';
+
+                    actividadReciente.forEach(actividad => {
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item';
+
+                        // Formatear fecha
+                        const fechaFormateada = new Date(actividad.fecha + 'T00:00:00').toLocaleDateString('es-SV') 
+                        li.innerHTML = `
+                <div class="d-flex gap-3">
+                    <div class="badge bg-${actividad.color} rounded-circle p-2">
+                        <i class="bi ${actividad.icono}"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold">${actividad.titulo}</div>
+                        <div class="small text-muted">${actividad.descripcion} — ${fechaFormateada}</div>
+                    </div>
+                </div>
+            `;
+
+                        lista.appendChild(li);
+                    });
+                }
+            }
+            /*
+            function setupQuickButtons() {
+                const buttons = {
+                    'btnNuevaCompra': 'Nueva compra',
+                    'btnNuevaFactura': 'Nueva factura',
+                    'btnNuevoProducto': 'Nuevo producto',
+                    'btnNuevoCliente': 'Nuevo cliente'
+                };
+
+                Object.keys(buttons).forEach(btnId => {
+                    const button = document.getElementById(btnId);
+                    if (button) {
+                        button.onclick = () => alert(buttons[btnId]);
+                    }
+                });
+            }*/
+
+            // QUE ABRA ASI COMO EN EL INDEX SIN PROBLEMA ALGUNO
+            function setupQuickButtons() {
+                const botones = {
+                    'btnNuevaCompra': 'compras',
+                    'btnNuevaFactura': 'cajero',
+                    'btnNuevoProducto': 'productos',
+                    'btnNuevoCliente': 'clientes'
+                };
+
+                Object.keys(botones).forEach(btnId => {
+                    const button = document.getElementById(btnId);
+                    if (button) {
+                        button.onclick = () => abrirVentana(botones[btnId]);
+                    }
+                });
+            }
+
+            function verFacturas() {
+                const rol = obtenerEmpleadoRol();
+                const button = document.getElementById('verTodasFacturas');
+
+                if (button) {
+                    // Solo mostrar el botón si es admin (rol 1) o cajero (rol 3)
+                    if (rol === '1' || rol === '3') {
+                        button.style.display = 'inline'; // Mostrar
+                        button.onclick = () => abrirVentana('facturas');
+                    } else {
+                        // Ocultar completamente para bodeguero (rol 2)
+                        button.style.display = 'none';
+                    }
+                }
+            }
+
+
+
+
+
+
+            // Función para configurar atajos según el rol
+            function configurarAtajosPorRol() {
+                const rol = obtenerEmpleadoRol(); // '1', '2', o '3'
+                const contenedorAtajos = document.getElementById('contenedorAtajos');
+                const rolNombreElemento = document.getElementById('rolNombre');
+
+                if (!contenedorAtajos) return;
+
+                // Definir atajos para cada rol
+                const atajosPorRol = {
+                    '1': [ // Administrador - TODOS los atajos
+                        { id: 'btnNuevaCompra', texto: 'Nueva Compra', icono: 'bi-bag', clase: 'btn-primary', form: 'compras' },
+
+                        { id: 'btnNuevoProducto', texto: 'Nuevo Producto', icono: 'bi-box-seam', clase: 'btn-warning', form: 'productos' },
+
+                        { id: 'btnNuevoEmpleado', texto: 'Nuevo Empleado', icono: 'bi-person-plus', clase: 'btn-info', form: 'empleados' },
+
+                        { id: 'btnVerInventario', texto: 'Ver Inventario', icono: 'bi-clipboard-data', clase: 'btn-dark', form: 'inventario' },
+
+                        { id: 'btnVerCompras', texto: 'Ver Compras', icono: 'bi-card-checklist', clase: 'btn-success', form: 'registroCompras' },
+
+                        { id: 'btnVerFacturas', texto: 'Ver Facturas', icono: 'bi-receipt', clase: 'btn-secondary', form: 'facturas' },
+
+                        { id: 'btnVerDevoluciones', texto: 'Ver Devoluciones', icono: 'bi-arrow-return-left', clase: 'btn-danger', form: 'devoluciones' }
+
+                    ],
+                    '2': [ // Bodeguero - Solo inventario y compras
+                        { id: 'btnNuevaCompra', texto: 'Nueva Compra', icono: 'bi-bag', clase: 'btn-primary', form: 'compras' },
+                        { id: 'btnNuevoProducto', texto: 'Nuevo Producto', icono: 'bi-box-seam', clase: 'btn-warning', form: 'productos' },
+                        { id: 'btnNuevoProveedor', texto: 'Nuevo Proveedor', icono: 'bi-shop', clase: 'btn-info', form: 'proveedores' },
+                        { id: 'btnRegistroCompras', texto: 'Ver Compras', icono: 'bi-card-checklist', clase: 'btn-success', form: 'registroCompras' },
+                        { id: 'btnVerInventario', texto: 'Ver Inventario', icono: 'bi-clipboard-data', clase: 'btn-dark', form: 'inventario' }
+
+                    ],
+                    '3': [ // Cajero - Solo ventas y clientes
+
+                        { id: 'btnNuevoCliente', texto: 'Nuevo Cliente', icono: 'bi-people', clase: 'btn-secondary', form: 'clientes' },
+                        { id: 'btnNuevaFactura', texto: 'Nueva Factura', icono: 'bi-cart', clase: 'btn-success', form: 'cajero' },
+                        { id: 'btnVerFacturas', texto: 'Ver Facturas', icono: 'bi-receipt', clase: 'btn-dark', form: 'facturas' },
+                        { id: 'btnRegistrarDevolucion', texto: 'Ver Devoluciones', icono: 'bi-arrow-return-left', clase: 'btn-danger', form: 'devoluciones' }
+
+                    ]
+                };
+
+                // Obtener nombre del rol para mostrar
+                const nombresRol = {
+                    '1': 'Administrador',
+                    '2': 'Bodeguero',
+                    '3': 'Cajero'
+                };
+
+                if (rolNombreElemento) {
+                    rolNombreElemento.textContent = nombresRol[rol] || 'Usuario';
+                }
+
+                // Limpiar contenedor
+                contenedorAtajos.innerHTML = '';
+
+                // Crear botones según el rol
+                const atajos = atajosPorRol[rol] || atajosPorRol['3']; // Por defecto cajero
+
+                atajos.forEach(atajo => {
+                    const boton = document.createElement('a');
+                    boton.id = atajo.id;
+                    boton.className = `btn btn-sm quick-btn ${atajo.clase}`;
+                    boton.innerHTML = `<i class="bi ${atajo.icono} me-1"></i> ${atajo.texto}`;
+                    boton.onclick = () => abrirVentana(atajo.form);
+
+                    contenedorAtajos.appendChild(boton);
+                });
+
+                // Si no hay atajos, mostrar mensaje
+                if (atajos.length === 0) {
+                    contenedorAtajos.innerHTML = `
+            <div class="alert alert-warning py-2 small mb-0">
+                <i class="bi bi-info-circle me-1"></i>
+                No hay atajos disponibles para tu rol
+            </div>
+        `;
+                }
+            }
+
+            // Función para obtener el rol (debe coincidir con tu función en el index)
+            function obtenerEmpleadoRol() {
+                return localStorage.getItem('empleadoRol') || '3'; // Por defecto cajero
+            }
+
+
+
+
+
+
+            // Hacer la función global
+            window.inicializarDashboard = inicializarDashboard;
+
+            // Auto-inicializar si se carga directamente
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', inicializarDashboard);
+            } else {
+                inicializarDashboard();
+                setInterval(inicializarDashboard, 60000)
+            }
+
+        })();
+    </script>
+
+</body>
+</html>

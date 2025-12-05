@@ -22,6 +22,8 @@ namespace WebAppInventario.Models
         public DbSet<CompraDetalle> ComprasDetalles { get; set; }
         public DbSet<Factura> Facturas { get; set; }
         public DbSet<FacturaDetalle> FacturasDetalles { get; set; }
+        public DbSet<Devolucion> Devoluciones { get; set; }
+        public DbSet<DevolucionDetalle> DevolucionesDetalles { get; set; }
 
 
 
@@ -61,6 +63,19 @@ namespace WebAppInventario.Models
                .WithMany(a => a.Compras)
                .HasForeignKey(i => i.idEmpleado);
 
+            modelBuilder.Entity<Compra>()
+               .HasOne(i => i.EmpleadoAnulacion)
+               .WithMany()
+               .HasForeignKey(i => i.idEmpleadoAnulacion);
+
+            modelBuilder.Entity<Compra>()
+               .HasOne(i => i.Proveedor)
+               .WithMany(a => a.Compras)
+               .HasForeignKey(i => i.idProveedor);
+
+            
+
+
             // Una compra puede tener detalles
             modelBuilder.Entity<CompraDetalle>()
                 .HasOne(f => f.Compra)
@@ -96,6 +111,41 @@ namespace WebAppInventario.Models
                .HasOne(k => k.inventario)
               .WithMany(a => a.facturaDetalles)
               .HasForeignKey(k => k.idInventario);
+
+
+
+
+            // Una factura puede tener muchos Productos vendidos
+            modelBuilder.Entity<Devolucion>()
+               .HasOne(k => k.Factura)
+              .WithMany(a => a.Devolucion)
+              .HasForeignKey(k => k.idFactura);
+
+            // Una factura puede tener muchos Productos vendidos
+            modelBuilder.Entity<Devolucion>()
+               .HasOne(k => k.Empleado)
+              .WithMany(a => a.Devolucion)
+              .HasForeignKey(k => k.idEmpleado);
+
+
+
+            // Una factura puede tener muchos Productos vendidos
+            modelBuilder.Entity<DevolucionDetalle>()
+               .HasOne(k => k.FacturaDetalle)
+              .WithMany(a => a.DevolucionDetalle)
+              .HasForeignKey(k => k.idFacturaDetalle);
+
+            // Una factura puede tener muchos Productos vendidos
+            modelBuilder.Entity<DevolucionDetalle>()
+               .HasOne(k => k.Devolucion)
+              .WithMany(a => a.DevolucionDetalle)
+              .HasForeignKey(k => k.idDevolucion);
+
+
+
+
+
+
 
 
 
