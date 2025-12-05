@@ -195,6 +195,9 @@
         #modalEliminarCompra .modal-header {
             background: linear-gradient(135deg, #E74C3C, #C0392B) !important;
         }
+        #modalErrorCompra .modal-header {
+            background: linear-gradient(135deg, #E74C3C, #C0392B) !important;
+        }
 
         #modalConfirmarLimpiarCompra .modal-header {
             background: linear-gradient(135deg, #E67E22, #D35400) !important;
@@ -1717,7 +1720,7 @@
                                         detalle.costo,
                                         () => {
                                             if (detallesEnviados === totalDetalles) {
-                                                mostrarModalErrorCompra('✅ Compra registrada exitosamente!\nCompra Nº: ' + numeroCompraActual, true);
+                                                mostrarModalErrorCompra('Compra registrada exitosamente!\nCompra Nº: ' + numeroCompraActual, true);
                                                 limpiarTodoCompra();
                                             }
                                         }

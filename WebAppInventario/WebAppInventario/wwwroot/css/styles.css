@@ -241,6 +241,8 @@ main {
         transform: translateY(-2px);
     }
 
+
+
 .card-header {
     background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
     border-radius: 12px 12px 0 0 !important;

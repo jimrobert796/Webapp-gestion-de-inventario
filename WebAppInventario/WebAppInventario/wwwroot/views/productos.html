@@ -227,7 +227,18 @@
             padding: 15px 20px;
         }
 
-        
+        /* COLORES DE TARJETAS MODALES */
+        #modalEliminar .modal-header {
+            background: linear-gradient(135deg, #E74C3C, #C0392B) !important;
+        }
+
+        #modalExito .modal-header {
+            background: linear-gradient(135deg, #27AE60, #229954) !important;
+        }
+
+        #modalProducto .modal-header {
+            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
+        }
 
         .border.rounded {
             border: 2px solid #e9ecef !important;
@@ -524,7 +535,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Confirmar Eliminación</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -544,7 +555,9 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">Éxito</h5>
+                    <h5 class="modal-title">
+                        <i class="bi bi-check-circle me-2"></i>Exito
+                    </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
