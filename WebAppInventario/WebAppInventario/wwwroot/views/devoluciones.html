@@ -225,9 +225,8 @@
             color: white !important;
         }
 
-        .modal-header {
-            background: linear-gradient(135deg, var(--ferreteria-primary), #34495E) !important;
-        }
+        
+
 
         #modalNueva .modal-header .modal-title {
             color: #ffffff !important;
@@ -816,6 +815,9 @@
         }
 
         function buscarFactura() {
+
+            deseleccionarProducto();
+
             const numeroFactura = $('#buscarFactura').val().trim();
             if (!numeroFactura) {
                 mostrarAlerta('Ingrese un número de factura', 'warning');

@@ -109,6 +109,7 @@ namespace WebAppInventario.Controllers
             var query = _context.Productos
                 .Include(p => p.Categoria)
                 .Include(p => p.Proveedor)
+                .Where(p => p.estado == true)  
                 .AsQueryable();
 
             // 📌 Filtro por categoría

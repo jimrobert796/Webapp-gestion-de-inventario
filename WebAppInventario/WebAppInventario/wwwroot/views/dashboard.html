@@ -232,18 +232,15 @@
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div>
                                         <h6 class="mb-1 fw-bold">Atajos rápidos</h6>
-                                        <small class="text-muted">Acciones frecuentes</small>
+                                        <small class="text-muted">Acciones frecuentes para <span id="rolNombre" class="fw-bold text-primary">tu rol</span></small>
                                     </div>
-                                    <div class="d-flex gap-2 flex-wrap">
-                                        <a class="btn btn-primary btn-sm quick-btn" id="btnNuevaCompra"><i class="bi bi-bag me-1"></i> Nueva Compra</a>
-                                        <a class="btn btn-success btn-sm quick-btn" id="btnNuevaFactura"><i class="bi bi-cart me-1"></i> Nueva Factura</a>
-                                        <a class="btn btn-warning btn-sm quick-btn" id="btnNuevoProducto"><i class="bi bi-box-seam me-1"></i> Nuevo Producto</a>
-                                        <a class="btn btn-secondary btn-sm quick-btn" id="btnNuevoCliente"><i class="bi bi-people me-1"></i> Nuevo Cliente</a>
+                                    <div class="d-flex gap-2 flex-wrap" id="contenedorAtajos">
+                                        <!-- Los atajos se cargarán dinámicamente según el rol -->
+                                        <div class="text-muted small">Cargando atajos...</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                         <!-- GRÁFICA + TOP PRODUCTOS -->
                         <div class="col-lg-7">
                             <div class="card p-3 h-100">
@@ -451,6 +448,10 @@
                     lastUpdateTime()
 
 
+                    // Configurar atajos según rol
+                    configurarAtajosPorRol(); // ← AÑADE ESTA LÍNEA
+
+
                     updateDateTime();
                     setInterval(updateDateTime, 1000);
 
@@ -470,8 +471,6 @@
                         updateKPIs();
                         createSalesChart();
                     }
-
-                    setupQuickButtons();
 
                     verFacturas()
 
@@ -510,24 +509,38 @@
               
             }
 
+            // Actualizar la función mostrarRolEmpleado para que use los mismos colores
             function mostrarRolEmpleado() {
                 try {
-                    // Obtener el rol del localStorage (donde normalmente se guarda al hacer login)
-                    const rolEmpleado = localStorage.getItem('empleadoRolNombre') ||
-                        sessionStorage.getItem('empleadoRolNombre') ||
-                        'No especificado';
+                    const rolId = obtenerEmpleadoRol();
+                    const rolNombre = localStorage.getItem('empleadoRolNombre') || 'Sin rol';
 
                     // Mostrar en el elemento con id 'rolEmpleado'
                     const rolElement = document.getElementById('rolEmpleado');
                     if (rolElement) {
-                        // Opcional: formatear el rol para que se vea mejor
-                        const rolFormateado = rolEmpleado.charAt(0).toUpperCase() + rolEmpleado.slice(1).toLowerCase();
-                        rolElement.textContent = rolFormateado;
-                    } else {
-                        console.warn('Elemento con id "rolEmpleado" no encontrado');
+                        // Aplicar colores según el rol
+                        let colorClase = '';
+                        let icono = '';
+
+                        switch (rolId) {
+                            case '1': // Administrador
+                                colorClase = 'text-danger';
+                                icono = '<i class="bi bi-shield-fill me-1"></i>';
+                                break;
+                            case '2': // Bodeguero
+                                colorClase = 'text-primary';
+                                icono = '<i class="bi bi-box-seam-fill me-1"></i>';
+                                break;
+                            case '3': // Cajero
+                                colorClase = 'text-success';
+                                icono = '<i class="bi bi-cash me-1"></i>';
+                                break;
+                        }
+
+                        rolElement.innerHTML = `${icono} <span class="${colorClase} fw-bold">${rolNombre}</span>`;
                     }
 
-                    return rolEmpleado;
+                    return rolNombre;
                 } catch (error) {
                     console.error('Error al obtener el rol del empleado:', error);
                     return 'Error';
@@ -774,12 +787,114 @@
             }
 
             function verFacturas() {
+                const rol = obtenerEmpleadoRol();
                 const button = document.getElementById('verTodasFacturas');
 
                 if (button) {
-                    button.onclick = () => abrirVentana('facturas');
+                    // Solo mostrar el botón si es admin (rol 1) o cajero (rol 3)
+                    if (rol === '1' || rol === '3') {
+                        button.style.display = 'inline'; // Mostrar
+                        button.onclick = () => abrirVentana('facturas');
+                    } else {
+                        // Ocultar completamente para bodeguero (rol 2)
+                        button.style.display = 'none';
+                    }
                 }
             }
+
+
+
+
+
+
+            // Función para configurar atajos según el rol
+            function configurarAtajosPorRol() {
+                const rol = obtenerEmpleadoRol(); // '1', '2', o '3'
+                const contenedorAtajos = document.getElementById('contenedorAtajos');
+                const rolNombreElemento = document.getElementById('rolNombre');
+
+                if (!contenedorAtajos) return;
+
+                // Definir atajos para cada rol
+                const atajosPorRol = {
+                    '1': [ // Administrador - TODOS los atajos
+                        { id: 'btnNuevaCompra', texto: 'Nueva Compra', icono: 'bi-bag', clase: 'btn-primary', form: 'compras' },
+
+                        { id: 'btnNuevoProducto', texto: 'Nuevo Producto', icono: 'bi-box-seam', clase: 'btn-warning', form: 'productos' },
+
+                        { id: 'btnNuevoEmpleado', texto: 'Nuevo Empleado', icono: 'bi-person-plus', clase: 'btn-info', form: 'empleados' },
+
+                        { id: 'btnVerInventario', texto: 'Ver Inventario', icono: 'bi-clipboard-data', clase: 'btn-dark', form: 'inventario' },
+
+                        { id: 'btnVerCompras', texto: 'Ver Compras', icono: 'bi-card-checklist', clase: 'btn-success', form: 'registroCompras' },
+
+                        { id: 'btnVerFacturas', texto: 'Ver Facturas', icono: 'bi-receipt', clase: 'btn-secondary', form: 'facturas' },
+
+                        { id: 'btnVerDevoluciones', texto: 'Ver Devoluciones', icono: 'bi-arrow-return-left', clase: 'btn-danger', form: 'devoluciones' }
+
+                    ],
+                    '2': [ // Bodeguero - Solo inventario y compras
+                        { id: 'btnNuevaCompra', texto: 'Nueva Compra', icono: 'bi-bag', clase: 'btn-primary', form: 'compras' },
+                        { id: 'btnNuevoProducto', texto: 'Nuevo Producto', icono: 'bi-box-seam', clase: 'btn-warning', form: 'productos' },
+                        { id: 'btnNuevoProveedor', texto: 'Nuevo Proveedor', icono: 'bi-shop', clase: 'btn-info', form: 'proveedores' },
+                        { id: 'btnRegistroCompras', texto: 'Ver Compras', icono: 'bi-card-checklist', clase: 'btn-success', form: 'registroCompras' },
+                        { id: 'btnVerInventario', texto: 'Ver Inventario', icono: 'bi-clipboard-data', clase: 'btn-dark', form: 'inventario' }
+
+                    ],
+                    '3': [ // Cajero - Solo ventas y clientes
+
+                        { id: 'btnNuevoCliente', texto: 'Nuevo Cliente', icono: 'bi-people', clase: 'btn-secondary', form: 'clientes' },
+                        { id: 'btnNuevaFactura', texto: 'Nueva Factura', icono: 'bi-cart', clase: 'btn-success', form: 'cajero' },
+                        { id: 'btnVerFacturas', texto: 'Ver Facturas', icono: 'bi-receipt', clase: 'btn-dark', form: 'facturas' },
+                        { id: 'btnRegistrarDevolucion', texto: 'Ver Devoluciones', icono: 'bi-arrow-return-left', clase: 'btn-danger', form: 'devoluciones' }
+
+                    ]
+                };
+
+                // Obtener nombre del rol para mostrar
+                const nombresRol = {
+                    '1': 'Administrador',
+                    '2': 'Bodeguero',
+                    '3': 'Cajero'
+                };
+
+                if (rolNombreElemento) {
+                    rolNombreElemento.textContent = nombresRol[rol] || 'Usuario';
+                }
+
+                // Limpiar contenedor
+                contenedorAtajos.innerHTML = '';
+
+                // Crear botones según el rol
+                const atajos = atajosPorRol[rol] || atajosPorRol['3']; // Por defecto cajero
+
+                atajos.forEach(atajo => {
+                    const boton = document.createElement('a');
+                    boton.id = atajo.id;
+                    boton.className = `btn btn-sm quick-btn ${atajo.clase}`;
+                    boton.innerHTML = `<i class="bi ${atajo.icono} me-1"></i> ${atajo.texto}`;
+                    boton.onclick = () => abrirVentana(atajo.form);
+
+                    contenedorAtajos.appendChild(boton);
+                });
+
+                // Si no hay atajos, mostrar mensaje
+                if (atajos.length === 0) {
+                    contenedorAtajos.innerHTML = `
+            <div class="alert alert-warning py-2 small mb-0">
+                <i class="bi bi-info-circle me-1"></i>
+                No hay atajos disponibles para tu rol
+            </div>
+        `;
+                }
+            }
+
+            // Función para obtener el rol (debe coincidir con tu función en el index)
+            function obtenerEmpleadoRol() {
+                return localStorage.getItem('empleadoRol') || '3'; // Por defecto cajero
+            }
+
+
 
 
 

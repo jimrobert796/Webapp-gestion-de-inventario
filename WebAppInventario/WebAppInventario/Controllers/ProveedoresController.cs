@@ -41,7 +41,11 @@ namespace WebAppInventario.Controllers
                 .AsQueryable();
             if (!string.IsNullOrEmpty(parametros.buscar))
             {
-                consulta = consulta.Where(Cliente => Cliente.nombre.Contains(parametros.buscar));
+                consulta = consulta.Where(p =>
+                                            p.nombre.Contains(parametros.buscar) ||
+                                            p.email.Contains(parametros.buscar) ||
+                                            p.telefono.Contains(parametros.buscar)
+                                        );
             }
 
             return await consulta.ToListAsync();

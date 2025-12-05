@@ -17,6 +17,54 @@
 
     <!-- CSS personalizado -->
     <link href="/css/styles.css" rel="stylesheet">
+    <style>
+
+        /* Estilos para transiciones suaves */
+        .sidebar li {
+            transition: all 0.3s ease-in-out;
+            overflow: hidden;
+        }
+
+        /* Estilo para el badge del rol en la info de usuario */
+        #rolUsuario {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animación para cuando se ocultan elementos */
+        [style*="display: none"] {
+            animation: fadeOut 0.3s ease forwards;
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                height: auto;
+                margin-bottom: 0.5rem;
+            }
+
+            to {
+                opacity: 0;
+                height: 0;
+                margin-bottom: 0;
+                overflow: hidden;
+            }
+        }
+
+        /* Estilo para indicar cambios en el menú */
+        .menu-filtrado::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--bs-primary), var(--bs-success));
+            border-radius: 0 3px 3px 0;
+        }
+    </style>
 </head>
 <body>
     <main class="d-flex flex-nowrap">
@@ -225,6 +273,7 @@
         document.addEventListener("DOMContentLoaded", () => {
             verificarSesion();
             cargarInformacionUsuario();
+            filtrarMenuPorRol(); // Nueva función para filtrar menú por rol
 
             // Inicializar modal
             const modalCerrarSesion = new bootstrap.Modal(document.getElementById('modalCerrarSesion'));
@@ -255,6 +304,131 @@
                 mostrarBienvenida();
             });
         });
+        //====== SEGUN ROL APAREZCA ===== 
+
+        // Función para filtrar el menú según el rol
+        function filtrarMenuPorRol() {
+            const rol = obtenerEmpleadoRol();
+
+            // Definir qué elementos puede ver cada rol
+            const elementosPorRol = {
+                '1': [ // Administrador - TODOS
+                    'dashboard', 'perfil', 'productos', 'inventario', 'proveedores',
+                    'categorias', 'compras', 'registroCompras', 'cajero', 'facturas',
+                    'devoluciones', 'empleados', 'clientes'
+                ],
+                '2': [ // Bodeguero
+                    'dashboard', 'perfil', 'productos', 'inventario', 'proveedores',
+                    'categorias', 'compras', 'registroCompras'
+                ],
+                '3': [ // Cajero
+                    'dashboard', 'perfil', 'cajero', 'facturas', 'devoluciones', 'clientes'
+                ]
+            };
+
+            const elementosPermitidos = elementosPorRol[rol] || [];
+
+            // PRIMERO: Ocultar elementos individuales no permitidos
+            document.querySelectorAll('[data-form]').forEach(link => {
+                const form = link.dataset.form;
+                const itemLi = link.closest('li');
+
+                if (!elementosPermitidos.includes(form)) {
+                    itemLi.style.display = 'none';
+                } else {
+                    itemLi.style.display = 'block';
+                }
+            });
+
+            // SEGUNDO: Ocultar secciones completas (toggle buttons) si no tienen elementos visibles
+            ocultarSeccionesVacias();
+
+            // TERCERO: Ajustar separadores
+            ajustarSeparadores();
+        }
+
+        // Función para encontrar el botón toggle padre (para secciones colapsables)
+        function encontrarTogglePadre(elemento) {
+            let elementoActual = elemento.previousElementSibling;
+
+            while (elementoActual) {
+                if (elementoActual.classList && elementoActual.classList.contains('btn-toggle')) {
+                    return elementoActual;
+                }
+                elementoActual = elementoActual.previousElementSibling;
+            }
+
+            return null;
+        }
+
+        // Función para ocultar secciones completas vacías
+        function ocultarSeccionesVacias() {
+            // Obtener todos los botones toggle
+            const toggleButtons = document.querySelectorAll('.btn-toggle');
+
+            toggleButtons.forEach(toggleBtn => {
+                const toggleLi = toggleBtn.closest('li');
+                const collapseId = toggleBtn.getAttribute('data-bs-target');
+
+                if (!collapseId) return;
+
+                const collapseElement = document.querySelector(collapseId);
+                if (!collapseElement) return;
+
+                // Contar cuántos elementos dentro del collapse están visibles
+                const elementosVisibles = collapseElement.querySelectorAll('a[data-form]');
+                let tieneElementosVisibles = false;
+
+                elementosVisibles.forEach(elemento => {
+                    const liPadre = elemento.closest('li');
+                    if (liPadre.style.display !== 'none') {
+                        tieneElementosVisibles = true;
+                    }
+                });
+
+                // Si NO tiene elementos visibles, ocultar toda la sección
+                if (!tieneElementosVisibles) {
+                    toggleLi.style.display = 'none';
+                    // También ocultar el collapse si está expandido
+                    collapseElement.style.display = 'none';
+                } else {
+                    toggleLi.style.display = 'block';
+                    collapseElement.style.display = ''; // Restaurar display
+                }
+            });
+        }
+
+
+        // Función para ajustar separadores
+        function ajustarSeparadores() {
+            const separadores = document.querySelectorAll('.border-top');
+
+            separadores.forEach(separador => {
+                const liSeparador = separador.closest('li');
+                let tieneElementosAntes = false;
+                let elementoActual = liSeparador.previousElementSibling;
+
+                // Buscar si hay al menos un elemento visible antes del separador
+                while (elementoActual && !tieneElementosAntes) {
+                    if (elementoActual.style.display !== 'none' &&
+                        !elementoActual.classList.contains('border-top') &&
+                        elementoActual.querySelector('[data-form]')) {
+                        tieneElementosAntes = true;
+                    }
+                    elementoActual = elementoActual.previousElementSibling;
+                }
+
+                // Ocultar separador si no hay elementos visibles antes
+                if (!tieneElementosAntes) {
+                    liSeparador.style.display = 'none';
+                } else {
+                    liSeparador.style.display = 'block';
+                }
+            });
+        }
+
+
+        //====== SEGUN ROL APAREZCA ===== 
 
         function mostrarBienvenida() {
             $('#contenido').html(`

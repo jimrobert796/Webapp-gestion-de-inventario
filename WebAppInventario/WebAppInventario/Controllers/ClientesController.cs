@@ -39,8 +39,12 @@ namespace WebAppInventario.Controllers
                 .Where(c => c.estado) // solo los clientes activos
                 .AsQueryable();
             if (!string.IsNullOrEmpty(parametros.buscar))
-            {
-                consulta = consulta.Where(Cliente => Cliente.nombre.Contains(parametros.buscar));
+            {   
+                consulta = consulta.Where(c =>
+                                            c.nombre.Contains(parametros.buscar) ||
+                                            c.email.Contains(parametros.buscar) ||
+                                            c.telefono.Contains(parametros.buscar)
+                                        );
             }
 
             return await consulta.ToListAsync();
